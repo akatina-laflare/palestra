@@ -191,6 +191,11 @@ ol.steps li::before{content:counter(st);width:24px;height:24px;border-radius:50%
 .sw[aria-pressed="true"]{border-color:var(--ink);outline:2px solid var(--glass-strong);outline-offset:-6px}
 .phrow{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:start}
 .phimg{width:96px;height:96px;object-fit:cover;border-radius:16px;display:block}
+.mlist{display:grid}
+.tnum{font-variant-numeric:tabular-nums}
+.mrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.mrow.mtot{border-bottom:0;align-items:start}
+.gwrap{display:flex;align-items:center;gap:6px}
 .gin{width:68px;min-height:36px;padding:0 8px;text-align:right;font-family:var(--mono);border-radius:10px}
 .modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:10px}
 .mode{border-radius:20px;padding:14px;text-align:left;display:grid;gap:2px;align-content:start;cursor:pointer;font:inherit;color:var(--ink);transition:transform .2s var(--spring),background .25s,color .25s}
@@ -208,6 +213,9 @@ ol.steps li::before{content:counter(st);width:24px;height:24px;border-radius:50%
 .wod{position:fixed;inset:0;z-index:60;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;color:#fff;background:var(--wbg);--wbg:#B8690A;
   padding:calc(env(safe-area-inset-top,0px) + 14px) max(18px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 18px) max(18px,env(safe-area-inset-left,0px));
   transition:background .45s var(--ease)}
+.wod{--ink:#fff;--muted:rgba(255,255,255,.6);--line:rgba(255,255,255,.28);--accent:#fff;--sunken:rgba(255,255,255,.12)}
+.wfig svg{width:min(44vw,24vh);height:min(44vw,24vh);display:block;border-radius:20px;background:rgba(255,255,255,.1)}
+.wlabel{text-wrap:balance;max-width:16ch}
 .wod[data-phase="work"]{--wbg:#15803D}.wod[data-phase="rest"]{--wbg:#1D5FBF}.wod[data-phase="pause"]{--wbg:#3F4652}.wod[data-phase="done"]{--wbg:#151A22}
 .wod.flash .wbig{animation:wpop .4s var(--spring)}
 @keyframes wpop{from{transform:scale(1.07)}}
@@ -229,7 +237,7 @@ ol.steps li::before{content:counter(st);width:24px;height:24px;border-radius:50%
 .wbtn:active{transform:scale(.95)}
 .wbtn.strong{background:#fff;color:#111;border-color:#fff;flex:1 1 160px;max-width:320px}
 .wbtn.ghost{background:transparent;min-width:0;min-height:44px;font-size:15px;padding:0 18px}
-@media (orientation:landscape) and (max-height:520px){.wod{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);gap:8px 16px}.wtop{grid-column:1/-1}.wmid{gap:4px}.wlabel{font-size:26px}.wbig{font-size:min(22vw,50vh)}.wrounds b{font-size:34px}#wNext{display:none}.wctl{flex-direction:column;justify-content:center;flex-wrap:nowrap}.wctl .wbtn{min-width:150px}.wbtn.strong{flex:0 0 auto;min-height:96px}}
+@media (orientation:landscape) and (max-height:520px){.wod{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);gap:8px 16px}.wtop{grid-column:1/-1}.wmid{gap:4px}.wlabel{font-size:26px}.wbig{font-size:min(22vw,50vh)}.wrounds b{font-size:34px}#wNext{display:none}.wfig svg{width:min(20vw,34vh);height:min(20vw,34vh)}.wctl{flex-direction:column;justify-content:center;flex-wrap:nowrap}.wctl .wbtn{min-width:150px}.wbtn.strong{flex:0 0 auto;min-height:96px}}
 .exrow.s3{grid-template-columns:58px minmax(0,1fr) auto}
 #libGrid{display:grid;gap:12px}
 .libh{display:flex;gap:8px;align-items:baseline;margin-top:10px}
@@ -344,9 +352,7 @@ details[open] summary::before{transform:rotate(45deg)}
 @media (hover:hover){.swipehint{display:none}}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{transition-duration:.01ms!important;animation:none!important}}
 </style>
-</head>
-<body>
-<div class="field" aria-hidden="true"></div>
+</head><body><div class="field" aria-hidden="true"></div>
 
 <header class="top glass bar">
   <div class="wrap">
@@ -684,60 +690,60 @@ X('tirate','Tirate al mento','Spalle','Bilanciere','lateral','comp','upright','D
   ["In piedi, bilanciere davanti alle cosce, presa alla larghezza delle spalle.","Tira il bilanciere verso l'alto lungo il corpo guidando con i gomiti.","Fermati quando i gomiti sono all'altezza delle spalle.","Scendi controllato."],
   ["Presa troppo stretta (stress per le spalle)","Salire troppo in alto"],
   "Se senti fastidio alle spalle, sostituiscilo con le alzate laterali.");
-/* BRACCIA */
-X('curl','Curl con manubri','Braccia','Manubri','biceps','iso','curl','Bicipiti, brachiale',
+/* BICIPITI E TRICIPITI */
+X('curl','Curl con manubri','Bicipiti','Manubri','biceps','iso','curl','Bicipiti, brachiale',
   ["In piedi, manubri lungo i fianchi, palmi in avanti.","Gomiti fermi accanto al busto.","Piega i gomiti portando i manubri verso le spalle.","Scendi lentamente (2–3 secondi) fino a braccia distese."],
   ["Dondolare con il busto","Gomiti che avanzano"],
   "Meglio un carico più leggero e un movimento completo.");
-X('curl_bil','Curl con bilanciere','Braccia','Bilanciere','biceps','iso','curl','Bicipiti',
+X('curl_bil','Curl con bilanciere','Bicipiti','Bilanciere','biceps','iso','curl','Bicipiti',
   ["In piedi, presa supina alla larghezza delle spalle.","Gomiti fermi ai fianchi.","Porta il bilanciere verso le spalle.","Scendi lentamente fino a braccia distese."],
   ["Dondolare","Polsi piegati all'indietro"],
   "Con il bilanciere EZ (sagomato) i polsi stanno più comodi.", {gear:'plate', a:'curl'});
-X('hammer','Curl a martello','Braccia','Manubri','biceps','iso','curl','Brachioradiale, brachiale, bicipiti',
+X('hammer','Curl a martello','Bicipiti','Manubri','biceps','iso','curl','Brachioradiale, brachiale, bicipiti',
   ["In piedi, manubri lungo i fianchi con i palmi che si guardano.","Gomiti fermi.","Porta i manubri verso le spalle mantenendo la presa neutra.","Scendi lentamente."],
   ["Gomiti che avanzano","Slancio"],
   "Lavora anche l'avambraccio: utile per la presa.");
-X('curl_conc','Curl concentrato','Braccia','Manubri','biceps','iso','curl','Bicipiti',
+X('curl_conc','Curl concentrato','Bicipiti','Manubri','biceps','iso','curl','Bicipiti',
   ["Seduto, gomito appoggiato all'interno della coscia.","Braccio disteso con il manubrio.","Porta il manubrio verso la spalla senza muovere il gomito.","Scendi lentamente."],
   ["Usare la spalla","Movimento incompleto"],
   "Ottimo per concentrarsi sulla contrazione. Ripetizioni per braccio.", {unit:'kg'});
-X('curl_scott','Curl alla panca Scott','Braccia','Bilanciere','biceps','iso','preacher','Bicipiti, brachiale',
+X('curl_scott','Curl alla panca Scott','Bicipiti','Bilanciere','biceps','iso','preacher','Bicipiti, brachiale',
   ["Siediti con il retro delle braccia appoggiato sul cuscino inclinato.","Presa supina sul bilanciere EZ.","Porta il peso verso le spalle.","Scendi lentamente fino quasi a distendere le braccia."],
   ["Distendere di colpo in basso (stress per i gomiti)","Sollevare i gomiti dal cuscino"],
   "Elimina ogni slancio: usa carichi più leggeri del curl in piedi.");
-X('curl_cavo','Curl al cavo','Braccia','Cavi','biceps','iso','curlCable','Bicipiti',
+X('curl_cavo','Curl al cavo','Bicipiti','Cavi','biceps','iso','curlCable','Bicipiti',
   ["Davanti alla carrucola bassa, barra o corda in mano.","Gomiti fermi ai fianchi.","Porta la barra verso le spalle.","Scendi lentamente mantenendo la tensione."],
   ["Gomiti che avanzano","Busto che dondola"],
   "Il cavo mantiene il muscolo in tensione per tutto il movimento.");
-X('curl_inverso','Curl inverso','Braccia','Bilanciere','biceps','iso','curl','Brachioradiale, estensori dell\'avambraccio',
+X('curl_inverso','Curl inverso','Bicipiti','Bilanciere','biceps','iso','curl','Brachioradiale, estensori dell\'avambraccio',
   ["Presa prona (palmi verso il basso) alla larghezza delle spalle.","Gomiti fermi ai fianchi.","Porta il bilanciere verso le spalle.","Scendi lentamente."],
   ["Polsi che cedono","Carico eccessivo"],
   "Rafforza avambracci e polsi.", {gear:'plate'});
-X('pushdown','Pushdown al cavo','Braccia','Cavi','triceps','iso','pushdown','Tricipiti',
+X('pushdown','Pushdown al cavo','Tricipiti','Cavi','triceps','iso','pushdown','Tricipiti',
   ["Davanti al cavo alto, presa sulla barra.","Gomiti attaccati ai fianchi, busto leggermente in avanti.","Spingi verso il basso fino a distendere completamente le braccia.","Risali controllato senza staccare i gomiti."],
   ["Gomiti che si alzano","Usare il peso del corpo"],
   "Tieni i gomiti fermi come se fossero incollati ai fianchi.");
-X('pushdown_corda','Pushdown con la corda','Braccia','Cavi','triceps','iso','pushdown','Tricipiti (capo laterale)',
+X('pushdown_corda','Pushdown con la corda','Tricipiti','Cavi','triceps','iso','pushdown','Tricipiti (capo laterale)',
   ["Corda al cavo alto, una mano per estremità.","Gomiti ai fianchi.","Spingi in basso e apri le mani ai lati delle cosce.","Risali lentamente."],
   ["Gomiti che si staccano","Busto troppo inclinato"],
   "Aprire la corda in basso aumenta la contrazione.");
-X('french','French press','Braccia','Bilanciere','triceps','iso','skull','Tricipiti',
+X('french','French press','Tricipiti','Bilanciere','triceps','iso','skull','Tricipiti',
   ["Sdraiato sulla panca, bilanciere EZ sopra il petto a braccia distese.","Piega solo i gomiti portando il bilanciere verso la fronte.","Gomiti fermi e rivolti verso il soffitto.","Distendi le braccia tornando su."],
   ["Gomiti che si aprono","Muovere le spalle"],
   "Scendi lentamente: il bilanciere passa vicino al viso.");
-X('ohtri','Estensioni sopra la testa','Braccia','Manubri','triceps','iso','ohTri','Tricipiti (capo lungo)',
+X('ohtri','Estensioni sopra la testa','Tricipiti','Manubri','triceps','iso','ohTri','Tricipiti (capo lungo)',
   ["Seduto o in piedi, un manubrio tenuto con due mani sopra la testa.","Gomiti vicini alla testa e rivolti in avanti.","Abbassa il manubrio dietro la testa piegando i gomiti.","Distendi le braccia."],
   ["Gomiti che si aprono","Inarcare la schiena"],
   "Allunga molto il capo lungo del tricipite.", {unit:'kg'});
-X('kickback','Kickback con manubrio','Braccia','Manubri','triceps','iso','kickback','Tricipiti',
+X('kickback','Kickback con manubrio','Tricipiti','Manubri','triceps','iso','kickback','Tricipiti',
   ["Busto inclinato in avanti, gomito alto vicino al fianco.","Avambraccio verticale con il manubrio.","Distendi il braccio indietro finché è dritto.","Torna lentamente."],
   ["Gomito che scende","Slancio"],
   "Carichi leggeri e un secondo di contrazione in alto.");
-X('dip_panca','Dip tra panche','Braccia','Corpo libero','triceps','comp','dip','Tricipiti, pettorali, deltoidi anteriori',
+X('dip_panca','Dip tra panche','Tricipiti','Corpo libero','triceps','comp','dip','Tricipiti, pettorali, deltoidi anteriori',
   ["Mani sul bordo di una panca dietro di te, gambe distese in avanti.","Scendi piegando i gomiti finché sono a circa 90°.","Gomiti rivolti indietro, non in fuori.","Spingi e torna su."],
   ["Scendere troppo (stress per le spalle)","Spalle che vanno in avanti"],
   "Ginocchia piegate per renderlo più facile, piedi su un'altra panca per renderlo più difficile.", {rr:[8,15]});
-X('panca_stretta','Panca presa stretta','Braccia','Bilanciere','triceps','comp','bench','Tricipiti, pettorali',
+X('panca_stretta','Panca presa stretta','Tricipiti','Bilanciere','triceps','comp','bench','Tricipiti, pettorali',
   ["Come la panca piana, ma con le mani alla larghezza delle spalle.","Gomiti vicini al busto.","Scendi verso la parte bassa del petto.","Spingi fino a braccia distese."],
   ["Mani troppo vicine (stress per i polsi)","Gomiti aperti"],
   "Il miglior esercizio multiarticolare per i tricipiti.");
@@ -746,6 +752,10 @@ X('squat','Squat con bilanciere','Gambe','Bilanciere','squat','comp','squat','Qu
   ["Bilanciere sui trapezi (non sul collo), mani poco più larghe delle spalle, gomiti sotto il bilanciere.","Piedi alla larghezza delle spalle, punte leggermente in fuori.","Inspira, contrai l'addome e scendi portando indietro le anche e piegando le ginocchia nella direzione delle punte.","Scendi almeno finché la coscia è parallela al pavimento, mantenendo la schiena neutra.","Spingi con tutto il piede e risali, espirando nell'ultimo tratto."],
   ["Ginocchia che cedono verso l'interno","Talloni che si alzano","Schiena che si arrotonda in basso"],
   "Se la mobilità della caviglia è limitata, inizia con il goblet squat.");
+X('squat_cl','Squat a corpo libero','Gambe','Corpo libero','squat','comp','squat','Quadricipiti, glutei',
+  ["Piedi alla larghezza delle spalle, punte leggermente in fuori, braccia in avanti per l'equilibrio.","Spingi indietro le anche e piega le ginocchia nella direzione delle punte.","Scendi almeno con le cosce parallele al pavimento, schiena dritta.","Risali spingendo con tutto il piede."],
+  ["Talloni che si alzano","Ginocchia che cedono verso l'interno"],
+  "La base di tutto: quando 20 ripetizioni diventano facili, passa al goblet squat.", {gear:null, rr:[12,20]});
 X('front_squat','Front squat','Gambe','Bilanciere','squat','comp','frontSquat','Quadricipiti, glutei, core',
   ["Bilanciere appoggiato sulla parte anteriore delle spalle, gomiti alti.","Piedi alla larghezza delle spalle.","Scendi con il busto il più verticale possibile.","Risali tenendo i gomiti alti."],
   ["Gomiti che cadono","Busto che si inclina in avanti"],
@@ -921,7 +931,7 @@ X('ellittica','Ellittica','Cardio','Cardio','cardio','cardio','elliptical','Cuor
   ["Piedi ben appoggiati sui pedali, mani sulle maniglie mobili.","Inizia con 5 minuti a resistenza bassa.","Spingi e tira le maniglie per coinvolgere anche le braccia.","Mantieni un ritmo in cui riesci a parlare a frasi brevi."],
   ["Appoggiarsi troppo alle maniglie","Ginocchia rigide"],
   "Impatto bassissimo sulle articolazioni.");
-const GROUPS = ['Tutti','Petto','Schiena','Spalle','Braccia','Gambe','Glutei','Core','Cardio'];
+const GROUPS = ['Tutti','Petto','Schiena','Spalle','Bicipiti','Tricipiti','Gambe','Glutei','Core','Cardio'];
 const EQUIP = ['Tutta','Bilanciere','Manubri','Macchina','Cavi','Corpo libero','Kettlebell','Cardio'];
 function alternatives(id){
   const X0 = EX[id], same = Object.keys(EX).filter(k => k !== id && EX[k].pat === X0.pat);
@@ -943,7 +953,8 @@ const GROUP_WORKOUTS = [
   {key:'dorso', n:'Dorso', ex:['trazioni','rematore','lat_stretta','pulley','pulldown_tese','hyper']},
   {key:'gambe', n:'Gambe', ex:['squat','legpress','rumeno','legext','legcurl','calf']},
   {key:'spalle', n:'Spalle', ex:['lento_m','alzate','alzate_cavo','alzate_post','facepull','scrollate']},
-  {key:'braccia', n:'Bicipiti e tricipiti', ex:['curl_bil','french','hammer','pushdown_corda','curl_scott','ohtri']},
+  {key:'bicipiti', n:'Bicipiti', ex:['curl_bil','hammer','curl_scott','curl_cavo','curl_conc','curl_inverso']},
+  {key:'tricipiti', n:'Tricipiti', ex:['panca_stretta','french','pushdown_corda','ohtri','kickback','dip_panca']},
   {key:'glutei', n:'Glutei', ex:['hipthrust','bulgaro','rumeno','slanci','abductor','ponte']},
   {key:'addome', n:'Addome', ex:['crunch_cavo','legraise_sbarra','plank','russian','abwheel','side_plank']},
   {key:'cardio', n:'Cardio e resistenza', ex:['cyclette','vogatore','burpee','mountain','corda']},
@@ -953,8 +964,8 @@ const MUSCLE_SPLITS = {
   2:[{n:'Parte alta', ex:['panca','rematore','lento_m','lat','curl','pushdown']},{n:'Parte bassa', ex:['squat','rumeno','legpress','legcurl','calf','plank']}],
   3:[{n:'Petto e tricipiti', ex:['panca','panca_incl_m','croci_cavi','dip','pushdown_corda','french']},{n:'Dorso e bicipiti', ex:['trazioni','rematore','pulley','pulldown_tese','curl_bil','hammer']},{n:'Gambe e spalle', ex:['squat','rumeno','legpress','calf','lento_m','alzate']}],
   4:[{n:'Petto e tricipiti', ex:['panca','panca_incl_m','croci_cavi','dip','pushdown_corda','french']},{n:'Dorso e bicipiti', ex:['trazioni','rematore','pulley','pulldown_tese','curl_bil','hammer']},{n:'Gambe', ex:GW('gambe').ex},{n:'Spalle e addome', ex:['lento_m','alzate','alzate_post','facepull','crunch_cavo','plank']}],
-  5:['petto','dorso','gambe','spalle','braccia'].map(k => ({n:GW(k).n, ex:GW(k).ex})),
-  6:[...['petto','dorso','gambe','spalle','braccia'].map(k => ({n:GW(k).n, ex:GW(k).ex})), {n:'Glutei e addome', ex:['hipthrust','bulgaro','slanci','abductor','legraise_sbarra','plank']}],
+  5:[...['petto','dorso','gambe','spalle'].map(k => ({n:GW(k).n, ex:GW(k).ex})), {n:'Bicipiti e tricipiti', ex:['curl_bil','hammer','curl_scott','french','pushdown_corda','ohtri']}],
+  6:[...['petto','dorso','gambe','spalle'].map(k => ({n:GW(k).n, ex:GW(k).ex})), {n:'Bicipiti e tricipiti', ex:['curl_bil','hammer','curl_scott','french','pushdown_corda','ohtri']}, {n:'Glutei e addome', ex:['hipthrust','bulgaro','slanci','abductor','legraise_sbarra','plank']}],
 };
 const STYLES = {auto:'Full body e misti', muscoli:'Per gruppo muscolare'};
 const GOALS = {
@@ -1359,7 +1370,8 @@ function openPicker({title, sub, first = [], onPick, restore}){
 }
 function exMatches(id, q, g, eq){
   const X = EX[id];
-  return (!g || g === 'Tutti' || X.g === g) && (!eq || eq === 'Tutta' || X.eq === eq) && (!q || (X.n + ' ' + X.m + ' ' + X.g + ' ' + X.eq).toLowerCase().includes(q));
+  // search name, group, equipment and the PRIMARY muscle only: "bicipiti" must not list rows and pull-ups
+  return (!g || g === 'Tutti' || X.g === g) && (!eq || eq === 'Tutta' || X.eq === eq) && (!q || (X.n + ' ' + X.g + ' ' + X.eq + ' ' + X.m.split(',')[0]).toLowerCase().includes(q));
 }
 function fillPicker(){
   const filtered = pickerQ || pickerG !== 'Tutti';
@@ -1498,7 +1510,7 @@ function renderOggi(){
         <div class="legend"><span><i class="dot p-c"></i>${n.p} g proteine</span><span><i class="dot c-c"></i>${n.c} g carboidrati</span><span><i class="dot f-c"></i>${n.f} g grassi</span></div>
         ${(() => { const t = foodTot(foodToday()); return t.kcal ? `<p class="small">Mangiato finora <strong class="num">${Math.round(t.kcal).toLocaleString('it-IT')}</strong> kcal · rimangono <strong class="num">${Math.max(0, Math.round(n.kcal - t.kcal)).toLocaleString('it-IT')}</strong></p><div class="prog"><span style="width:${Math.min(100, t.kcal / n.kcal * 100)}%;background:var(--accent)"></span></div>` : ''; })()}
         <p class="small muted">Acqua: ${fmt(n.water)} litri · Fibre: ${n.fiber} g</p>
-        <div class="row"><button class="btn primary sm" data-go="nutrizione">Fotografa un pasto</button><button class="btn sm" data-go="nutrizione">Piano alimentare</button></div>
+        <div class="row"><button class="btn primary sm" data-go="nutrizione">Scrivi cosa hai mangiato</button><button class="btn sm" data-go="nutrizione">Piano alimentare</button></div>
       </div>
     </div>`;
   $('#startW').onclick = () => startSession($('#pickDay').value);
@@ -1756,7 +1768,7 @@ function renderNutrizione(){
   el.innerHTML = `
     <div><span class="eyebrow">${esc(G.l)} · ${fmt(+p.weight)} kg</span><h2>Piano alimentare</h2></div>
     ${p.example ? `<div class="example"><span>Valori calcolati sul profilo di esempio.</span><button class="btn sm" data-go="profilo">Inserisci i tuoi dati</button></div>` : ''}
-    ${photoCardHTML()}
+    ${mealCardHTML()}
     ${diaryHTML()}
     <div class="stats">
       <div class="stat glass"><span class="key" style="background:var(--ink)"></span><span>Calorie giornaliere</span><b class="num">${n.kcal.toLocaleString('it-IT')}</b><span>kcal</span></div>
@@ -1804,8 +1816,8 @@ function renderNutrizione(){
       <p class="small muted">Il coach compone una giornata di pasti che rispetta i tuoi numeri, con alimenti comuni in Italia.</p>
       <div id="menuOut"></div></div>`;
   $('#menuBtn').onclick = genMenu;
-  bindPhoto(); bindDiary(el);
-  if(photo){ renderPhotoForm(); if(photoRes) renderPhotoResult(); }
+  bindMeal(); bindDiary(el);
+  if(mealRes){ $('#mealTxt').value = mealRes.text; renderMealResult(); }
 }
 /* ================= AI: Claude inside claude.ai, Claude API with the user's own key everywhere else ================= */
 let sampleFn;
@@ -1903,93 +1915,250 @@ function addFood(entry){
   const cut = dayNum(iso()) - 120; state.food = state.food.filter(f => dayNum(f.date) >= cut);
   markFood(iso());
 }
-async function prepImage(file){
-  const url = URL.createObjectURL(file);
-  try{
-    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej({code:'image_rejected'}); i.src = url; });
-    const sc = Math.min(1, 1280 / Math.max(img.naturalWidth, img.naturalHeight));
-    const cv = document.createElement('canvas'); cv.width = Math.round(img.naturalWidth * sc); cv.height = Math.round(img.naturalHeight * sc);
-    cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
-    const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', .85));
-    const dataUrl = cv.toDataURL('image/jpeg', .85);
-    return {blob, type:'image/jpeg', b64: dataUrl.slice(dataUrl.indexOf(',') + 1), preview: dataUrl};
-  } finally { URL.revokeObjectURL(url); }
-}
-const FOOD_SCHEMA = {type:'object', additionalProperties:false, required:['e_cibo','piatto','affidabilita','alimenti','consiglio'], properties:{
-  e_cibo:{type:'boolean'}, piatto:{type:'string'}, affidabilita:{type:'string', enum:['alta','media','bassa']},
-  alimenti:{type:'array', items:{type:'object', additionalProperties:false, required:['nome','grammi','kcal','proteine','carboidrati','grassi'], properties:{
-    nome:{type:'string'}, grammi:{type:'number'}, kcal:{type:'number'}, proteine:{type:'number'}, carboidrati:{type:'number'}, grassi:{type:'number'}}}},
-  consiglio:{type:'string'}}};
-let photo = null, photoRes = null;
-function photoCardHTML(){
-  return `<div class="card glass" id="photoCard">
-    <div><span class="eyebrow">Foto del piatto</span><h3>Quanto vale questo pasto?</h3></div>
-    <p class="small muted">Scatta una foto: Claude riconosce gli alimenti, stima grammi, calorie e macronutrienti e ti dà un consiglio. Poi puoi correggere le quantità e salvarlo nel diario.</p>
-    <div class="row"><label class="btn primary" for="phCam">Scatta una foto</label><input id="phCam" type="file" accept="image/*" capture="environment" hidden>
-      <label class="btn" for="phGal">Scegli dalla galleria</label><input id="phGal" type="file" accept="image/*" hidden></div>
-    <div id="phOut"></div></div>`;
-}
-function bindPhoto(){
-  const onPick = async e => {
-    const f = e.target.files && e.target.files[0]; e.target.value = ''; if(!f) return;
-    $('#phOut').innerHTML = `<p class="muted row">${typing} Preparo la foto…</p>`;
-    try{ photo = await prepImage(f); photoRes = null; renderPhotoForm(); }catch(err){ $('#phOut').innerHTML = `<p class="muted">${esc(sampleErr(err && err.code))}</p>`; }
-  };
-  $('#phCam').onchange = onPick; $('#phGal').onchange = onPick;
-}
-function renderPhotoForm(){
-  $('#phOut').innerHTML = `<div class="phrow"><img class="phimg" src="${photo.preview}" alt="La foto del pasto"><div style="display:grid;gap:8px;min-width:0">
-      <label class="f">Dettagli che la foto non mostra (facoltativo)<input id="phNote" placeholder="es. condito con un cucchiaio d'olio, porzione da 100 g"></label>
-      <div class="row"><button class="btn primary" id="phGo">Analizza</button><button class="btn ghost sm" id="phX">Annulla</button></div></div></div>
-    <div id="phRes"></div>`;
-  $('#phGo').onclick = analyzePhoto;
-  $('#phX').onclick = () => { photo = null; $('#phOut').innerHTML = ''; };
-}
-async function analyzePhoto(){
-  const n = nutr(), t = foodTot(foodToday()), p = state.profile, btn = $('#phGo');
-  btn.disabled = true; $('#phRes').innerHTML = `<p class="muted row">${typing} Riconosco gli alimenti…</p>`;
-  const note = ($('#phNote').value || '').trim();
-  try{
-    const r = await aiJSON({images:[photo], effort:'medium', schema: FOOD_SCHEMA, prompt:
-`Sei un nutrizionista sportivo italiano. Nella foto c'è un pasto: riconosci ogni alimento visibile e stima il peso in grammi (cotto, come appare nel piatto) e i valori nutrizionali, usando porzioni realistiche e le tabelle nutrizionali italiane (CREA). Considera anche condimenti probabili ma non visibili, come l'olio, e indicali come alimento a parte.
-${note ? 'Dettagli dati dalla persona: ' + note + '\n' : ''}Se la foto non mostra cibo, metti e_cibo a false e lascia alimenti vuoto.
-"affidabilita" è quanto sei sicuro della stima. "consiglio" è un consiglio breve (massimo 2 frasi, in italiano, dando del tu) su come questo pasto si inserisce nella giornata.
-Contesto: ${p.sex === 'm' ? 'uomo' : 'donna'}, ${p.weight} kg, obiettivo: ${GOALS[p.goal].l}. Target giornaliero ${n.kcal} kcal, proteine ${n.p} g, carboidrati ${n.c} g, grassi ${n.f} g. Già mangiato oggi: ${Math.round(t.kcal)} kcal, P ${Math.round(t.p)} g, C ${Math.round(t.c)} g, G ${Math.round(t.f)} g.`});
-    if(!r || !r.e_cibo || !Array.isArray(r.alimenti) || !r.alimenti.length){ $('#phRes').innerHTML = `<p class="muted">Non vedo cibo in questa foto. Prova con una foto del piatto dall'alto, con buona luce.</p>`; btn.disabled = false; return; }
-    photoRes = {piatto: String(r.piatto || 'Pasto'), aff: r.affidabilita, consiglio: String(r.consiglio || ''), items: r.alimenti.map(a => {
-      const g = Math.max(1, num(a.grammi));
-      return {nome:String(a.nome), g, base:{kcal:num(a.kcal)/g, p:num(a.proteine)/g, c:num(a.carboidrati)/g, f:num(a.grassi)/g}};
-    })};
-    renderPhotoResult(); haptic(10);
-  }catch(e){ $('#phRes').innerHTML = `<p class="muted">${esc(sampleErr(e && e.code))}</p>`; }
-  if($('#phGo')) $('#phGo').disabled = false;
-}
-const itemVals = it => ({kcal: it.base.kcal * it.g, p: it.base.p * it.g, c: it.base.c * it.g, f: it.base.f * it.g});
-function photoTotals(){ return photoRes.items.reduce((a, it) => { const v = itemVals(it); return {kcal:a.kcal + v.kcal, p:a.p + v.p, c:a.c + v.c, f:a.f + v.f}; }, {kcal:0, p:0, c:0, f:0}); }
-function renderPhotoResult(){
-  const R = photoRes, aff = {alta:'stima affidabile', media:'stima indicativa', bassa:'stima incerta'}[R.aff] || 'stima';
-  $('#phRes').innerHTML = `<div style="display:grid;gap:10px">
-    <div class="row between"><strong style="font-size:17px">${esc(R.piatto)}</strong><span class="tag">${aff}</span></div>
-    <div class="scroll"><table><tr><th>Alimento</th><th class="r">Grammi</th><th class="r">kcal</th><th class="r">P</th><th class="r">C</th><th class="r">G</th></tr>
-      ${R.items.map((it, i) => { const v = itemVals(it); return `<tr><td>${esc(it.nome)}</td><td class="r"><input class="gin" inputmode="numeric" data-i="${i}" value="${Math.round(it.g)}" aria-label="Grammi di ${esc(it.nome)}"></td><td class="r num" id="pk-${i}">${Math.round(v.kcal)}</td><td class="r num" id="pp-${i}">${Math.round(v.p)}</td><td class="r num" id="pc-${i}">${Math.round(v.c)}</td><td class="r num" id="pf-${i}">${Math.round(v.f)}</td></tr>`; }).join('')}
-      <tr><td><strong>Totale</strong></td><td></td><td class="r num"><strong id="ptk"></strong></td><td class="r num" id="ptp"></td><td class="r num" id="ptc"></td><td class="r num" id="ptf"></td></tr></table></div>
-    ${R.consiglio ? `<div class="note small">${esc(R.consiglio)}</div>` : ''}
-    <p class="small muted">Correggi i grammi se servono: i valori si aggiornano da soli. È una stima: i condimenti nascosti possono cambiare il totale.</p>
-    <div class="row"><label class="f" style="width:min(100%,170px)">Pasto<select id="phMeal">${MEALS.map(m => `<option ${m === mealNow() ? 'selected' : ''}>${m}</option>`).join('')}</select></label>
-      <button class="btn primary" id="phAdd" style="align-self:end">Aggiungi al diario</button></div></div>`;
-  const upd = () => { const t = photoTotals(); $('#ptk').textContent = Math.round(t.kcal); $('#ptp').textContent = Math.round(t.p); $('#ptc').textContent = Math.round(t.c); $('#ptf').textContent = Math.round(t.f); };
-  upd();
-  $('#phRes').querySelectorAll('.gin').forEach(inp => inp.oninput = () => {
-    const it = R.items[+inp.dataset.i]; it.g = Math.max(0, num(inp.value)); const v = itemVals(it), i = inp.dataset.i;
-    $('#pk-' + i).textContent = Math.round(v.kcal); $('#pp-' + i).textContent = Math.round(v.p); $('#pc-' + i).textContent = Math.round(v.c); $('#pf-' + i).textContent = Math.round(v.f); upd();
+/* ================= food database (values per 100 g edible part; typical Italian label / CREA values) ================= */
+// F(id, name, aliases, kcal, protein, carbs, fat, default grams, household units in grams)
+const FOODS = [];
+const F = (id, n, al, k, p, c, f, def, u = {}) => FOODS.push({id, n, al: al.split('|'), k, p, c, f, def, u});
+// cereali, pane, primi
+F('pasta','Pasta (cruda)','pasta|spaghetti|penne|fusilli|rigatoni|maccheroni|linguine|tagliatelle secche|farfalle|mezze maniche',353,12.5,71,1.5,80,{piatto:80,porzione:80});
+F('pasta_cotta','Pasta (cotta)','pasta cotta|spaghetti cotti|penne cotte',158,5.8,31,0.9,220);
+F('pasta_int','Pasta integrale (cruda)','pasta integrale|spaghetti integrali|penne integrali',340,13,64,2.5,80,{piatto:80,porzione:80});
+F('riso','Riso (crudo)','riso|riso basmati|riso integrale|riso venere|risotto crudo',350,7,78,0.6,80,{piatto:80,porzione:80});
+F('riso_cotto','Riso (cotto)','riso cotto|riso bollito',130,2.7,28,0.3,200);
+F('pane','Pane','pane|pane bianco|pagnotta|rosetta|baguette|panino|panino vuoto',270,8.5,52,1.5,50,{fetta:35,pz:80,panino:80});
+F('pane_int','Pane integrale','pane integrale|pane di segale|pane ai cereali',245,9,45,2.5,50,{fetta:35,pz:80});
+F('fette_bisc','Fette biscottate','fette biscottate|fetta biscottata',410,11,72,6,20,{pz:10,fetta:10,confezione:30});
+F('cracker','Cracker','cracker|crackers',430,10,70,12,25,{pacchetto:25,pz:6});
+F('grissini','Grissini','grissini|grissino',410,12,68,9,20,{pz:5});
+F('avena','Fiocchi d\'avena','avena|fiocchi d avena|porridge',370,13,60,7,40,{cucchiaio:10,tazza:80});
+F('cornflakes','Cereali da colazione','cereali|corn flakes|cornflakes|muesli|granola',380,8,76,4,40,{tazza:40,ciotola:40});
+F('biscotti','Biscotti frollini','biscotti|biscotto|frollini|frollino',470,7,70,18,30,{pz:10});
+F('gallette','Gallette di riso','gallette|galletta|gallette di riso|gallette di mais',380,8,80,3,16,{pz:8});
+F('cornetto','Cornetto','cornetto|brioche|croissant',410,7,48,21,60,{pz:60});
+F('pizza','Pizza margherita','pizza|pizza margherita|margherita',250,10,32,9,330,{pz:330,fetta:110,trancio:150});
+F('piadina','Piadina','piadina|piadine',300,8,48,8,110,{pz:110});
+F('focaccia','Focaccia','focaccia',300,7,45,10,100,{pz:100,fetta:80,trancio:100});
+F('couscous','Cous cous (crudo)','cous cous|couscous',360,12,72,1.5,70);
+F('quinoa','Quinoa (cruda)','quinoa',368,14,64,6,70);
+F('farro','Farro (crudo)','farro|orzo perlato|orzo',340,14,67,2.5,70);
+F('gnocchi','Gnocchi di patate','gnocchi',150,4,32,0.4,200,{piatto:200,porzione:200});
+F('tortellini','Tortellini o ravioli','tortellini|ravioli|cappelletti|pasta ripiena',300,12,45,8,125,{piatto:125,porzione:125});
+F('lasagne','Lasagne','lasagne|lasagna',160,9,14,8,300,{piatto:300,porzione:300});
+F('patate','Patate','patate|patata|patate lesse|patate al forno|pure|purè',77,2,17,0.1,200,{pz:170});
+F('patatine_fritte','Patatine fritte','patatine fritte|patate fritte|fries',300,3.5,37,15,120,{porzione:120});
+F('polenta','Polenta (cotta)','polenta',75,1.7,16,0.3,250);
+// piatti pronti tipici
+F('pasta_pom','Pasta al pomodoro (piatto)','pasta al pomodoro|spaghetti al pomodoro|pasta al sugo|penne al pomodoro',140,4.5,26,2.5,300,{piatto:300,porzione:300});
+F('pasta_ragu','Pasta al ragù (piatto)','pasta al ragu|pasta al ragù|tagliatelle al ragu|bolognese',170,7,23,6,320,{piatto:320,porzione:320});
+F('carbonara','Carbonara (piatto)','carbonara|pasta alla carbonara',230,10,22,12,300,{piatto:300,porzione:300});
+F('risotto','Risotto (piatto)','risotto',160,3.5,25,5,300,{piatto:300,porzione:300});
+F('pasta_fagioli','Pasta e fagioli (piatto)','pasta e fagioli|pasta e ceci|pasta e lenticchie|minestra di legumi',110,5,16,2.5,300,{piatto:300,porzione:300,ciotola:300});
+F('insalata_riso','Insalata di riso','insalata di riso',180,5,22,8,300,{piatto:300,porzione:300});
+F('panino_prosc','Panino con prosciutto','panino con prosciutto|panino al prosciutto|panino prosciutto|panino con salame',270,13,32,9,150,{pz:150});
+F('toast','Toast','toast|tramezzino',270,13,26,12,120,{pz:120});
+F('hamburger_pan','Hamburger nel panino','hamburger con panino|big mac|cheeseburger|panino con hamburger',255,13,26,11,220,{pz:220});
+F('kebab','Kebab','kebab|piadina kebab',220,12,20,10,400,{pz:400});
+F('sushi','Sushi','sushi|nigiri|uramaki|hosomaki',150,6,26,2,30,{pz:30});
+F('poke','Poke','poke|poke bowl',150,8,18,5,400,{pz:400,ciotola:400});
+// carne, pesce, uova
+F('pollo','Petto di pollo (crudo)','pollo|petto di pollo|fesa di pollo|pollo crudo',100,23,0,1,150,{fetta:100});
+F('pollo_cotto','Pollo cotto','pollo cotto|pollo alla griglia|pollo ai ferri|pollo arrosto|pollo al forno',150,30,0,3,150);
+F('tacchino','Fesa di tacchino','tacchino|fesa di tacchino|petto di tacchino',107,24,0,1.2,150,{fetta:80});
+F('manzo','Manzo magro','manzo|bistecca|carne rossa|tagliata|filetto|vitello|carpaccio',130,21,0,5,150);
+F('macinato','Carne macinata','macinato|carne macinata|polpette|ragu di carne',200,19,0,14,120);
+F('maiale','Lonza di maiale','maiale|lonza|braciola|costata di maiale',145,21,0,6,150);
+F('hamburger','Hamburger di carne','hamburger|burger',230,17,0,18,100,{pz:100});
+F('wurstel','Würstel','wurstel|würstel|salsiccia|salsicce',270,13,2,23,100,{pz:50});
+F('prosc_crudo','Prosciutto crudo','prosciutto crudo|speck',270,26,0,18,50,{fetta:15});
+F('prosc_cotto','Prosciutto cotto','prosciutto cotto|prosciutto',140,19,1,7,50,{fetta:25});
+F('bresaola','Bresaola','bresaola',150,32,0,2,50,{fetta:10});
+F('salame','Salame','salame|salami|mortadella|coppa',380,22,1,32,40,{fetta:8});
+F('salmone','Salmone','salmone|salmone fresco',185,20,0,12,150);
+F('salmone_aff','Salmone affumicato','salmone affumicato',147,25,0,4.5,80,{fetta:15});
+F('tonno','Tonno al naturale','tonno|tonno al naturale',110,25,0,1,60,{scatoletta:60,pz:60});
+F('tonno_olio','Tonno sott\'olio (sgocciolato)','tonno sott olio|tonno all olio|tonno in olio',190,25,0,10,60,{scatoletta:60,pz:60});
+F('pesce','Pesce bianco','merluzzo|nasello|platessa|orata|branzino|spigola|sogliola|pesce|pesce spada|trota',90,19,0,1.5,150,{filetto:150});
+F('gamberi','Gamberi','gamberi|gamberetti|calamari|polpo|seppie|frutti di mare|cozze|vongole',75,15,1,1,150);
+F('uova','Uova','uovo|uova|uovo sodo|uova strapazzate|frittata|omelette',128,12.4,0.5,8.7,55,{pz:55});
+F('albume','Albume','albume|albumi|chiara d uovo',45,11,0.7,0.2,100,{pz:33});
+F('tofu','Tofu','tofu|seitan|tempeh',120,13,3,6,100);
+// latte e derivati
+F('latte','Latte parzialmente scremato','latte|latte parzialmente scremato|latte ps',46,3.4,4.9,1.6,200,{bicchiere:200,tazza:250,tazzina:30});
+F('latte_intero','Latte intero','latte intero',64,3.3,4.8,3.6,200,{bicchiere:200,tazza:250});
+F('latte_scremato','Latte scremato','latte scremato',34,3.5,5,0.2,200,{bicchiere:200,tazza:250});
+F('latte_veg','Bevanda vegetale','latte di soia|latte di mandorla|latte d avena|bevanda di soia|bevanda vegetale|latte di riso',40,2.5,4,1.5,200,{bicchiere:200,tazza:250});
+F('yogurt','Yogurt bianco','yogurt|yogurt bianco|yogurt intero',66,3.8,4.3,3.9,125,{vasetto:125,pz:125});
+F('yogurt_greco','Yogurt greco 0%','yogurt greco|greco|skyr|yogurt greco magro|yogurt greco 0',57,10,4,0.2,170,{vasetto:170,pz:170,cucchiaio:20});
+F('yogurt_greco_int','Yogurt greco intero','yogurt greco intero|greco intero',97,9,4,5,150,{vasetto:150,pz:150});
+F('yogurt_frutta','Yogurt alla frutta','yogurt alla frutta|yogurt fragola|yogurt alla fragola',95,3,15,2.5,125,{vasetto:125,pz:125});
+F('mozzarella','Mozzarella','mozzarella|fior di latte|mozzarelline|bocconcini',250,18,1,19,125,{pz:125,fetta:30});
+F('mozz_light','Mozzarella light','mozzarella light',165,19,1,9,125,{pz:125});
+F('parmigiano','Parmigiano / grana','parmigiano|grana|grana padano|parmigiano reggiano|pecorino',390,33,0,28,20,{cucchiaio:5,cucchiaino:3,scaglia:5});
+F('formaggio','Formaggio stagionato','formaggio|emmental|fontina|provola|scamorza|asiago|caciotta|gorgonzola|brie|edamer',380,25,1,30,50,{fetta:25});
+F('ricotta','Ricotta','ricotta',145,9,3.5,11,100,{cucchiaio:20});
+F('fiocchi_latte','Fiocchi di latte','fiocchi di latte|cottage cheese|jocca',95,11,3,4,150,{vasetto:150,cucchiaio:20});
+F('philadelphia','Formaggio spalmabile','philadelphia|formaggio spalmabile|spalmabile|robiola|stracchino|crescenza',230,6,3,21,30,{cucchiaio:20,cucchiaino:8});
+F('burro','Burro','burro',750,0.8,0.1,83,10,{cucchiaino:5,cucchiaio:12,noce:10});
+F('panna','Panna','panna|panna da cucina|panna montata',330,2,3.5,35,30,{cucchiaio:15});
+F('whey','Proteine in polvere','proteine|proteine in polvere|whey|proteine whey|shake proteico|frullato proteico',380,78,6,5,30,{misurino:30,scoop:30,pz:30});
+// condimenti, dolci
+F('olio','Olio d\'oliva','olio|olio d oliva|olio extravergine|olio evo|olio di semi|filo d olio',899,0,0,100,10,{cucchiaio:10,cucchiaino:4,filo:5,giro:5});
+F('maionese','Maionese','maionese|salsa tonnata',700,1.5,2,75,15,{cucchiaio:15,cucchiaino:5});
+F('ketchup','Ketchup','ketchup|salsa barbecue',110,1.5,25,0.2,15,{cucchiaio:15,cucchiaino:5});
+F('pesto','Pesto','pesto',450,5,6,45,30,{cucchiaio:15,cucchiaino:5});
+F('passata','Passata o sugo di pomodoro','passata|sugo|sugo di pomodoro|salsa di pomodoro|pomodoro pelato|pelati',30,1.3,5,0.3,100,{cucchiaio:20});
+F('zucchero','Zucchero','zucchero|zucchero di canna',392,0,100,0,5,{cucchiaino:5,cucchiaio:12,bustina:4});
+F('miele','Miele','miele',304,0.3,82,0,10,{cucchiaino:7,cucchiaio:20});
+F('marmellata','Marmellata','marmellata|confettura',250,0.5,60,0,20,{cucchiaino:10,cucchiaio:20});
+F('nutella','Crema spalmabile al cacao','nutella|crema al cacao|crema spalmabile|crema di nocciole',539,6.3,57.5,31,15,{cucchiaino:10,cucchiaio:20});
+F('burro_arachidi','Burro di arachidi','burro di arachidi|crema di arachidi|burro d arachidi',600,25,15,50,15,{cucchiaino:7,cucchiaio:16});
+F('cioccolato_fond','Cioccolato fondente','cioccolato fondente|fondente|cioccolato',560,8,35,42,20,{quadretto:6,pz:6,tavoletta:100});
+F('cioccolato_latte','Cioccolato al latte','cioccolato al latte|kinder|ovetto',540,7,57,31,20,{quadretto:6,pz:20});
+F('gelato','Gelato','gelato|cono gelato|coppetta',210,3.5,25,11,100,{pallina:50,cono:120,coppetta:100});
+F('torta','Torta o dolce','torta|dolce|crostata|tiramisu|tiramisù|ciambellone|plumcake|merendina|cheesecake',380,6,50,17,100,{fetta:100,pz:40});
+F('barretta','Barretta proteica','barretta|barretta proteica|protein bar',350,30,30,10,60,{pz:60});
+F('patatine','Patatine in busta','patatine|chips|pop corn|popcorn|salatini|taralli',520,6,55,30,30,{pacchetto:30,busta:30,manciata:20});
+// frutta, frutta secca
+F('banana','Banana','banana|banane',90,1.1,21,0.3,120,{pz:120});
+F('mela','Mela','mela|mele',52,0.3,12,0.2,180,{pz:180});
+F('pera','Pera','pera|pere',55,0.4,13,0.1,170,{pz:170});
+F('arancia','Arancia','arancia|arance',47,0.9,10,0.1,150,{pz:150});
+F('mandarino','Mandarino o clementina','mandarino|mandarini|clementina|clementine',50,0.8,11,0.3,70,{pz:70});
+F('kiwi','Kiwi','kiwi',61,1.1,13,0.5,80,{pz:80});
+F('pesca','Pesca o albicocca','pesca|pesche|albicocca|albicocche|nettarina|prugna|susina|susine',42,0.9,9.5,0.2,150,{pz:150});
+F('fragole','Frutti rossi','fragole|fragola|frutti di bosco|mirtilli|lamponi|more',35,0.7,7.5,0.3,150,{ciotola:150,manciata:60});
+F('uva','Uva','uva|ciliegie|ciliegia',70,0.7,17,0.2,150,{grappolo:150,manciata:80});
+F('ananas','Ananas','ananas|mango|papaya',55,0.6,13,0.2,150,{fetta:80});
+F('anguria','Anguria o melone','anguria|melone|cocomero',32,0.7,7.7,0.2,250,{fetta:250});
+F('frutta','Frutta mista','frutta|macedonia|frutto',50,0.6,12,0.2,150,{pz:150,ciotola:200});
+F('spremuta','Spremuta d\'arancia','spremuta|spremuta d arancia',45,0.7,10,0.2,200,{bicchiere:200});
+F('succo','Succo di frutta','succo|succo di frutta|succo d arancia|estathe|the freddo|tè freddo',48,0.2,12,0,200,{bicchiere:200,brick:200,bottiglia:500});
+F('mandorle','Mandorle','mandorle|mandorla',580,21,9,50,30,{manciata:30,pz:1.2});
+F('noci','Noci','noci|noce|nocciole|anacardi|frutta secca|pistacchi|pinoli',640,16,9,60,30,{manciata:30,pz:5});
+F('arachidi','Arachidi','arachidi|noccioline',590,26,10,49,30,{manciata:30});
+F('avocado','Avocado','avocado',160,2,2,15,75,{pz:150});
+F('frutta_secca_dolce','Frutta essiccata','uvetta|datteri|dattero|fichi secchi|albicocche secche|prugne secche',280,2.5,66,0.5,30,{pz:8,manciata:30});
+// verdura e legumi
+F('verdura','Verdura','verdura|verdure|insalata|lattuga|rucola|spinaci|zucchine|zucchina|broccoli|cavolfiore|cavolo|bieta|melanzane|melanzana|peperoni|peperone|funghi|fagiolini|asparagi|carciofi|finocchi|cetrioli|cetriolo|verdure grigliate|minestrone|cicoria|radicchio|cavolini',25,1.8,3.5,0.3,200,{piatto:200,ciotola:200,porzione:200});
+F('pomodori','Pomodori','pomodori|pomodoro|pomodorini|insalata di pomodori',18,1,3.5,0.2,150,{pz:120});
+F('carote','Carote','carote|carota',35,1,7.6,0.2,100,{pz:80});
+F('cipolla','Cipolla','cipolla|cipolle|porro',40,1.1,9,0.1,50,{pz:100});
+F('piselli','Piselli o mais','piselli|mais|granturco|edamame',80,4.5,13,1,100,{cucchiaio:20,scatoletta:140});
+F('legumi_secchi','Legumi secchi','legumi secchi|lenticchie secche|ceci secchi|fagioli secchi',340,22,50,2,70);
+F('legumi','Legumi cotti','legumi|lenticchie|ceci|fagioli|fagioli borlotti|fagioli cannellini|piselli secchi|hummus|zuppa di legumi',115,7.5,17,1,150,{scatoletta:240,piatto:250,ciotola:250,cucchiaio:25});
+// bevande
+F('caffe','Caffè','caffe|caffè|espresso|caffe amaro',2,0.1,0.3,0,30,{tazzina:30,pz:30});
+F('cappuccino','Cappuccino','cappuccino|caffelatte|latte macchiato',42,2.3,3.4,1.7,150,{tazza:150,pz:150});
+F('birra','Birra','birra|birre',43,0.5,3.6,0,330,{pz:330,lattina:330,bottiglia:330,boccale:400,media:400,piccola:200});
+F('vino','Vino','vino|vino rosso|vino bianco|prosecco|spritz',85,0.1,2.6,0,125,{bicchiere:125,calice:125,pz:125});
+F('cocacola','Bibita zuccherata','coca cola|cocacola|coca|aranciata|sprite|fanta|bibita|gassosa|chinotto|red bull|energy drink',42,0,10.6,0,330,{lattina:330,bottiglia:500,bicchiere:200,pz:330});
+F('zero','Bibita zero','coca zero|coca cola zero|zero|bibita zero|light',0.3,0,0,0,330,{lattina:330,bottiglia:500,pz:330});
+F('acqua','Acqua','acqua|acqua frizzante',0,0,0,0,500,{bicchiere:200,bottiglia:500});
+
+['pasta_pom','pasta_ragu','carbonara','risotto','insalata_riso','pasta_fagioli'].forEach(id => { FOODS.find(x => x.id === id).raw = id === 'pasta_fagioli' ? 50 : 80; }); // grams of dry pasta/rice in one plate
+const strip = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’'`]/g, ' ').replace(/[^a-z0-9.,/\s-]/g, ' ').replace(/\s+/g, ' ').trim();
+const stem = w => w.length > 3 ? w.replace(/[aeiou]$/, '') : w;
+const STOP = new Set('di d del della dello dei delle degli al alla allo ai alle il lo la i gli le un una uno in a da per'.split(' '));
+const stems = s => strip(s).split(' ').filter(w => w && !STOP.has(w)).map(stem);
+const FOOD_IDX = FOODS.flatMap(fd => fd.al.map(a => ({fd, st: stems(a)}))).sort((a, b) => b.st.length - a.st.length || b.st.join('').length - a.st.join('').length);
+const NUMW = {un:1, uno:1, una:1, mezzo:.5, mezza:.5, due:2, tre:3, quattro:4, cinque:5, sei:6, sette:7, otto:8, nove:9, dieci:10, dodici:12, venti:20, qualche:3, paio:2};
+const UNITS = [
+  [/^(kg|chili|chilo)$/, 'kg'], [/^(g|gr|grammi|grammo|gramm)$/, 'g'], [/^(hg|etto|etti)$/, 'hg'], [/^(ml|millilitri)$/, 'g'], [/^(cl)$/, 'cl'], [/^(l|litro|litri)$/, 'l'],
+  [/^cucchiain/, 'cucchiaino'], [/^cucchia/, 'cucchiaio'], [/^fett/, 'fetta'], [/^vasett/, 'vasetto'], [/^bicchier/, 'bicchiere'], [/^tazzin/, 'tazzina'], [/^tazz/, 'tazza'],
+  [/^lattin/, 'lattina'], [/^misurin|^scoop/, 'misurino'], [/^manciat/, 'manciata'], [/^piatt/, 'piatto'], [/^porzion/, 'porzione'], [/^scatolett/, 'scatoletta'], [/^pacchett/, 'pacchetto'],
+  [/^bust/, 'busta'], [/^quadrett/, 'quadretto'], [/^pallin/, 'pallina'], [/^pezz/, 'pz'], [/^bottigli/, 'bottiglia'], [/^ciotol/, 'ciotola'], [/^tranc/, 'trancio'], [/^calic/, 'calice'], [/^filett/, 'filetto'], [/^nocett|^noce$/, 'noce'], [/^fil[oi]$/, 'filo'], [/^gir[oi]$/, 'giro'], [/^confezion/, 'confezione'], [/^panin/, 'panino'], [/^con[oi]$/, 'cono'], [/^coppett/, 'coppetta'], [/^brick$/, 'brick'], [/^scagli/, 'scaglia'], [/^boccal/, 'boccale']
+];
+const GENERIC_UNIT = {cucchiaio:15, cucchiaino:5, fetta:30, vasetto:125, bicchiere:200, tazza:250, tazzina:30, lattina:330, misurino:30, manciata:30, scatoletta:80, pacchetto:30, busta:30, quadretto:6, pallina:50, bottiglia:500, ciotola:200, calice:125, noce:10, filo:5, giro:5, confezione:30};
+function parseMeal(text){
+  const JOINED = FOODS.flatMap(fd => fd.al).filter(a => / (con|e) /.test(a)).map(strip).sort((a, b) => b.length - a.length); // dishes whose name contains "con"/"e"
+  const parts = text.split(/[,;+\n]+/).map(strip).filter(Boolean).flatMap(p => {
+    JOINED.forEach(a => { p = p.split(a).join(a.replace(/ /g, 'qqq')); }); // protect them while splitting on "e"/"con"
+    return p.replace(/\b(ed?|piu|con|insieme a|poi)\b/g, ',').split(',').map(x => x.replace(/qqq/g, ' ').trim()).filter(Boolean);
   });
-  $('#phAdd').onclick = () => {
-    const t = photoTotals();
-    addFood({meal: $('#phMeal').value, name: R.piatto, src:'foto', kcal: Math.round(t.kcal), p: Math.round(t.p), c: Math.round(t.c), f: Math.round(t.f),
-      items: R.items.filter(it => it.g > 0).map(it => { const v = itemVals(it); return {n: it.nome, g: Math.round(it.g), kcal: Math.round(v.kcal)}; })});
-    photo = null; photoRes = null; haptic(12); toast(`${R.piatto} aggiunto al diario`); renderNutrizione(); renderOggi();
+  return parts.map(raw => {
+    let s = ' ' + raw + ' ', qty = null, unit = null;
+    // number + optional unit, anywhere in the piece (e.g. "80 g di pasta", "pasta 80g", "2 uova", "mezzo litro di latte")
+    const m = s.match(/\s(\d+\/\d+|\d+(?:[.,]\d+)?|(?:una|uno|un|mezza|mezzo|due|tre|quattro|cinque|sei|sette|otto|nove|dieci|dodici|venti|qualche|paio)(?=\s))\s*([a-z]+)?(?=\s)/);
+    if(m){
+      const n = m[1];
+      qty = /\//.test(n) ? (+n.split('/')[0] / +n.split('/')[1]) : NUMW[n] !== undefined ? NUMW[n] : parseFloat(n.replace(',', '.'));
+      if(!(qty > 0)) qty = null;
+      const uw = m[2] || ''; const hit = UNITS.find(([re]) => re.test(uw));
+      if(hit) unit = hit[1];
+      s = s.replace(m[0], hit ? ' ' : ' ' + uw + ' ');
+    }
+    const st = stems(s);
+    let found = null;
+    for(const e of FOOD_IDX){
+      for(let i = 0; i + e.st.length <= st.length; i++){
+        if(e.st.every((w, j) => st[i + j] === w)){ found = e.fd; break; }
+      }
+      if(found) break;
+    }
+    if(!found) return {raw, unknown:true};
+    // cooked / raw hints switch to the matching variant
+    if(/\bcott[aoie]\b|\blessat|\bbollit/.test(raw) && FOODS.find(x => x.id === found.id + '_cotto' || x.id === found.id + '_cotta')) found = FOODS.find(x => x.id === found.id + '_cotto' || x.id === found.id + '_cotta');
+    let g, how;
+    if(qty !== null && unit){
+      g = unit === 'kg' ? qty * 1000 : unit === 'hg' ? qty * 100 : unit === 'l' ? qty * 1000 : unit === 'cl' ? qty * 10 : unit === 'g' ? qty : qty * (found.u[unit] || GENERIC_UNIT[unit] || found.def);
+      how = unit === 'g' || unit === 'kg' || unit === 'hg' || unit === 'l' || unit === 'cl' ? 'peso indicato' : 'misura casalinga';
+    } else if(qty !== null){
+      if(found.u.pz && qty < 20){ g = qty * found.u.pz; how = 'pezzo medio'; }
+      else if(qty >= 20){ g = qty; how = 'peso indicato'; }
+      else { g = qty * found.def; how = 'porzione standard'; }
+    } else { g = found.def; how = 'porzione standard'; }
+    if(found.raw && how === 'peso indicato' && g <= 150){ g = g * found.def / found.raw; how = 'pasta cruda'; } // "80 g di pasta al pomodoro" = 80 g of dry pasta, dressed
+    return {raw, fd: found, g: Math.round(g * 10) / 10, how};
+  });
+}
+const foodVals = (fd, g) => ({kcal: fd.k * g / 100, p: fd.p * g / 100, c: fd.c * g / 100, f: fd.f * g / 100});
+
+/* ================= "scrivi cosa hai mangiato" ================= */
+let mealRes = null;
+function mealCardHTML(){
+  return `<div class="card glass" id="mealCard">
+    <div><span class="eyebrow">Calcolo automatico</span><h3>Cosa hai mangiato?</h3></div>
+    <p class="small muted">Scrivilo come lo diresti a voce: calcolo calorie e macronutrienti dagli alimenti di una tabella italiana. Se non scrivi la quantità uso una porzione standard, che puoi correggere.</p>
+    <label class="f" for="mealTxt">Il tuo pasto</label>
+    <textarea id="mealTxt" rows="3" placeholder="es. 80 g di pasta al pomodoro, un cucchiaio d'olio, 150 g di petto di pollo, una mela"></textarea>
+    <div class="row"><button class="btn primary" id="mealGo">Calcola</button></div>
+    <div id="mealOut"></div></div>`;
+}
+function bindMeal(){
+  $('#mealGo').onclick = () => {
+    const t = $('#mealTxt').value.trim();
+    if(!t){ $('#mealOut').innerHTML = `<p class="small muted">Scrivi almeno un alimento, per esempio «2 uova e una fetta di pane».</p>`; return; }
+    const rows = parseMeal(t);
+    mealRes = {text: t, items: rows.filter(r => !r.unknown).map(r => ({n: r.fd.n, fd: r.fd, g: r.g, how: r.how})), unknown: rows.filter(r => r.unknown).map(r => r.raw)};
+    renderMealResult(); haptic(8);
+  };
+  $('#mealTxt').onkeydown = e => { if(e.key === 'Enter' && (e.metaKey || e.ctrlKey)){ e.preventDefault(); $('#mealGo').click(); } };
+}
+function mealTotals(){ return mealRes.items.reduce((a, it) => { const v = foodVals(it.fd, it.g); return {kcal:a.kcal + v.kcal, p:a.p + v.p, c:a.c + v.c, f:a.f + v.f}; }, {kcal:0, p:0, c:0, f:0}); }
+function renderMealResult(){
+  const R = mealRes, out = $('#mealOut');
+  if(!R.items.length){ out.innerHTML = `<p class="small">Non ho riconosciuto nessun alimento in «${esc(R.unknown.join(', '))}». Prova con parole più comuni (es. «pasta», «pollo», «yogurt greco») oppure aggiungilo a mano qui sotto, nel diario.</p>`; return; }
+  out.innerHTML = `<div style="display:grid;gap:10px">
+    <div class="mlist">${R.items.map((it, i) => `<div class="mrow"><div style="min-width:0"><div>${esc(it.n)}${it.how === 'porzione standard' ? ' <span class="tag">porzione standard</span>' : it.how === 'pasta cruda' ? ' <span class="tag">da pasta cruda</span>' : ''}</div><div class="small muted tnum" id="mv-${i}"></div></div><label class="gwrap"><input class="gin" inputmode="decimal" data-i="${i}" value="${fmt(it.g, 0)}" aria-label="Grammi di ${esc(it.n)}"><span class="small muted">g</span></label></div>`).join('')}
+      <div class="mrow mtot"><strong>Totale</strong><div class="num" style="text-align:right"><strong id="mtk"></strong> kcal<div class="small"><span><i class="dot p-c"></i>P <b id="mtp"></b> g</span> · <span><i class="dot c-c"></i>C <b id="mtc"></b> g</span> · <span><i class="dot f-c"></i>G <b id="mtf"></b> g</span></div></div></div></div>
+    ${R.unknown.length ? `<p class="small" style="color:var(--red)">Non riconosciuto: ${esc(R.unknown.join(', '))}. Riscrivilo con un nome più comune oppure aggiungilo a mano nel diario.</p>` : ''}
+    <p class="small muted">Controlla i grammi: i valori si aggiornano subito. Pasta, riso e legumi sono calcolati da crudi; scrivi «cotta» o «cotto» se li hai pesati cotti.</p>
+    <div class="row"><label class="f" style="width:min(100%,170px)">Pasto<select id="mealMeal">${MEALS.map(m => `<option ${m === mealNow() ? 'selected' : ''}>${m}</option>`).join('')}</select></label>
+      <button class="btn primary" id="mealAdd" style="align-self:end">Aggiungi al diario</button></div></div>`;
+  const line = i => { const v = foodVals(R.items[i].fd, R.items[i].g); $('#mv-' + i).textContent = `${Math.round(v.kcal)} kcal · P ${fmt(v.p)} · C ${fmt(v.c)} · G ${fmt(v.f)}`; };
+  const upd = () => { const t = mealTotals(); $('#mtk').textContent = Math.round(t.kcal).toLocaleString('it-IT'); $('#mtp').textContent = fmt(t.p, 0); $('#mtc').textContent = fmt(t.c, 0); $('#mtf').textContent = fmt(t.f, 0); };
+  R.items.forEach((_, i) => line(i)); upd();
+  out.querySelectorAll('.gin').forEach(inp => inp.oninput = () => { const it = R.items[+inp.dataset.i]; it.g = Math.max(0, num(inp.value)); line(+inp.dataset.i); upd(); });
+  $('#mealAdd').onclick = () => {
+    const t = mealTotals(), items = R.items.filter(it => it.g > 0);
+    if(!items.length) return;
+    const name = items.length === 1 ? items[0].n : items.slice(0, 3).map(it => it.n.replace(/ \(.*\)$/, '')).join(', ') + (items.length > 3 ? '…' : '');
+    addFood({meal: $('#mealMeal').value, name, src:'testo', kcal: Math.round(t.kcal), p: Math.round(t.p), c: Math.round(t.c), f: Math.round(t.f),
+      items: items.map(it => ({n: it.n, g: Math.round(it.g), kcal: Math.round(foodVals(it.fd, it.g).kcal)}))});
+    mealRes = null; haptic(12); toast('Pasto aggiunto al diario'); renderNutrizione(); renderOggi();
   };
 }
+
 function diaryHTML(){
   const n = nutr(), list = foodToday(), t = foodTot(list);
   const bar = (label, val, target, color, unit) => { const pct = target ? Math.min(100, val / target * 100) : 0, over = val > target * 1.05;
@@ -1997,7 +2166,7 @@ function diaryHTML(){
   return `<div class="card glass" id="diary">
     <div class="row between"><div><span class="eyebrow">${dItal(iso())}</span><h3>Diario di oggi</h3></div><span class="num muted small">rimangono ${Math.max(0, Math.round(n.kcal - t.kcal)).toLocaleString('it-IT')} kcal</span></div>
     ${bar('Calorie', t.kcal, n.kcal, 'var(--ink)', 'kcal')}${bar('Proteine', t.p, n.p, 'var(--mp)', 'g')}${bar('Carboidrati', t.c, n.c, 'var(--mc)', 'g')}${bar('Grassi', t.f, n.f, 'var(--mf)', 'g')}
-    ${list.length ? MEALS.filter(m => list.some(f => f.meal === m)).map(m => `<div style="display:grid;gap:6px"><span class="eyebrow">${m}</span>${list.filter(f => f.meal === m).map(f => `<div class="row between" style="flex-wrap:nowrap;gap:10px"><div style="min-width:0"><div>${esc(f.name)}${f.src === 'foto' ? ' <span class="tag">foto</span>' : ''}</div><div class="small muted num">${f.kcal} kcal · P ${f.p} · C ${f.c} · G ${f.f}${f.items && f.items.length ? ' · ' + esc(f.items.map(i => i.n + ' ' + i.g + ' g').join(', ')) : ''}</div></div><button class="btn ghost sm" data-delfood="${f.id}" aria-label="Elimina ${esc(f.name)}">Elimina</button></div>`).join('')}</div>`).join('') : `<p class="small muted">Ancora niente oggi. Fotografa un pasto o aggiungilo a mano.</p>`}
+    ${list.length ? MEALS.filter(m => list.some(f => f.meal === m)).map(m => `<div style="display:grid;gap:6px"><span class="eyebrow">${m}</span>${list.filter(f => f.meal === m).map(f => `<div class="row between" style="flex-wrap:nowrap;gap:10px"><div style="min-width:0"><div>${esc(f.name)}${f.src === 'foto' ? ' <span class="tag">foto</span>' : ''}</div><div class="small muted num">${f.kcal} kcal · P ${f.p} · C ${f.c} · G ${f.f}${f.items && f.items.length ? ' · ' + esc(f.items.map(i => i.n + ' ' + i.g + ' g').join(', ')) : ''}</div></div><button class="btn ghost sm" data-delfood="${f.id}" aria-label="Elimina ${esc(f.name)}">Elimina</button></div>`).join('')}</div>`).join('') : `<p class="small muted">Ancora niente oggi. Scrivi cosa hai mangiato qui sopra, oppure aggiungilo a mano.</p>`}
     <details><summary class="small muted">Aggiungi a mano</summary>
       <form id="manForm" class="formgrid" style="padding-top:10px;align-items:end" novalidate>
         <label class="f">Cosa hai mangiato<input id="mfName" placeholder="es. Yogurt greco e miele"></label>
@@ -2051,7 +2220,17 @@ const WOD_MODES = {
   intervalli:{n:'Intervalli', d:'Lavoro e riposo su misura'},
   mix:{n:'Mix', d:'La tua sequenza di blocchi'},
 };
-const WOD_DEF = {mode:'amrap', prep:10, voice:true, sound:true,
+const CIRCUITS = [
+  {id:'bruciagrassi', n:'Brucia grassi a corpo libero', lv:'Principiante', eq:'Nessun attrezzo', d:'Tutto il corpo a ritmo alto: perfetto a casa o a fine allenamento.', work:40, rest:20, rounds:3, roundRest:60, st:['jj','squat_cl','piegamenti','mountain','ponte','plank']},
+  {id:'hiit20', n:'HIIT 20 minuti', lv:'Intermedio', eq:'Nessun attrezzo', d:'Intervalli intensi per fiato e dimagrimento: 30 secondi a tutta, 30 di recupero.', work:30, rest:30, rounds:4, roundRest:0, st:['burpee','squat_cl','mountain','jj','affondi']},
+  {id:'gambeglutei', n:'Gambe e glutei', lv:'Principiante', eq:'Nessun attrezzo', d:'Quadricipiti, glutei e polpacci senza pesi.', work:40, rest:20, rounds:3, roundRest:60, st:['squat_cl','affondi_inv','ponte','wallsit','calf','affondi']},
+  {id:'addome', n:'Addome completo', lv:'Tutti i livelli', eq:'Tappetino', d:'Sei esercizi per tutto il core: addominali, obliqui e zona lombare.', work:30, rest:15, rounds:3, roundRest:45, st:['crunch','legraise','russian','side_plank','deadbug','plank']},
+  {id:'parteAlta', n:'Parte alta a corpo libero', lv:'Intermedio', eq:'Una panca o una sedia e una sbarra bassa', d:'Petto, schiena, spalle e braccia con il peso del corpo.', work:40, rest:20, rounds:3, roundRest:60, st:['piegamenti','rem_inverso','dip_panca','mountain','plank']},
+  {id:'manubri', n:'Total body con manubri', lv:'Intermedio', eq:'Un paio di manubri', d:'Forza e resistenza in tutto il corpo con un solo attrezzo.', work:45, rest:15, rounds:3, roundRest:90, st:['goblet','rematore_m','lento_m','affondi','curl','plank']},
+  {id:'kettlebell', n:'Kettlebell express', lv:'Intermedio', eq:'Un kettlebell o un manubrio', d:'Breve e intenso: glutei, spalle e fiato.', work:40, rest:20, rounds:4, roundRest:60, st:['kbswing','goblet','lento_m','mountain']},
+  {id:'macchine', n:'Circuito alle macchine', lv:'Principiante', eq:'Palestra', d:'Tutto il corpo con movimenti guidati e sicuri: ideale le prime settimane.', work:45, rest:30, rounds:3, roundRest:90, st:['legpress','chest_press','lat','shoulder_mac','legcurl','crunch_cavo']},
+];
+const WOD_DEF = {mode:'amrap', view:'timer', circ:{}, prep:10, voice:true, sound:true,
   fortime:{cap:20}, amrap:{min:12}, emom:{every:60, rounds:10},
   tabata:{work:20, rest:10, rounds:8, sets:1, setRest:60}, intervalli:{work:40, rest:20, rounds:10},
   mix:{repeat:3, steps:[{name:'AMRAP', kind:'work', sec:240}, {name:'Riposo', kind:'rest', sec:60}]}};
@@ -2061,10 +2240,23 @@ function wodCfg(){
   if(!WOD_MODES[c.mode]) c.mode = 'amrap';
   return c;
 }
+function circCfg(id){
+  const c = wodCfg(), C = CIRCUITS.find(x => x.id === id);
+  if(!c.circ[id]) c.circ[id] = {work:C.work, rest:C.rest, rounds:C.rounds, roundRest:C.roundRest};
+  return c.circ[id];
+}
 const mmss = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
 function buildSegs(c){
   const S = [], m = c.mode;
-  if(c.prep) S.push({k:'prep', dur:c.prep, label:'Preparati'});
+  if(c.prep) S.push({k:'prep', dur:c.prep, label:'Preparati', nextEx: m === 'circuit' ? CIRCUITS.find(x => x.id === c.circuit).st[0] : null});
+  if(m === 'circuit'){
+    const C = CIRCUITS.find(x => x.id === c.circuit), k = circCfg(c.circuit), n = C.st.length;
+    for(let r = 1; r <= k.rounds; r++) C.st.forEach((id, i) => {
+      S.push({k:'work', dur:k.work, label:EX[id].n, ex:id, r, rt:k.rounds, st:i + 1, sts:n});
+      if(i < n - 1 && k.rest) S.push({k:'rest', dur:k.rest, label:'Riposo', nextEx:C.st[i + 1], r, rt:k.rounds});
+      if(i === n - 1 && r < k.rounds && k.roundRest) S.push({k:'rest', dur:k.roundRest, label:'Riposo tra i giri', nextEx:C.st[0], r, rt:k.rounds});
+    });
+  }
   if(m === 'fortime') S.push({k:'work', dur: c.fortime.cap ? c.fortime.cap * 60 : Infinity, up:true, label:'For Time'});
   if(m === 'amrap') S.push({k:'work', dur: c.amrap.min * 60, label:'AMRAP'});
   if(m === 'emom') for(let i = 1; i <= c.emom.rounds; i++) S.push({k:'work', dur:c.emom.every, label:'EMOM', r:i, rt:c.emom.rounds});
@@ -2092,7 +2284,8 @@ function wodSummaryLabel(c){
     amrap: `AMRAP ${c.amrap.min} min`, emom: `EMOM ${c.emom.rounds} × ${mmss(c.emom.every)}`,
     tabata: `Tabata ${c.tabata.work}/${c.tabata.rest} × ${c.tabata.rounds}${c.tabata.sets > 1 ? ' · ' + c.tabata.sets + ' serie' : ''}`,
     intervalli: `Intervalli ${mmss(c.intervalli.work)}/${mmss(c.intervalli.rest)} × ${c.intervalli.rounds}`,
-    mix: `Mix · ${c.mix.steps.length} blocchi × ${c.mix.repeat}`}[c.mode];
+    mix: `Mix · ${c.mix.steps.length} blocchi × ${c.mix.repeat}`,
+    circuit: c.circuit ? 'Circuito · ' + (CIRCUITS.find(x => x.id === c.circuit) || {n:''}).n : 'Circuito'}[c.mode];
 }
 
 /* settings UI */
@@ -2112,10 +2305,17 @@ const STEP = {
   'mix.repeat':{l:'Ripeti la sequenza', min:1, max:20, step:1, f:v => v + (v === 1 ? ' volta' : ' volte')},
   'prep':{l:'Conto alla rovescia iniziale', min:0, max:60, step:5, f:v => v ? v + ' s' : 'nessuno'},
 };
+function stepDef(path){
+  if(STEP[path]) return STEP[path];
+  const m = path.match(/^circ\.[^.]+\.(\w+)$/);
+  if(m) return {work:{l:'Lavoro per esercizio', min:10, max:180, step:5, f:v => v + ' s'}, rest:{l:'Riposo tra gli esercizi', min:0, max:120, step:5, f:v => v ? v + ' s' : 'nessuno'},
+    rounds:{l:'Giri', min:1, max:10, step:1, f:v => v + (v === 1 ? ' giro' : ' giri')}, roundRest:{l:'Riposo tra i giri', min:0, max:300, step:15, f:v => v ? mmss(v) : 'nessuno'}}[m[1]];
+  return {l:'', min:5, max:3600, step:15, f:mmss};
+}
 const getPath = (o, p) => p.split('.').reduce((a, k) => a[k], o);
 const setPath = (o, p, v) => { const ks = p.split('.'), last = ks.pop(); ks.reduce((a, k) => a[k], o)[last] = v; };
 function stepper(path, label){
-  const d = STEP[path] || {l:label, min:5, max:3600, step:15, f:mmss}, v = path.startsWith('mix.steps.') ? getPath(wodCfg(), path) : getPath(wodCfg(), path);
+  const d = stepDef(path), v = getPath(wodCfg(), path);
   return `<div class="stepper" data-path="${path}"><span class="small muted">${esc(label || d.l)}</span><div class="stp"><button type="button" data-d="-1" aria-label="Diminuisci ${esc(label || d.l)}">−</button><output class="num">${esc(String(d.f(v)))}</output><button type="button" data-d="1" aria-label="Aumenta ${esc(label || d.l)}">+</button></div></div>`;
 }
 function wodSettingsHTML(){
@@ -2136,8 +2336,16 @@ function wodSettingsHTML(){
 }
 function renderTimer(){
   const c = wodCfg(), el = $('#p-timer'), segs = buildSegs(c), tot = workDur(segs);
+  const seg = `<div class="seg glass" role="group" aria-label="Sezione del timer"><button type="button" data-view="timer" aria-pressed="${c.view !== 'circuiti'}">Timer</button><button type="button" data-view="circuiti" aria-pressed="${c.view === 'circuiti'}">Circuiti</button></div>`;
+  if(c.view === 'circuiti'){
+    el.innerHTML = `<div><span class="eyebrow">${CIRCUITS.length} circuiti pronti, con timer integrato</span><h2>Circuiti</h2></div>${seg}
+      <p class="muted">Ogni esercizio dura un tempo fisso: il timer ti dice cosa fare, ti mostra il movimento e ti avvisa del prossimo. Puoi cambiare tempi e giri.</p>
+      <div class="grid2">${CIRCUITS.map(C => circCardHTML(C)).join('')}</div>`;
+    bindTimerSettings(el);
+    return;
+  }
   el.innerHTML = `
-    <div><span class="eyebrow">Cronometro da allenamento</span><h2>Timer</h2></div>
+    <div><span class="eyebrow">Cronometro da allenamento</span><h2>Timer</h2></div>${seg}
     <div class="modes" role="group" aria-label="Tipo di timer">${Object.entries(WOD_MODES).map(([k, v]) => `<button class="mode glass" type="button" data-mode="${k}" aria-pressed="${c.mode === k}"><strong>${v.n}</strong><span class="small muted">${v.d}</span></button>`).join('')}</div>
     <div class="card glass" id="wodSet"><h3>${WOD_MODES[c.mode].n}</h3>${wodSettingsHTML()}</div>
     <div class="card glass">${stepper('prep')}
@@ -2146,29 +2354,52 @@ function renderTimer(){
     ${state.wods.length ? `<div class="card glass"><h3>Ultimi allenamenti a tempo</h3>${state.wods.slice(0, 4).map(w => `<div class="row between small" style="flex-wrap:nowrap"><span style="min-width:0">${dItal(w.date)} · ${esc(w.label)}</span><span class="num">${mmss(w.total)}${w.rounds ? ' · ' + w.rounds + ' giri' : ''}</span></div>`).join('')}<div><button class="btn ghost sm" data-go="progressi">Vedi lo storico</button></div></div>` : ''}`;
   bindTimerSettings(el);
 }
+let openCirc = null;
+function circCardHTML(C){
+  const k = circCfg(C.id), dur = workDur(buildSegs({...wodCfg(), prep:0, mode:'circuit', circuit:C.id}));
+  return `<div class="card glass gcard" id="cc-${C.id}">
+    <div class="top"><div style="min-width:0"><span class="eyebrow">${esc(C.lv)} · <span class="ccdur">${mmss(dur)}</span></span><h3>${esc(C.n)}</h3><p class="small muted">${esc(C.d)}</p></div>${figSVG(C.st[0])}</div>
+    <p class="small"><strong>Attrezzatura:</strong> ${esc(C.eq)}<br><span class="ccsum">${C.st.length} esercizi · ${k.work} s lavoro, ${k.rest ? k.rest + ' s riposo' : 'senza riposo'} · ${k.rounds} ${k.rounds === 1 ? 'giro' : 'giri'}</span></p>
+    <details data-circ-details="${C.id}" ${openCirc === C.id ? 'open' : ''}><summary class="small muted">Esercizi e tempi</summary>
+      <div style="padding-top:8px">${C.st.map(id => exRow(id)).join('')}</div>
+      <div style="display:grid;gap:10px;padding-top:8px">${stepper('circ.' + C.id + '.work')}${stepper('circ.' + C.id + '.rest')}${stepper('circ.' + C.id + '.rounds')}${stepper('circ.' + C.id + '.roundRest')}</div></details>
+    <div class="row"><button class="btn primary" data-circ="${C.id}">Inizia circuito</button></div></div>`;
+}
+function updateCircCard(id){
+  const C = CIRCUITS.find(x => x.id === id), k = circCfg(id), card = $('#cc-' + id); if(!card) return;
+  card.querySelector('.ccdur').textContent = mmss(workDur(buildSegs({...wodCfg(), prep:0, mode:'circuit', circuit:id})));
+  card.querySelector('.ccsum').textContent = `${C.st.length} esercizi · ${k.work} s lavoro, ${k.rest ? k.rest + ' s riposo' : 'senza riposo'} · ${k.rounds} ${k.rounds === 1 ? 'giro' : 'giri'}`;
+}
 function bindTimerSettings(el){
   const c = wodCfg();
   const refresh = () => { persist(); renderTimer(); };
+  el.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { if(c.view === b.dataset.view) return; c.view = b.dataset.view; haptic(6); refresh(); });
+  el.querySelectorAll('[data-circ]').forEach(b => b.onclick = () => wodStart(b.dataset.circ));
+  el.querySelectorAll('[data-circ-details]').forEach(d => d.addEventListener('toggle', () => { if(d.open) openCirc = d.dataset.circDetails; else if(openCirc === d.dataset.circDetails) openCirc = null; }));
+  if(!el.querySelector('.modes')){ bindSteppers(el, c); hookFigs(el); return; }
   el.querySelector('.modes').onclick = e => { const b = e.target.closest('[data-mode]'); if(!b || c.mode === b.dataset.mode) return; c.mode = b.dataset.mode; haptic(6); refresh(); };
   el.querySelectorAll('[data-tog]').forEach(b => b.onclick = () => { c[b.dataset.tog] = !c[b.dataset.tog]; haptic(5); refresh(); });
   el.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => { Object.assign(c.tabata, b.dataset.preset === 'tabata' ? {work:20, rest:10, rounds:8} : {work:30, rest:15, rounds:6}); haptic(6); refresh(); });
+  bindSteppers(el, c);
+  el.querySelectorAll('.mixname').forEach(i => i.oninput = () => { c.mix.steps[+i.dataset.i].name = i.value; persist(); });
+  el.querySelectorAll('[data-kind]').forEach(b => b.onclick = () => { c.mix.steps[+b.dataset.i].kind = b.dataset.kind; haptic(5); refresh(); });
+  el.querySelectorAll('[data-mixdel]').forEach(b => b.onclick = () => { c.mix.steps.splice(+b.dataset.mixdel, 1); haptic(6); refresh(); });
+  const add = el.querySelector('#mixAdd'); if(add) add.onclick = () => { const last = c.mix.steps[c.mix.steps.length - 1]; c.mix.steps.push(last && last.kind === 'work' ? {name:'Riposo', kind:'rest', sec:60} : {name:'Lavoro', kind:'work', sec:120}); haptic(6); refresh(); };
+  $('#wodGo').onclick = () => wodStart();
+}
+function bindSteppers(el, c){
   // steppers: tap to change, hold to repeat
   el.querySelectorAll('.stepper').forEach(s => {
-    const path = s.dataset.path, d = STEP[path] || {min:5, max:3600, step:15, f:mmss};
+    const path = s.dataset.path, d = stepDef(path);
     const bump = dir => { const v = Math.min(d.max, Math.max(d.min, getPath(c, path) + dir * d.step)); setPath(c, path, v); s.querySelector('output').textContent = d.f(v); updateGo(); haptic(4); };
     s.querySelectorAll('button[data-d]').forEach(b => {
       let t1 = null, t2 = null;
       const stop = () => { clearTimeout(t1); clearInterval(t2); t1 = t2 = null; };
       b.addEventListener('pointerdown', e => { e.preventDefault(); bump(+b.dataset.d); t1 = setTimeout(() => { t2 = setInterval(() => bump(+b.dataset.d), 80); }, 420); });
-      ['pointerup','pointerleave','pointercancel'].forEach(t => b.addEventListener(t, () => { if(t1 || t2){ stop(); persist(); renderTimerSoft(); } }));
+      ['pointerup','pointerleave','pointercancel'].forEach(t => b.addEventListener(t, () => { if(t1 || t2){ stop(); persist(); if(path.startsWith('circ.')) updateCircCard(path.split('.')[1]); else renderTimerSoft(); } }));
       b.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); bump(+b.dataset.d); persist(); } });
     });
   });
-  el.querySelectorAll('.mixname').forEach(i => i.oninput = () => { c.mix.steps[+i.dataset.i].name = i.value; persist(); });
-  el.querySelectorAll('[data-kind]').forEach(b => b.onclick = () => { c.mix.steps[+b.dataset.i].kind = b.dataset.kind; haptic(5); refresh(); });
-  el.querySelectorAll('[data-mixdel]').forEach(b => b.onclick = () => { c.mix.steps.splice(+b.dataset.mixdel, 1); haptic(6); refresh(); });
-  const add = el.querySelector('#mixAdd'); if(add) add.onclick = () => { const last = c.mix.steps[c.mix.steps.length - 1]; c.mix.steps.push(last && last.kind === 'work' ? {name:'Riposo', kind:'rest', sec:60} : {name:'Lavoro', kind:'work', sec:120}); haptic(6); refresh(); };
-  $('#wodGo').onclick = wodStart;
 }
 function updateGo(){ const t = workDur(buildSegs(wodCfg())); const g = $('#wodGo'); if(g) g.textContent = 'Avvia' + (t ? ' · ' + mmss(t) : ''); }
 function renderTimerSoft(){ if($('#p-timer').querySelector('[data-path="tabata.sets"]')) renderTimer(); } // the set-rest stepper appears only with 2+ sets
@@ -2186,8 +2417,8 @@ function say(text){
   if(!W || !W.c.voice || !('speechSynthesis' in window)) return;
   try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'it-IT'; u.rate = 1.05; const v = speechSynthesis.getVoices().find(x => /^it/i.test(x.lang)); if(v) u.voice = v; speechSynthesis.speak(u); }catch(e){}
 }
-function wodStart(){
-  const c = wodCfg(), segs = buildSegs(c);
+function wodStart(circuit){
+  const base = wodCfg(), c = typeof circuit === 'string' ? {...base, mode:'circuit', circuit} : base, segs = buildSegs(c);
   if(!segs.some(s => s.k === 'work')){ toast('Aggiungi almeno un blocco di lavoro'); haptic([10, 40, 10]); return; }
   audio();
   try{ if('speechSynthesis' in window && c.voice){ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } }catch(e){} // unlocks speech on iOS inside the tap
@@ -2203,7 +2434,12 @@ function enterSeg(){
   const lastWork = s.k === 'work' && !W.segs.slice(W.i + 1).some(x => x.k === 'work');
   tone(s.k === 'rest' ? 660 : 1046, .45);
   haptic(s.k === 'rest' ? [60] : [120]);
-  if(s.k === 'prep') say('Preparati');
+  if(W.c.mode === 'circuit'){
+    if(s.k === 'prep') say('Preparati. Si parte con ' + EX[s.nextEx].n);
+    else if(s.k === 'rest') say((s.label === 'Riposo tra i giri' ? 'Riposo tra i giri' : 'Riposo') + '. Prossimo: ' + EX[s.nextEx].n);
+    else say((lastWork ? 'Ultimo esercizio: ' : '') + EX[s.ex].n);
+  }
+  else if(s.k === 'prep') say('Preparati');
   else if(s.k === 'rest') say(s.label === 'Riposo tra le serie' ? 'Riposo tra le serie' : 'Riposo');
   else if(W.i === W.segs.findIndex(x => x.k === 'work')) say('Via!');
   else if(lastWork && s.rt > 1) say('Ultimo round');
@@ -2241,8 +2477,12 @@ function wodLayout(){
   if(!W) return;
   const s = W.segs[W.i], next = W.segs[W.i + 1], cnt = roundsCounting(W.c.mode) && s.k === 'work';
   $('#wLabel').textContent = W.paused ? 'In pausa' : s.label;
-  $('#wRound').textContent = [s.set && s.sets > 1 ? `Serie ${s.set}/${s.sets}` : '', s.r ? `Round ${s.r}/${s.rt}` : ''].filter(Boolean).join(' · ');
-  $('#wNext').textContent = next ? `Dopo: ${next.label}${isFinite(next.dur) ? ' ' + mmss(next.dur) : ''}` : 'Ultimo blocco';
+  $('#wRound').textContent = W.c.mode === 'circuit'
+    ? (s.k === 'work' ? `Esercizio ${s.st}/${s.sts} · Giro ${s.r}/${s.rt}` : s.nextEx ? `Prossimo: ${EX[s.nextEx].n}` : '')
+    : [s.set && s.sets > 1 ? `Serie ${s.set}/${s.sets}` : '', s.r ? `Round ${s.r}/${s.rt}` : ''].filter(Boolean).join(' · ');
+  const figId = s.ex || s.nextEx || null, fig = $('#wFig');
+  if(fig.dataset.id !== String(figId)){ fig.dataset.id = String(figId); fig.hidden = !figId; fig.innerHTML = figId ? figSVG(figId) : ''; if(figId) hookFigs(fig); }
+  $('#wNext').textContent = W.c.mode === 'circuit' && s.k !== 'work' ? '' : next ? `Dopo: ${next.label}${isFinite(next.dur) ? ' ' + mmss(next.dur) : ''}` : 'Ultimo blocco';
   $('#wRounds').hidden = !roundsCounting(W.c.mode);
   $('#wRounds').innerHTML = `<b class="num">${W.splits.length}</b><span>${W.splits.length === 1 ? 'giro' : 'giri'}${W.splits.length ? ' · ultimo ' + mmss((W.splits[W.splits.length - 1] - (W.splits[W.splits.length - 2] || 0)) / 1000) : ''}</span>`;
   $('#wLap').hidden = !cnt; $('#wUndo').hidden = !cnt || !W.splits.length;
@@ -2255,6 +2495,7 @@ function openWod(){
   ov.innerHTML = `
     <div class="wtop"><div style="min-width:0"><div class="wmode">${esc(wodSummaryLabel(W.c))}</div><div class="wsmall" id="wTot"></div></div><button class="wbtn ghost" id="wStop">Termina</button></div>
     <div class="wmid" id="wTap">
+      <div class="wfig" id="wFig" hidden></div>
       <div class="wlabel" id="wLabel"></div><div class="wsmall" id="wRound"></div>
       <div class="wbig num" id="wBig" aria-live="off"></div>
       <div class="wbar"><span id="wProg"></span></div>
@@ -2538,8 +2779,8 @@ function renderProfilo(){
       <div class="row"><button class="btn primary" type="submit">Salva profilo</button></div>
     </form>
     <div class="card glass" id="aiCard"><h3>Coach AI fuori da Claude</h3>
-      <p class="small">Dentro l'app Claude il coach usa il tuo account e non serve altro. Nella web app, per esempio quando la apri dalla Home, coach, menù e foto dei pasti usano l'API di Claude con una chiave tua. La crei su <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.</p>
-      <p class="small muted">Il costo va sul tuo account API: pochi centesimi per una foto o una risposta. Imposta un limite di spesa nella console. La chiave resta solo in questo browser: non va nel tuo account Claude né su GitHub.</p>
+      <p class="small">Dentro l'app Claude il coach usa il tuo account e non serve altro. Nella web app, per esempio quando la apri dalla Home, coach e menù del giorno usano l'API di Claude con una chiave tua: è facoltativa, tutto il resto funziona senza. La crei su <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.</p>
+      <p class="small muted">Il costo va sul tuo account API: pochi centesimi per una risposta. Imposta un limite di spesa nella console. La chiave resta solo in questo browser: non va nel tuo account Claude né su GitHub.</p>
       <label class="f">Chiave API<input id="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="${getKey() ? 'Chiave salvata · ••••' + esc(getKey().slice(-4)) : 'sk-ant-…'}"></label>
       <div class="row"><button class="btn primary sm" id="keySave">Salva chiave</button>${getKey() ? '<button class="btn sm" id="keyTest">Prova la chiave</button><button class="btn ghost sm" id="keyDel">Rimuovi</button>' : ''}</div>
       <p class="small" id="keyMsg" aria-live="polite"></p>
@@ -2572,7 +2813,7 @@ function renderProfilo(){
   if($('#keyDel')) $('#keyDel').onclick = () => { setKey(''); renderProfilo(); toast('Chiave rimossa da questo dispositivo'); };
   if($('#keyTest')) $('#keyTest').onclick = async () => {
     const b = $('#keyTest'), msg = $('#keyMsg'); b.disabled = true; msg.style.color = ''; msg.innerHTML = typing + ' Provo la chiave…';
-    try{ await aiText({force:'api', system:'Rispondi solo con la parola OK.', turns:[{role:'user', content:'Prova'}], effort:'low'}); msg.style.color = 'var(--green)'; msg.textContent = 'La chiave funziona: coach, menù e foto sono attivi anche nella web app.'; haptic(12); }
+    try{ await aiText({force:'api', system:'Rispondi solo con la parola OK.', turns:[{role:'user', content:'Prova'}], effort:'low'}); msg.style.color = 'var(--green)'; msg.textContent = 'La chiave funziona: coach e menù sono attivi anche nella web app.'; haptic(12); }
     catch(e){ msg.style.color = 'var(--red)'; msg.textContent = sampleErr(e && e.code); }
     b.disabled = false;
   };
@@ -2626,6 +2867,4 @@ requestAnimationFrame(() => { placeIndicator(); requestAnimationFrame(() => { $(
 document.fonts && document.fonts.ready.then(placeIndicator);
 setStatus('local');
 initStore();
-</script>
-</body>
-</html>
+</script></body></html>
