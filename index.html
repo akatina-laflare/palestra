@@ -2761,6 +2761,17 @@ function closeWod(){
   W = null;
 }
 document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && W && !W.done){ lockScreen(true); wodTick(); } });
+/* the iPhone status bar takes theme-color: match the full-screen timer's phase colour, restore the app's colours when it closes */
+const WOD_BG = {prep:'#B8690A', work:'#15803D', rest:'#1D5FBF', pause:'#3F4652', done:'#151A22'};
+function statusColor(c){
+  let ms = [...document.querySelectorAll('meta[name="theme-color"]')];
+  if(!ms.length){ if(!c) return; const m = document.createElement('meta'); m.name = 'theme-color'; m.dataset.orig = ''; document.head.append(m); ms = [m]; }
+  ms.forEach(m => {
+    if(m.dataset.orig === undefined) m.dataset.orig = m.getAttribute('content') || '';
+    if(c) m.setAttribute('content', c); else if(m.dataset.orig) m.setAttribute('content', m.dataset.orig); else m.remove();
+  });
+}
+new MutationObserver(() => { const w = $('#wod'); statusColor(w.hidden ? null : WOD_BG[w.dataset.phase] || WOD_BG.prep); }).observe($('#wod'), {attributes:true, attributeFilter:['data-phase', 'hidden']});
 document.addEventListener('keydown', e => { if(!W || W.done || $('#wod').hidden) return; if(e.key === ' '){ e.preventDefault(); wodPause(); } if(e.key === 'Enter' && !$('#wLap').hidden){ e.preventDefault(); $('#wLap').click(); } });
 
 /* ================= PROGRESSI ================= */
