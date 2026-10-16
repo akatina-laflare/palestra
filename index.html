@@ -98,6 +98,8 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;border-wid
 .tg[aria-checked="true"]{background:var(--accent)}
 .tg[aria-checked="true"]::after{transform:translateX(20px)}
 .hapsw{position:fixed;left:-200px;top:0;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
+button:has(> input.hapin){position:relative}
+input.hapin{all:revert!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;opacity:0!important;z-index:2!important;cursor:pointer!important;clip-path:inset(0 round 14px)!important}
 .iconbtn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .iconbtn:active{transform:scale(.9)}
 
@@ -432,9 +434,29 @@ function iosTap(){ // iOS has no Vibration API: toggling a native switch control
     hapSw.click();
   }catch(e){}
 }
+/* Since iOS 26.5 a web page can only get a haptic tick from a finger landing directly on a native switch:
+   on iPhone the main buttons carry an invisible <input switch> on top, and taps go through it to the button. */
+const HAP_DIRECT = !canVibrate && matchMedia('(pointer:coarse)').matches;
+const HAP_SEL = '.set .ok, #dock button, #wPause, #wLap, #wDone, #wAfter, #wSave, #tMinus, #tPlus, #tSkip, #startW, #wuGo, #wuGo2, #wodGo, #setTest, .tg, [data-circ], [data-wu], [data-start], [data-gstart]';
+let hapTapAt = 0;
+function armHaptics(root){
+  const arm = b => {
+    if(b.tagName !== 'BUTTON' || b.querySelector(':scope > .hapin')) return;
+    try{ if(state.settings.vibe === false) return; }catch(e){}
+    const i = document.createElement('input'); i.type = 'checkbox'; i.setAttribute('switch', ''); i.className = 'hapin'; i.tabIndex = -1; i.setAttribute('aria-hidden', 'true'); b.append(i);
+  };
+  if(root.matches && root.matches(HAP_SEL)) arm(root);
+  if(root.querySelectorAll) root.querySelectorAll(HAP_SEL).forEach(arm);
+}
+function setHaptics(on){ if(!HAP_DIRECT) return; if(on) armHaptics(document); else document.querySelectorAll('.hapin').forEach(i => i.remove()); }
+if(HAP_DIRECT){
+  new MutationObserver(ms => ms.forEach(m => { if(m.target.nodeType === 1) armHaptics(m.target); })).observe(document.body, {childList:true, subtree:true});
+  document.addEventListener('pointerdown', e => { if(e.target.classList && e.target.classList.contains('hapin')) hapTapAt = performance.now(); }, true);
+}
 const haptic = p => {
   try{ if(state.settings.vibe === false) return; }catch(e){}
   if(canVibrate){ try{ navigator.vibrate(p); }catch(e){} return; }
+  if(performance.now() - hapTapAt < 400) return; // the switch under the finger already ticked
   let t = 0; (Array.isArray(p) ? p : [p]).forEach((d, i) => { if(i % 2 === 0) for(let k = 0; k < (d >= 100 ? 3 : 1); k++) setTimeout(iosTap, t + k * 80); t += d; });
 };
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1448,16 +1470,16 @@ function openSettings(){
     <div class="row between" style="align-items:flex-start;flex-wrap:nowrap"><div style="min-width:0"><span class="eyebrow">Ghisa</span><h2 id="sheetTitle">Impostazioni</h2></div><button class="btn sm" data-close>Chiudi</button></div>
     <div class="card glass" style="gap:0"><h3>Avvisi</h3>
       ${row('sound', 'Suoni', 'Bip a fine recupero, negli ultimi 3 secondi e a ogni cambio del timer.')}
-      ${row('vibe', 'Vibrazione', canVibrate ? 'Vibra a fine recupero, negli ultimi secondi e a ogni cambio del timer.' : 'Su iPhone: colpetti aptici del sistema a ogni avviso (iOS 18 o successivo).')}
+      ${row('vibe', 'Vibrazione', canVibrate ? 'Vibra a fine recupero, negli ultimi secondi e a ogni cambio del timer.' : 'Su iPhone: un colpetto quando tocchi i pulsanti principali (✓ delle serie, timer, barra in basso).')}
       ${row('voice', 'Voce', 'Legge il nome degli esercizi nei circuiti e nel riscaldamento.')}
     </div>
     <div class="row"><button class="btn" id="setTest">Prova suono e vibrazione</button></div>
-    ${canVibrate ? '' : `<p class="small muted">Su iPhone Apple non permette alle web app di vibrare come le app dell'App Store: Ghisa usa il feedback aptico del sistema, più leggero. Se non senti niente, controlla in Impostazioni dell'iPhone → Suoni e feedback aptico che «Feedback aptico di sistema» sia attivo. Con il telefono bloccato iOS ferma suoni e vibrazioni delle web app.</p>`}
+    ${canVibrate ? '' : `<div class="note small"><strong>Vibrazione su iPhone</strong><br>Da iOS 26.5 Apple non permette più a nessuna web app di far vibrare il telefono da sola: per questo a fine recupero e nei cambi del timer l'avviso è il suono (con la suoneria attiva o le cuffie) e lo schermo che lampeggia. Il colpetto aptico c'è quando tocchi i pulsanti principali. Se non lo senti, in Impostazioni dell'iPhone → Suoni e feedback aptico attiva «Feedback aptico di sistema». La vibrazione vera a ogni avviso è possibile solo con un'app installata dall'App Store.</div>`}
     <div class="card glass"><h3>Profilo e aspetto</h3><p class="small muted">Dati personali, obiettivo, colore principale e chiave del coach.</p><div class="row"><button class="btn sm" id="setProf">Apri il profilo</button></div></div>`);
   const sh = $('#sheet');
   sh.querySelectorAll('[data-set]').forEach(b => b.onclick = () => {
     const k = b.dataset.set; S[k] = !S[k]; b.setAttribute('aria-checked', S[k]); persist();
-    if(k === 'vibe' && S[k]) haptic(30);
+    if(k === 'vibe'){ setHaptics(S[k]); if(S[k]) haptic(30); }
     if(k === 'voice' && !S[k]) try{ speechSynthesis.cancel(); }catch(e){}
     if($('#p-timer').querySelector('[data-tog]')) renderTimer();
   });
@@ -1715,7 +1737,7 @@ function renderSession(el){
   const wu2 = $('#wuGo2'); if(wu2) wu2.onclick = () => wodStart({warmup:wu2.dataset.wu});
   const list = $('#sxList');
   list.addEventListener('input', ev => {
-    const inp = ev.target.closest('.set input'); if(!inp) return;
+    const inp = ev.target.closest('.set input[data-f]'); if(!inp) return;
     const s = A.ex[+inp.dataset.i].sets[+inp.dataset.j];
     s[inp.dataset.f] = inp.value.replace(',', '.').replace(/[^0-9.]/g, '');
     if(inp.value !== s[inp.dataset.f]) inp.value = s[inp.dataset.f];
@@ -2551,7 +2573,7 @@ function bindTimerSettings(el){
   el.querySelectorAll('[data-circ-details]').forEach(d => d.addEventListener('toggle', () => { if(d.open) openCirc = d.dataset.circDetails; else if(openCirc === d.dataset.circDetails) openCirc = null; }));
   if(!el.querySelector('.modes')){ bindSteppers(el, c); hookFigs(el); return; }
   el.querySelector('.modes').onclick = e => { const b = e.target.closest('[data-mode]'); if(!b || c.mode === b.dataset.mode) return; c.mode = b.dataset.mode; haptic(6); refresh(); };
-  el.querySelectorAll('[data-tog]').forEach(b => b.onclick = () => { const k = b.dataset.tog; state.settings[k] = !state.settings[k]; if(k === 'voice' && !state.settings.voice) try{ speechSynthesis.cancel(); }catch(e){} haptic(k === 'vibe' ? 30 : 5); refresh(); });
+  el.querySelectorAll('[data-tog]').forEach(b => b.onclick = () => { const k = b.dataset.tog; state.settings[k] = !state.settings[k]; if(k === 'vibe') setHaptics(state.settings.vibe); if(k === 'voice' && !state.settings.voice) try{ speechSynthesis.cancel(); }catch(e){} haptic(k === 'vibe' ? 30 : 5); refresh(); });
   el.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => { Object.assign(c.tabata, b.dataset.preset === 'tabata' ? {work:20, rest:10, rounds:8} : {work:30, rest:15, rounds:6}); haptic(6); refresh(); });
   bindSteppers(el, c);
   el.querySelectorAll('.mixname').forEach(i => i.oninput = () => { c.mix.steps[+i.dataset.i].name = i.value; persist(); });
@@ -3048,6 +3070,7 @@ function renderAll(keepTab){
   showTab(tab, {animate:false, scroll:false});
 }
 const local = loadLocal(); if(local) state = merge(local);
+setHaptics(state.settings.vibe);
 if(state.active && !state.active.ex) state.active = null;
 renderAll();
 $('#ind').style.transition = 'none';
