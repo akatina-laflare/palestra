@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#E8EBF0" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0C0F14" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -52,7 +52,12 @@
   --red:#EE5D69; --blue:#719BE8; --yellow:#E9BD4A; --green:#57C281; --on-accent:#0C0F14;
   --blob-b:#1C3263; --blob-y:#4C3C10; --blob-g:#15442A; --accent:var(--accent-d); --mp:#33A68E; --mc:#B97C1C; --mf:#8F74E6; color-scheme:dark}
 
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:pan-x pan-y}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior:none}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select,.msg,.selectable{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+svg,img{-webkit-user-drag:none}
+button{-webkit-appearance:none;appearance:none;margin:0}
 [hidden]{display:none!important}
 body{margin:0}
 .glass.bar{background:linear-gradient(160deg,var(--sheen) 0%,transparent 45%),var(--bar)}
@@ -78,7 +83,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;border-wid
 .brand h1{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:.03em;margin:0;text-transform:uppercase;display:flex;align-items:center;gap:9px;line-height:1}
 .logo{width:26px;height:26px;flex:0 0 auto;border-radius:7px;box-shadow:0 4px 10px -4px var(--accent)}
 .hbtns{display:flex;align-items:center;gap:8px}
-.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);padding:5px 10px;border-radius:999px;white-space:nowrap}
+.status{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--muted);height:40px;min-width:40px;padding:0 14px;border-radius:999px;white-space:nowrap}
 .status i{width:7px;height:7px;border-radius:50%;background:var(--muted);flex:0 0 auto;transition:background .3s}
 .status[data-s="ok"] i{background:var(--green)}
 .status[data-s="saving"] i{background:var(--yellow);animation:pulse 1s ease-in-out infinite}
@@ -90,7 +95,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;border-wid
 .iconbtn:active{transform:scale(.9)}
 
 /* bottom tab capsule */
-nav.dock{position:fixed;z-index:9;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));
+nav.dock{position:fixed;z-index:9;left:0;right:0;margin-inline:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));
   width:min(480px,calc(100% - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));
   border-radius:999px;padding:6px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
 nav.dock .ind{position:absolute;top:6px;bottom:6px;left:0;width:0;border-radius:999px;background:var(--glass-strong);
@@ -117,21 +122,20 @@ h3{font-family:var(--display);font-weight:600;font-size:20px;line-height:1.15;ma
 p{margin:0}
 .muted{color:var(--muted)}
 .small{font-size:13px}
-.card{border-radius:22px;padding:18px;display:grid;gap:12px;min-width:0}
+.card{border-radius:24px;padding:18px;display:grid;gap:12px;min-width:0}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .between{justify-content:space-between}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
-.btn{font:600 15px var(--body);border-radius:999px;border:1px solid var(--glass-edge);background:var(--field);color:var(--ink);padding:9px 18px;cursor:pointer;min-height:42px;
+.btn{font:600 15px var(--body);border-radius:999px;border:1px solid var(--glass-edge);background:var(--field);color:var(--ink);padding:0 20px;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;line-height:1.2;
   box-shadow:inset 0 1px 0 var(--sheen);transition:transform .2s var(--spring),background .2s,opacity .2s;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
-.btn:hover{background:var(--glass-strong)}
+@media (hover:hover){.btn:hover{background:var(--glass-strong)}.btn.ghost:hover{background:var(--sunken)}}
 .btn:active{transform:scale(.96)}
 .btn.primary{background:linear-gradient(180deg,rgba(255,255,255,.22),transparent 55%),var(--accent);border-color:transparent;color:var(--on-accent);box-shadow:0 8px 20px -10px var(--accent),inset 0 1px 0 rgba(255,255,255,.35)}
 .btn.blue{background:linear-gradient(180deg,rgba(255,255,255,.22),transparent 55%),var(--accent);border-color:transparent;color:var(--on-accent);box-shadow:0 8px 20px -10px var(--accent),inset 0 1px 0 rgba(255,255,255,.35)}
 .btn.ghost{background:none;border-color:transparent;box-shadow:none;color:var(--muted);-webkit-backdrop-filter:none;backdrop-filter:none}
-.btn.ghost:hover{background:var(--sunken)}
-.btn.sm{padding:5px 13px;min-height:34px;font-size:13px}
+.btn.sm{padding:0 14px;min-height:36px;font-size:13px}
 .btn:disabled{opacity:.5;cursor:default;transform:none}
 a{color:var(--blue)}
 label.f{display:grid;gap:5px;font-size:13px;color:var(--muted);min-width:0}
@@ -141,7 +145,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);bo
 select{appearance:none;-webkit-appearance:none;padding-right:34px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 52%,calc(100% - 13px) 52%;background-size:5px 5px;background-repeat:no-repeat}
 textarea{resize:vertical;min-height:72px;line-height:1.4}
 .formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px}
-.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--glass-edge);border-radius:999px;padding:6px 13px;font:500 13px var(--body);background:var(--field);color:var(--ink);cursor:pointer;transition:transform .2s var(--spring),background .2s,color .2s;text-align:left}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--glass-edge);border-radius:999px;padding:0 14px;min-height:36px;font:500 13px var(--body);white-space:nowrap;background:var(--field);color:var(--ink);cursor:pointer;transition:transform .2s var(--spring),background .2s,color .2s;text-align:left}
 .chip:active{transform:scale(.95)}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .tag{display:inline-block;font-family:var(--mono);font-size:11px;padding:3px 8px;border-radius:999px;background:var(--sunken);color:var(--muted);letter-spacing:.03em;white-space:nowrap}
@@ -150,7 +154,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.4}
 
 /* stats */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px}
-.stat{border-radius:18px;padding:13px 15px;display:grid;gap:3px;align-content:start}
+.stat{border-radius:20px;padding:13px 15px;display:grid;gap:3px;align-content:start}
 .stat b{font-family:var(--display);font-size:32px;font-weight:700;line-height:1}
 .stat span{font-size:12px;color:var(--muted)}
 .stat .key{width:22px;height:4px;border-radius:2px;margin-bottom:4px}
@@ -176,7 +180,7 @@ ol.steps li::before{content:counter(st);width:24px;height:24px;border-radius:50%
 .exrow{display:grid;grid-template-columns:58px minmax(0,1fr);gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
 .exrow:first-child{border-top:0;padding-top:0}
 .seg{display:inline-flex;justify-self:start;padding:4px;border-radius:999px;gap:2px;max-width:100%;overflow-x:auto;scrollbar-width:none}
-.seg button{border:0;background:none;padding:8px 14px;border-radius:999px;font:600 14px var(--body);color:var(--muted);cursor:pointer;transition:background .25s,color .25s,transform .2s var(--spring)}
+.seg button{border:0;background:none;padding:0 16px;min-height:36px;white-space:nowrap;border-radius:999px;font:600 14px var(--body);color:var(--muted);cursor:pointer;transition:background .25s,color .25s,transform .2s var(--spring)}
 .seg button:active{transform:scale(.96)}
 .seg button[aria-pressed="true"]{background:var(--glass-strong);color:var(--ink);box-shadow:0 4px 12px -6px var(--glass-shadow),inset 0 1px 0 var(--sheen)}
 .gcard .top{display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:12px;align-items:center}
@@ -196,12 +200,15 @@ ol.steps li::before{content:counter(st);width:24px;height:24px;border-radius:50%
 
 /* library */
 .lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,158px),1fr));gap:12px}
-.libcard{border-radius:20px;padding:10px;display:grid;gap:6px;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:transform .25s var(--spring)}
+.libcard{border-radius:24px;padding:10px;display:grid;gap:6px;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:transform .25s var(--spring)}
 .libcard:active{transform:scale(.97)}
 .libcard svg{width:100%;aspect-ratio:1/1;max-width:100%;background:var(--sunken);border-radius:14px;display:block}
 .libcard strong{font-family:var(--display);font-size:18px;letter-spacing:.02em;text-transform:uppercase;line-height:1.1}
 .chiprow{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px;margin:-2px}
 .chiprow::-webkit-scrollbar{display:none}
+.chiprow.more-r{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
+.chiprow.more-l{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px);mask-image:linear-gradient(90deg,transparent,#000 36px)}
+.chiprow.more-l.more-r{-webkit-mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(90deg,transparent,#000 36px,#000 calc(100% - 36px),transparent)}
 .chiprow .chip{flex:0 0 auto}
 
 /* session */
@@ -222,20 +229,20 @@ ol.steps li::before{content:counter(st);width:24px;height:24px;border-radius:50%
 .hint{font-size:13px;border-left:3px solid var(--accent);padding-left:9px;color:var(--muted)}
 
 /* timer pill */
-.timer{position:fixed;z-index:9;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));
+.timer{position:fixed;z-index:9;left:0;right:0;margin-inline:auto;bottom:calc(92px + env(safe-area-inset-bottom,0px));
   width:min(480px,calc(100% - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));
-  border-radius:24px;padding:10px 12px;display:flex;align-items:center;gap:12px;transform:translateX(-50%);
+  border-radius:24px;padding:10px 12px;display:flex;align-items:center;gap:12px;transform:none;
   transition:transform .4s var(--spring),opacity .3s;touch-action:pan-x}
-.timer.enter{transform:translateX(-50%) translateY(30px);opacity:0}
+.timer.enter{transform:translateY(30px);opacity:0}
 .timer .ring{width:46px;height:46px;flex:0 0 auto}
 .timer .ring circle{fill:none;stroke-width:4}
 .timer b{font-family:var(--mono);font-size:24px;font-weight:600;flex:1;min-width:0}
 .timer small{display:block;font:500 11px var(--body);color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
 
 /* toast */
-.toast{position:fixed;z-index:40;left:50%;top:calc(70px + env(safe-area-inset-top,0px));transform:translate(-50%,-14px);opacity:0;pointer-events:none;
+.toast{position:fixed;z-index:40;left:0;right:0;margin-inline:auto;width:fit-content;top:calc(70px + env(safe-area-inset-top,0px));transform:translateY(-14px);opacity:0;pointer-events:none;
   border-radius:20px;padding:10px 18px;font-weight:600;font-size:14px;max-width:calc(100% - 32px);text-align:center;transition:transform .4s var(--spring),opacity .25s}
-.toast.show{transform:translate(-50%,0);opacity:1}
+.toast.show{transform:none;opacity:1}
 
 /* sheet */
 .overlay{position:fixed;inset:0;z-index:30;background:var(--scrim);display:flex;align-items:flex-end;justify-content:center;
@@ -266,8 +273,8 @@ ol.steps li::before{content:counter(st);width:24px;height:24px;border-radius:50%
 .chartbox{position:relative}
 .chart{width:100%;height:auto;display:block;touch-action:pan-y}
 .chart text{fill:var(--muted);font-family:var(--mono);font-size:11px}
-@media (max-width:420px){.status{padding:9px}.status span{display:none}}
-.tip{position:absolute;top:0;pointer-events:none;border-radius:12px;padding:7px 10px;font-size:12px;white-space:nowrap;transform:translateX(-50%);opacity:0;transition:opacity .15s}
+@media (max-width:420px){.status{padding:0;width:40px}.status span{display:none}}
+.tip{position:absolute;top:0;pointer-events:none;border-radius:12px;padding:7px 10px;font-size:12px;white-space:nowrap;transform:none;opacity:0;transition:opacity .15s}
 .tip.on{opacity:1}
 .tip strong{font:600 15px var(--mono);display:block}
 .tip .k{display:inline-block;width:12px;height:2px;background:var(--accent);vertical-align:middle;margin-right:5px}
@@ -321,10 +328,6 @@ details[open] summary::before{transform:rotate(45deg)}
   <section class="panel" id="p-progressi" hidden></section>
   <section class="panel" id="p-coach" hidden></section>
   <section class="panel" id="p-profilo" hidden></section>
-  <div class="foot">
-    <span><i class="dot p-c"></i>Proteine</span><span><i class="dot c-c"></i>Carboidrati</span><span><i class="dot f-c"></i>Grassi</span>
-    <span>Indicazioni generali: non sostituiscono medico o nutrizionista.</span>
-  </div>
   <p class="swipehint">Scorri a destra o a sinistra per cambiare sezione</p>
 </main>
 
@@ -1358,9 +1361,12 @@ function placeIndicator(){
   if(!b){ ind.style.opacity = 0; return; }
   ind.style.opacity = 1; ind.style.width = b.offsetWidth + 'px'; ind.style.transform = `translateX(${b.offsetLeft}px)`;
 }
+const tabScroll = {};
 function showTab(t, opts = {}){
   if(!TABS.includes(t)) return;
   const prev = tab; tab = t;
+  if(prev === t && opts.scroll !== false && opts.animate !== false){ window.scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'}); return; }
+  if(prev !== t) tabScroll[prev] = window.scrollY;
   document.querySelectorAll('#dock button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === t));
   $('#hCoach').setAttribute('aria-pressed', t === 'coach'); $('#hProfilo').setAttribute('aria-pressed', t === 'profilo');
   document.querySelectorAll('section.panel').forEach(s => {
@@ -1370,7 +1376,7 @@ function showTab(t, opts = {}){
   });
   placeIndicator();
   try{ sessionStorage.setItem('ghisa-tab', t); }catch(e){}
-  if(opts.scroll !== false && prev !== t) window.scrollTo(0, 0);
+  if(opts.scroll !== false && prev !== t) window.scrollTo(0, tabScroll[t] || 0);
   if(prev !== t) haptic(5);
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if(b) showTab(b.dataset.tab); });
@@ -1602,7 +1608,7 @@ $('#tSkip').onclick = () => { stopTimer(); haptic(5); };
 (() => { // swipe the timer pill sideways or down to skip
   const t = $('#timer'); let x0 = null, y0 = 0;
   t.addEventListener('touchstart', e => { if(e.target.closest('button')) return; x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t.style.transition = 'none'; }, {passive:true});
-  t.addEventListener('touchmove', e => { if(x0 === null) return; const dx = e.touches[0].clientX - x0, dy = Math.max(0, e.touches[0].clientY - y0); t.style.transform = `translateX(calc(-50% + ${dx}px)) translateY(${dy}px)`; t.style.opacity = String(Math.max(.3, 1 - Math.max(Math.abs(dx), dy) / 220)); }, {passive:true});
+  t.addEventListener('touchmove', e => { if(x0 === null) return; const dx = e.touches[0].clientX - x0, dy = Math.max(0, e.touches[0].clientY - y0); t.style.transform = `translate(${Math.round(dx)}px, ${Math.round(dy)}px)`; t.style.opacity = String(Math.max(.3, 1 - Math.max(Math.abs(dx), dy) / 220)); }, {passive:true});
   t.addEventListener('touchend', e => {
     if(x0 === null) return;
     const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
@@ -1874,7 +1880,7 @@ function wireChart(box){
     const a = document.createElement('div'); const k = document.createElement('i'); k.className = 'k'; a.append(k, 'media 7 gg: ' + fmt(p.avg) + ' kg'); tip.append(a);
     tip.classList.add('on');
     const tw = tip.offsetWidth, x = Math.min(Math.max(p.x * sx, tw / 2 + 2), r.width - tw / 2 - 2);
-    tip.style.left = x + 'px'; tip.style.top = Math.max(0, p.y * sx - tip.offsetHeight - 14) + 'px';
+    tip.style.left = Math.round(x - tw / 2) + 'px'; tip.style.top = Math.round(Math.max(0, p.y * sx - tip.offsetHeight - 14)) + 'px';
   };
   const hide = () => { cross.setAttribute('opacity', '0'); dot.setAttribute('opacity', '0'); tip.classList.remove('on'); cur = -1; };
   const nearest = clientX => { const r = svg.getBoundingClientRect(), x = (clientX - r.left) / r.width * chartData.W; let bi = 0, bd = Infinity; chartData.pts.forEach((p, i) => { const d = Math.abs(p.x - x); if(d < bd){ bd = d; bi = i; } }); return bi; };
@@ -1991,7 +1997,8 @@ function renderProfilo(){
     <div class="card glass"><h3>Dove sono salvati i dati</h3>
       <p class="small">${SYNC.stateRef ? 'Nel tuo account Claude, visibili solo a te: li ritrovi su qualsiasi dispositivo da cui apri questa pagina.' : 'Solo in questo browser. Apri la pagina su claude.ai con il tuo account per salvarli nel tuo account.'}</p>
       <div id="resetBox" class="row"><button class="btn ghost sm" id="resetBtn">Cancella tutti i dati</button></div>
-    </div>`;
+    </div>
+    <p class="small muted">Le indicazioni su allenamento e alimentazione sono generali e non sostituiscono medico o nutrizionista.</p>`;
   $('#pForm').onsubmit = e => {
     e.preventDefault();
     const g = k => $('#pf-' + k).value, err = $('#pErr');
@@ -2023,6 +2030,20 @@ function renderProfilo(){
 /* ================= accent colour ================= */
 const ACCENTS = [['blu','Blu','#2F6BD8'],['verde','Verde','#1E8A5A'],['viola','Viola','#6B4FD6'],['arancio','Arancio','#C9620E'],['grafite','Grafite','#2B323C']];
 function applyAccent(){ const a = state.profile.accent; if(a && a !== 'blu') document.documentElement.dataset.accent = a; else delete document.documentElement.dataset.accent; }
+
+/* ================= app behaviour ================= */
+['gesturestart','gesturechange','gestureend'].forEach(t => document.addEventListener(t, e => e.preventDefault(), {passive:false}));
+document.addEventListener('touchmove', e => { if(e.touches.length > 1) e.preventDefault(); }, {passive:false});
+window.addEventListener('wheel', e => { if(e.ctrlKey) e.preventDefault(); }, {passive:false});
+document.addEventListener('keydown', e => { if((e.ctrlKey || e.metaKey) && ['+','-','=','0'].includes(e.key)) e.preventDefault(); });
+document.addEventListener('contextmenu', e => { if(!e.target.closest('input,textarea,.msg,a')) e.preventDefault(); });
+document.addEventListener('dragstart', e => { if(e.target.closest('svg,img,a')) e.preventDefault(); });
+
+/* fade the edges of horizontal chip rows only where there is more to scroll */
+function fadeRows(){ document.querySelectorAll('.chiprow').forEach(r => { const max = r.scrollWidth - r.clientWidth; r.classList.toggle('more-r', max > 2 && r.scrollLeft < max - 2); r.classList.toggle('more-l', max > 2 && r.scrollLeft > 2); }); }
+document.addEventListener('scroll', e => { if(e.target.classList && e.target.classList.contains('chiprow')) fadeRows(); }, true);
+new MutationObserver(() => requestAnimationFrame(fadeRows)).observe(document.body, {childList:true, subtree:true});
+window.addEventListener('resize', fadeRows);
 
 /* ================= boot ================= */
 function renderAll(keepTab){
