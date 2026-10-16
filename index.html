@@ -150,6 +150,7 @@ textarea{resize:vertical;min-height:72px;line-height:1.4}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .tag{display:inline-block;font-family:var(--mono);font-size:11px;padding:3px 8px;border-radius:999px;background:var(--sunken);color:var(--muted);letter-spacing:.03em;white-space:nowrap}
 .note{background:var(--sunken);border-radius:14px;padding:11px 13px;font-size:14px}
+.wurow{display:flex;align-items:center;justify-content:space-between;gap:12px}.wurow .btn{flex:none}
 .example{border:1px dashed var(--yellow);border-radius:14px;padding:10px 13px;font-size:14px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 
 /* stats */
@@ -523,6 +524,12 @@ const T = {
   elliptical:{props:['elliptical'], K:[{h:[100,26], s:[100,43], p:[98,98], k:[116,128], a:[110,164], t:[122,164], k2:[92,138], a2:[80,170], t2:[92,172], e:[116,64], w:[132,48], e2:[94,68], w2:[118,74]}, {k:[92,138], a:[80,170], t:[92,172], k2:[116,128], a2:[110,164], t2:[122,164], e:[94,68], w:[118,74], e2:[116,64], w2:[132,48]}]},
   bike:{props:['bike'], K:[{p:[88,104], s:[118,56], h:[128,40], e:[136,76], w:[154,84], k:[124,100], a:[112,144], t:[124,146], k2:[118,136], a2:[106,176], t2:[118,176]}, {k:[118,136], a:[106,176], t:[118,176], k2:[124,100], a2:[112,144], t2:[124,146]}]},
   rower:{gear:'grip', seatAt:'p', props:['rower'], cable:[176,146], K:[{p:[70,160], k:[108,118], a:[140,150], t:[146,138], s:[94,110], h:[100,93], e:[118,122], w:[142,128]}, {p:[62,162], k:[101,154], s:[46,110], h:[42,93], e:[30,128], w:[56,124]}]},
+  armCircles:{cycle:true, K:[0,1,2,3,4,5,6,7].map(i => { const a = i * Math.PI / 4, x = Math.sin(a), y = Math.cos(a); return {...(i ? {} : {...S, t:[112,180]}), e:[100 + 26 * x, 45 + 26 * y], w:[100 + 52 * x, 45 + 52 * y]}; })},
+  legSwing:{K:[{...S, k2:[100,140], a2:[100,180], t2:[112,180], k:[80,135], a:[60,170], t:[70,176], e:[110,70], w:[122,92]}, {k:[100,140], a:[100,180], t:[112,180], e:[102,72], w:[104,97]}, {k:[128,128], a:[156,156], t:[164,147], e:[92,70], w:[84,92]}]},
+  catCow:{K:[{h:[52,136], s:[64,120], m:[92,104], p:[120,122], e:[64,148], w:[64,176], e2:[64,148], w2:[64,176], k:[120,170], a:[158,176], t:[164,180], k2:[120,170], a2:[158,176], t2:[164,180]}, {h:[48,106], m:[92,136]}]},
+  inchworm:{K:[{h:[60,28], s:[60,45], p:[60,100], k:[60,140], a:[60,180], t:[72,180], e:[62,72], w:[64,97]}, {h:[100,153], s:[92,140], p:[52,102], e:[94,159], w:[96,178]}, {h:[182,110], s:[168,122], e:[168,150], w:[168,178], p:[114,148], k:[88,163], a:[60,176], t:[54,180]}]},
+  highKnees:{K:[{h:[100,26], s:[100,43], p:[100,98], k:[138,102], a:[134,140], t:[146,142], k2:[100,138], a2:[100,176], t2:[112,180], e:[84,64], w:[80,90], e2:[116,62], w2:[126,40]}, {k:[100,138], a:[100,176], t:[112,180], k2:[138,102], a2:[134,140], t2:[146,142], e:[116,62], w:[126,40], e2:[84,64], w2:[80,90]}]},
+  lungeReach:{K:[{...S, k2:[100,140], a2:[100,180], t2:[112,180], e:[100,72], w:[100,98]}, {h:[100,63], s:[100,80], p:[100,135], k:[140,138], a:[138,180], k2:[92,175], a2:[62,166], t2:[70,180], e:[110,57], w:[122,34]}]},
 };
 
 /* ================= exercise library ================= */
@@ -931,7 +938,36 @@ X('ellittica','Ellittica','Cardio','Cardio','cardio','cardio','elliptical','Cuor
   ["Piedi ben appoggiati sui pedali, mani sulle maniglie mobili.","Inizia con 5 minuti a resistenza bassa.","Spingi e tira le maniglie per coinvolgere anche le braccia.","Mantieni un ritmo in cui riesci a parlare a frasi brevi."],
   ["Appoggiarsi troppo alle maniglie","Ginocchia rigide"],
   "Impatto bassissimo sulle articolazioni.");
-const GROUPS = ['Tutti','Petto','Schiena','Spalle','Bicipiti','Tricipiti','Gambe','Glutei','Core','Cardio'];
+/* MOBILITÀ E RISCALDAMENTO */
+X('skip','Skip sul posto','Mobilità','Corpo libero','mob','mob','highKnees',"Cuore e fiato, flessori dell'anca, polpacci",
+  ["In piedi, busto dritto e sguardo avanti.","Porta un ginocchio all'altezza dell'anca, poi l'altro, restando sugli avampiedi.","Muovi le braccia in modo alternato, come quando corri.","Parti piano e aumenta il ritmo negli ultimi secondi."],
+  ["Busto che si inclina indietro","Atterrare di tallone"],
+  "Alla fine devi avere il respiro un po' più veloce, non il fiatone.", {timed:true});
+X('cerchi_braccia','Circonduzioni delle braccia','Mobilità','Corpo libero','mob','mob','armCircles','Spalle, petto, dorso alto',
+  ["In piedi, piedi alla larghezza delle anche.","Braccia distese: disegna cerchi ampi in avanti, passando sopra la testa.","A metà tempo inverti il senso e fai i cerchi all'indietro.","Addome contratto: la schiena non si inarca."],
+  ["Cerchi piccoli e veloci","Spalle che salgono verso le orecchie"],
+  "Ottimo prima di panca, spinte sopra la testa e trazioni.", {timed:true, half:'Inverti il senso'});
+X('slanci_gambe','Slanci delle gambe','Mobilità','Corpo libero','mob','mob','legSwing',"Flessori dell'anca, femorali, glutei",
+  ["In piedi accanto a un muro, tenendoti con una mano.","Lascia oscillare una gamba avanti e indietro, distesa ma morbida.","Aumenta piano l'ampiezza a ogni oscillazione.","A metà tempo cambia gamba."],
+  ["Inarcare la schiena quando la gamba va indietro","Calciare di forza invece di oscillare"],
+  "Prepara anche e femorali a squat, stacchi e affondi.", {timed:true, half:'Cambia gamba'});
+X('gatto_mucca','Gatto-mucca','Mobilità','Corpo libero','mob','mob','catCow','Colonna vertebrale, zona lombare, addome',
+  ["In quadrupedia: mani sotto le spalle, ginocchia sotto le anche.","Espirando, arrotonda la schiena verso l'alto e porta il mento verso il petto.","Inspirando, lascia scendere la pancia e guarda un po' in avanti.","Movimento lento, al ritmo del respiro."],
+  ["Muovere solo il collo","Andare veloci"],
+  "Scioglie la schiena prima di stacchi, rematori e squat.", {timed:true});
+X('inchworm','Inchworm (passeggiata sulle mani)','Mobilità','Corpo libero','mob','mob','inchworm','Femorali, spalle, addome',
+  ["In piedi, piegati in avanti e appoggia le mani a terra; piega un po' le ginocchia se serve.","Cammina con le mani in avanti fino alla posizione di plank.","Tieni il plank un secondo, poi torna indietro camminando con le mani.","Rialzati e ripeti."],
+  ["Bacino che cede nel plank","Forzare con la schiena per toccare terra"],
+  "Allunga i femorali e attiva spalle e addome nello stesso movimento.", {timed:true});
+X('hinge_cl','Good morning a corpo libero','Mobilità','Corpo libero','mob','mob','goodMorning','Femorali, glutei, zona lombare',
+  ["In piedi, mani dietro la testa, ginocchia appena piegate.","Spingi il bacino indietro e inclina il busto in avanti con la schiena dritta.","Scendi finché senti tirare i femorali.","Torna su stringendo i glutei."],
+  ["Schiena arrotondata","Piegare troppo le ginocchia, come in uno squat"],
+  "Insegna la cerniera dell'anca che usi in stacchi e rematori.", {timed:true, gear:null});
+X('affondo_allungo','Affondo con allungamento','Mobilità','Corpo libero','mob','mob','lungeReach',"Flessori dell'anca, quadricipiti, glutei",
+  ["In piedi, fai un passo lungo in avanti.","Scendi in affondo e porta le braccia in alto sopra la testa.","Tieni un secondo: senti allungare la parte davanti dell'anca della gamba dietro.","Torna su e alterna le gambe."],
+  ["Ginocchio davanti che crolla verso l'interno","Busto che cade in avanti"],
+  "Apre le anche: ideale prima di gambe e corsa.", {timed:true});
+const GROUPS = ['Tutti','Petto','Schiena','Spalle','Bicipiti','Tricipiti','Gambe','Glutei','Core','Cardio','Mobilità'];
 const EQUIP = ['Tutta','Bilanciere','Manubri','Macchina','Cavi','Corpo libero','Kettlebell','Cardio'];
 function alternatives(id){
   const X0 = EX[id], same = Object.keys(EX).filter(k => k !== id && EX[k].pat === X0.pat);
@@ -1100,6 +1136,7 @@ const UNIT_LONG = {rip:'ripetizioni', s:'secondi', min:'minuti'};
 function presc(id){
   const G = GOALS[state.profile.goal] || GOALS.ricomp, X = EX[id];
   if(X.type === 'cardio') return {s:1, r: state.profile.goal === 'cut' ? [20,35] : [15,25], rest:0, unit:'min'};
+  if(X.type === 'mob') return {s:2, r:[30,45], rest:15, unit:'s'};
   let s = G.s, r = G.r.slice(), rest = G.rest;
   if(X.type === 'iso'){ r = [Math.max(10, r[0]+2), Math.max(15, r[1]+3)]; rest = Math.min(rest, 75); s = 3; }
   if(X.type === 'core'){ r = X.timed ? [30,45] : [12,20]; rest = 60; s = 3; }
@@ -1118,6 +1155,7 @@ function lastFor(id){
 function suggest(id){
   const p = presc(id), X = EX[id], last = lastFor(id), U = UNIT_LONG[p.unit];
   if(X.type === 'cardio') return {kg:null, text: last ? `Ultima volta: ${num(last.sets[0].reps)} minuti${num(last.sets[0].kg) ? ', ' + fmt(num(last.sets[0].kg)) + ' km' : ''}. Stesso ritmo, prova ad aggiungere 2–3 minuti.` : `${p.r[0]}–${p.r[1]} minuti a un ritmo in cui riesci a parlare a frasi brevi.`};
+  if(X.type === 'mob') return {kg:null, text:'Esercizio di riscaldamento: ampio e controllato, senza forzare. Lo trovi guidato con il timer in Timer → Riscaldamento.'};
   if(!last){
     if(X.bw) return {kg:null, text:`Prima volta: ${p.s} serie, cercando di arrivare a ${p.r[0]}–${p.r[1]} ${U}.`};
     if(X.timed) return {kg:null, text:`Prima volta: ${p.s} serie da ${p.r[0]}–${p.r[1]} secondi con un carico impegnativo ma gestibile.`};
@@ -1196,7 +1234,8 @@ function resolveFig(id){
   if(X._fig) return X._fig;
   const tp = T[X.a] || T.curl;
   const frames = []; tp.K.forEach((k, i) => frames.push(i ? {...frames[i-1], ...k} : {...k}));
-  X._fig = {frames, front:!!tp.front, props: X.props || tp.props || [], gear: 'gear' in X ? X.gear : (tp.gear || null),
+  if(tp.cycle) frames.push({...frames[0]});
+  X._fig = {frames, cycle:!!tp.cycle, front:!!tp.front, props: X.props || tp.props || [], gear: 'gear' in X ? X.gear : (tp.gear || null),
     cable: X.cable || tp.cable || null, cable2: tp.cable2 || null, cableAt: tp.cableAt || null, padAt: tp.padAt || 'a', seatAt: tp.seatAt || null};
   return X._fig;
 }
@@ -1260,7 +1299,7 @@ function drawFig(svg, t){
   if(!svg._P) buildFig(svg);
   const P = svg._P, F = svg._F, o = lerpPose(F, t);
   const foot = (a, tt) => tt || (F.front ? null : [a[0] + 12, a[1]]);
-  P.torso.setAttribute('points', pts([o.s, o.p]));
+  P.torso.setAttribute('points', pts([o.s, o.m, o.p]));
   P.neck.setAttribute('points', pts([o.s, o.h]));
   P.arm.setAttribute('points', o.e ? pts([o.sa || o.s, o.e, o.w]) : '');
   P.leg.setAttribute('points', pts([o.pl || o.p, o.k, o.a, foot(o.a, o.t)]));
@@ -1292,6 +1331,7 @@ function phase(time, off){ // 0 → 1 → 0 with short holds at both ends, eased
   const y = x < .1 ? 0 : x < .45 ? (x - .1) / .35 : x < .6 ? 1 : x < .95 ? 1 - (x - .6) / .35 : 0;
   return y < .5 ? 2*y*y : 1 - (-2*y + 2) ** 2 / 2;
 }
+const cycT = (time, off) => { const T = 3.2; return (((time / 1000 + off) % T) + T) % T / T; }; // linear 0 → 1, for movements that loop (circles)
 const visibleFigs = new Set();
 const figIO = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? visibleFigs.add(e.target) : visibleFigs.delete(e.target)), {rootMargin:'80px'}) : null;
 function hookFigs(root){
@@ -1302,7 +1342,7 @@ function hookFigs(root){
   });
 }
 function loop(time){
-  if(!reduce) visibleFigs.forEach(svg => { if(!svg.isConnected){ visibleFigs.delete(svg); figIO && figIO.unobserve(svg); return; } drawFig(svg, phase(time, svg._off)); });
+  if(!reduce) visibleFigs.forEach(svg => { if(!svg.isConnected){ visibleFigs.delete(svg); figIO && figIO.unobserve(svg); return; } drawFig(svg, svg._F && svg._F.cycle ? cycT(time, svg._off) : phase(time, svg._off)); });
   requestAnimationFrame(loop);
 }
 
@@ -1499,7 +1539,7 @@ function renderOggi(){
       </div>
       <div style="display:grid;gap:6px"><span class="small muted">Oppure allena un gruppo muscolare:</span><div class="chiprow" id="gChips">${GROUP_WORKOUTS.map(g => `<button class="chip" data-gpick="g:${g.key}" aria-pressed="false">${esc(g.n)}</button>`).join('')}</div></div>
       <div id="nextList">${dayList(sp[idx])}</div>
-      <div class="note small"><strong>Riscaldamento (8 minuti):</strong> 5 minuti di cyclette o camminata veloce, poi 2 serie leggere del primo esercizio, al 50% e al 70% del carico.</div>
+      <div class="note small wurow" id="wuRow">${wuNote(sp[idx])}</div>
       <div class="row"><button class="btn primary" id="startW">Inizia allenamento</button></div>
     </div>
     <div class="grid2">
@@ -1514,8 +1554,11 @@ function renderOggi(){
       </div>
     </div>`;
   $('#startW').onclick = () => startSession($('#pickDay').value);
+  const bindWu = () => { $('#wuGo').onclick = () => wodStart({warmup:$('#wuGo').dataset.wu, after:$('#pickDay').value}); };
+  bindWu();
   const pick = ref => {
     const {day} = resolveDay(ref); $('#pickDay').value = ref;
+    $('#wuRow').innerHTML = wuNote(day); bindWu();
     $('#nextName').textContent = day.n; $('#nextEyebrow').textContent = String(ref).startsWith('g:') ? `Gruppo muscolare · circa ${estMin(day.ex)} minuti` : `Prossimo allenamento · circa ${estMin(day.ex)} minuti`;
     $('#gChips').querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.gpick === ref));
     $('#nextList').innerHTML = dayList(day); hookFigs($('#nextList'));
@@ -1579,10 +1622,12 @@ function renderSession(el){
       </div>
       <div style="display:grid;gap:6px"><div class="prog"><span id="sProg"></span></div><span class="small muted num" id="sCount"></span></div>
       <div id="sessionMsg"></div>
+      ${sessionCount(A)[0] ? '' : (() => { const U = WARMUPS.find(x => x.id === warmupFor(A.ex.map(e => e.id))); return `<div class="note small wurow"><span style="min-width:0"><strong>Prima riscaldati</strong> · ${esc(U.n)}, ${mmss(wuDur(U.id))}</span><button class="btn sm" id="wuGo2" data-wu="${U.id}">Avvia</button></div>`; })()}
     </div>
     <div class="card glass" id="sxList">${A.ex.map((_, i) => sxBlock(i)).join('')}</div>
     <div class="row"><button class="btn" id="addEx">+ Aggiungi esercizio</button></div>`;
   updateProgress();
+  const wu2 = $('#wuGo2'); if(wu2) wu2.onclick = () => wodStart({warmup:wu2.dataset.wu});
   const list = $('#sxList');
   list.addEventListener('input', ev => {
     const inp = ev.target.closest('.set input'); if(!inp) return;
@@ -2230,6 +2275,24 @@ const CIRCUITS = [
   {id:'kettlebell', n:'Kettlebell express', lv:'Intermedio', eq:'Un kettlebell o un manubrio', d:'Breve e intenso: glutei, spalle e fiato.', work:40, rest:20, rounds:4, roundRest:60, st:['kbswing','goblet','lento_m','mountain']},
   {id:'macchine', n:'Circuito alle macchine', lv:'Principiante', eq:'Palestra', d:'Tutto il corpo con movimenti guidati e sicuri: ideale le prime settimane.', work:45, rest:30, rounds:3, roundRest:90, st:['legpress','chest_press','lat','shoulder_mac','legcurl','crunch_cavo']},
 ];
+const WARMUPS = [
+  {id:'generale', n:'Riscaldamento generale', for:'Full body e misti', d:'Per qualsiasi allenamento: scalda il corpo e muove tutte le articolazioni.', st:[['skip',45],['cerchi_braccia',40],['slanci_gambe',40],['squat_cl',40],['inchworm',45],['affondo_allungo',40],['jj',40]]},
+  {id:'gambe', n:'Prima di gambe e glutei', for:'Gambe e glutei', d:'Anche, ginocchia e caviglie pronte per squat, affondi e stacchi.', st:[['skip',60],['slanci_gambe',50],['hinge_cl',40],['ponte',40],['squat_cl',45],['affondo_allungo',45]]},
+  {id:'alta', n:'Prima di petto, spalle e braccia', for:'Parte alta', d:'Spalle, gomiti e polsi pronti per spinte e panca.', st:[['jj',45],['cerchi_braccia',50],['gatto_mucca',40],['inchworm',45],['piegamenti',30],['plank',30]]},
+  {id:'schiena', n:'Prima di schiena e stacchi', for:'Schiena', d:'Colonna mobile e anche attive prima di trazioni, rematori e stacchi.', st:[['skip',45],['gatto_mucca',45],['birddog',40],['hinge_cl',40],['ponte',40],['cerchi_braccia',40]]},
+  {id:'cardio', n:'Prima della corsa o del cardio', for:'Cardio e circuiti', d:'Gambe e fiato pronti per tapis roulant, corsa, HIIT e circuiti.', st:[['skip',60],['slanci_gambe',50],['affondo_allungo',45],['calf',30],['jj',45]]},
+];
+const WU_GAP = 6; // seconds to get into position between warm-up moves
+function warmupFor(ids){
+  const c = {}; ids.forEach(id => { const g = EX[id] && EX[id].g; if(g) c[g] = (c[g] || 0) + 1; });
+  const n = ids.length || 1, f = (...gs) => gs.reduce((a, g) => a + (c[g] || 0), 0) / n;
+  if(f('Cardio') >= .5) return 'cardio';
+  if(f('Gambe', 'Glutei') >= .6) return 'gambe';
+  if(f('Schiena') >= .5) return 'schiena';
+  if(f('Petto', 'Spalle', 'Bicipiti', 'Tricipiti', 'Schiena') >= .8) return 'alta';
+  return 'generale';
+}
+const wuDur = id => workDur(buildSegs({...wodCfg(), prep:0, mode:'warmup', warmup:id}));
 const WOD_DEF = {mode:'amrap', view:'timer', circ:{}, prep:10, voice:true, sound:true,
   fortime:{cap:20}, amrap:{min:12}, emom:{every:60, rounds:10},
   tabata:{work:20, rest:10, rounds:8, sets:1, setRest:60}, intervalli:{work:40, rest:20, rounds:10},
@@ -2248,7 +2311,12 @@ function circCfg(id){
 const mmss = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
 function buildSegs(c){
   const S = [], m = c.mode;
-  if(c.prep) S.push({k:'prep', dur:c.prep, label:'Preparati', nextEx: m === 'circuit' ? CIRCUITS.find(x => x.id === c.circuit).st[0] : null});
+  const U = m === 'warmup' ? WARMUPS.find(x => x.id === c.warmup) : null;
+  if(c.prep) S.push({k:'prep', dur:c.prep, label:'Preparati', nextEx: m === 'circuit' ? CIRCUITS.find(x => x.id === c.circuit).st[0] : U ? U.st[0][0] : null});
+  if(U) U.st.forEach(([id, sec], i) => {
+    S.push({k:'work', dur:sec, label:EX[id].n, ex:id, st:i + 1, sts:U.st.length, half:EX[id].half || null});
+    if(i < U.st.length - 1) S.push({k:'rest', dur:WU_GAP, label:'Cambio', nextEx:U.st[i + 1][0]});
+  });
   if(m === 'circuit'){
     const C = CIRCUITS.find(x => x.id === c.circuit), k = circCfg(c.circuit), n = C.st.length;
     for(let r = 1; r <= k.rounds; r++) C.st.forEach((id, i) => {
@@ -2285,7 +2353,8 @@ function wodSummaryLabel(c){
     tabata: `Tabata ${c.tabata.work}/${c.tabata.rest} × ${c.tabata.rounds}${c.tabata.sets > 1 ? ' · ' + c.tabata.sets + ' serie' : ''}`,
     intervalli: `Intervalli ${mmss(c.intervalli.work)}/${mmss(c.intervalli.rest)} × ${c.intervalli.rounds}`,
     mix: `Mix · ${c.mix.steps.length} blocchi × ${c.mix.repeat}`,
-    circuit: c.circuit ? 'Circuito · ' + (CIRCUITS.find(x => x.id === c.circuit) || {n:''}).n : 'Circuito'}[c.mode];
+    circuit: c.circuit ? 'Circuito · ' + (CIRCUITS.find(x => x.id === c.circuit) || {n:''}).n : 'Circuito',
+    warmup: (WARMUPS.find(x => x.id === c.warmup) || {n:'Riscaldamento'}).n}[c.mode];
 }
 
 /* settings UI */
@@ -2336,7 +2405,14 @@ function wodSettingsHTML(){
 }
 function renderTimer(){
   const c = wodCfg(), el = $('#p-timer'), segs = buildSegs(c), tot = workDur(segs);
-  const seg = `<div class="seg glass" role="group" aria-label="Sezione del timer"><button type="button" data-view="timer" aria-pressed="${c.view !== 'circuiti'}">Timer</button><button type="button" data-view="circuiti" aria-pressed="${c.view === 'circuiti'}">Circuiti</button></div>`;
+  const seg = `<div class="seg glass" role="group" aria-label="Sezione del timer"><button type="button" data-view="timer" aria-pressed="${c.view !== 'circuiti' && c.view !== 'riscaldamento'}">Timer</button><button type="button" data-view="circuiti" aria-pressed="${c.view === 'circuiti'}">Circuiti</button><button type="button" data-view="riscaldamento" aria-pressed="${c.view === 'riscaldamento'}">Riscaldamento</button></div>`;
+  if(c.view === 'riscaldamento'){
+    el.innerHTML = `<div><span class="eyebrow">${WARMUPS.length} riscaldamenti guidati, 4–6 minuti</span><h2>Riscaldamento</h2></div>${seg}
+      <p class="muted">Da fare prima di allenarti: il timer ti guida esercizio per esercizio con animazione e voce, e negli esercizi su un lato ti dice quando cambiare.</p>
+      <div class="grid2">${WARMUPS.map(U => wuCardHTML(U)).join('')}</div>`;
+    bindTimerSettings(el);
+    return;
+  }
   if(c.view === 'circuiti'){
     el.innerHTML = `<div><span class="eyebrow">${CIRCUITS.length} circuiti pronti, con timer integrato</span><h2>Circuiti</h2></div>${seg}
       <p class="muted">Ogni esercizio dura un tempo fisso: il timer ti dice cosa fare, ti mostra il movimento e ti avvisa del prossimo. Puoi cambiare tempi e giri.</p>
@@ -2353,6 +2429,16 @@ function renderTimer(){
     <button class="btn primary big" id="wodGo">Avvia${tot ? ' · ' + mmss(tot) : ''}</button>
     ${state.wods.length ? `<div class="card glass"><h3>Ultimi allenamenti a tempo</h3>${state.wods.slice(0, 4).map(w => `<div class="row between small" style="flex-wrap:nowrap"><span style="min-width:0">${dItal(w.date)} · ${esc(w.label)}</span><span class="num">${mmss(w.total)}${w.rounds ? ' · ' + w.rounds + ' giri' : ''}</span></div>`).join('')}<div><button class="btn ghost sm" data-go="progressi">Vedi lo storico</button></div></div>` : ''}`;
   bindTimerSettings(el);
+}
+function wuCardHTML(U){
+  return `<div class="card glass gcard" id="wu-${U.id}">
+    <div class="top"><div style="min-width:0"><span class="eyebrow">${esc(U.for)} · ${mmss(wuDur(U.id))}</span><h3>${esc(U.n)}</h3><p class="small muted">${esc(U.d)}</p></div>${figSVG(U.st[0][0])}</div>
+    <details><summary class="small muted">${U.st.length} esercizi</summary><div style="padding-top:8px">${U.st.map(([id, sec]) => `<div class="exrow">${figSVG(id)}<div style="min-width:0;display:grid;gap:3px"><button class="exname" data-ex="${id}">${esc(EX[id].n)}</button><div class="small muted">${sec} secondi${EX[id].half ? ' · a metà: ' + EX[id].half.toLowerCase() : ''}</div></div></div>`).join('')}</div></details>
+    <div class="row"><button class="btn primary" data-wu="${U.id}">Inizia riscaldamento</button></div></div>`;
+}
+function wuNote(day){
+  const U = WARMUPS.find(x => x.id === warmupFor(day.ex));
+  return `<div style="min-width:0"><strong>Riscaldamento guidato · ${esc(U.n)}</strong><br><span class="muted">${U.st.length} esercizi in ${mmss(wuDur(U.id))}, con timer e animazioni. Poi 1–2 serie leggere del primo esercizio.</span></div><button class="btn sm" id="wuGo" data-wu="${U.id}">Riscaldati</button>`;
 }
 let openCirc = null;
 function circCardHTML(C){
@@ -2375,6 +2461,7 @@ function bindTimerSettings(el){
   const refresh = () => { persist(); renderTimer(); };
   el.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { if(c.view === b.dataset.view) return; c.view = b.dataset.view; haptic(6); refresh(); });
   el.querySelectorAll('[data-circ]').forEach(b => b.onclick = () => wodStart(b.dataset.circ));
+  el.querySelectorAll('[data-wu]').forEach(b => b.onclick = () => wodStart({warmup:b.dataset.wu}));
   el.querySelectorAll('[data-circ-details]').forEach(d => d.addEventListener('toggle', () => { if(d.open) openCirc = d.dataset.circDetails; else if(openCirc === d.dataset.circDetails) openCirc = null; }));
   if(!el.querySelector('.modes')){ bindSteppers(el, c); hookFigs(el); return; }
   el.querySelector('.modes').onclick = e => { const b = e.target.closest('[data-mode]'); if(!b || c.mode === b.dataset.mode) return; c.mode = b.dataset.mode; haptic(6); refresh(); };
@@ -2417,12 +2504,12 @@ function say(text){
   if(!W || !W.c.voice || !('speechSynthesis' in window)) return;
   try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'it-IT'; u.rate = 1.05; const v = speechSynthesis.getVoices().find(x => /^it/i.test(x.lang)); if(v) u.voice = v; speechSynthesis.speak(u); }catch(e){}
 }
-function wodStart(circuit){
-  const base = wodCfg(), c = typeof circuit === 'string' ? {...base, mode:'circuit', circuit} : base, segs = buildSegs(c);
+function wodStart(opt){
+  const base = wodCfg(), c = typeof opt === 'string' ? {...base, mode:'circuit', circuit:opt} : opt && opt.warmup ? {...base, mode:'warmup', warmup:opt.warmup} : base, segs = buildSegs(c);
   if(!segs.some(s => s.k === 'work')){ toast('Aggiungi almeno un blocco di lavoro'); haptic([10, 40, 10]); return; }
   audio();
   try{ if('speechSynthesis' in window && c.voice){ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } }catch(e){} // unlocks speech on iOS inside the tap
-  W = {c, segs, i:0, paused:false, pauseAt:0, pausedTotal:0, segStart:performance.now(), workStart:null, splits:[], cue:'', flags:{}, done:false, date:iso()};
+  W = {c, segs, i:0, paused:false, pauseAt:0, pausedTotal:0, segStart:performance.now(), workStart:null, splits:[], cue:'', flags:{}, done:false, date:iso(), after: opt && opt.after != null ? opt.after : null};
   openWod(); enterSeg();
   lockScreen(true);
   W.int = setInterval(wodTick, 100);
@@ -2434,9 +2521,9 @@ function enterSeg(){
   const lastWork = s.k === 'work' && !W.segs.slice(W.i + 1).some(x => x.k === 'work');
   tone(s.k === 'rest' ? 660 : 1046, .45);
   haptic(s.k === 'rest' ? [60] : [120]);
-  if(W.c.mode === 'circuit'){
+  if(W.c.mode === 'circuit' || W.c.mode === 'warmup'){
     if(s.k === 'prep') say('Preparati. Si parte con ' + EX[s.nextEx].n);
-    else if(s.k === 'rest') say((s.label === 'Riposo tra i giri' ? 'Riposo tra i giri' : 'Riposo') + '. Prossimo: ' + EX[s.nextEx].n);
+    else if(s.k === 'rest') say((W.c.mode === 'warmup' ? '' : s.label === 'Riposo tra i giri' ? 'Riposo tra i giri. ' : 'Riposo. ') + 'Prossimo: ' + EX[s.nextEx].n);
     else say((lastWork ? 'Ultimo esercizio: ' : '') + EX[s.ex].n);
   }
   else if(s.k === 'prep') say('Preparati');
@@ -2459,6 +2546,7 @@ function wodTick(){
   if(!isFinite(s.dur)) return;
   const rem = s.dur - el, sec = Math.ceil(rem);
   if(sec <= 3 && sec >= 1 && W.cue !== W.i + ':' + sec){ W.cue = W.i + ':' + sec; tone(880, .16); haptic(30); }
+  if(s.k === 'work' && s.half && !W.flags.side && el >= s.dur / 2){ W.flags.side = 1; say(s.half); tone(880, .2); haptic(40); }
   if(s.k === 'work' && s.dur >= 120 && !W.flags.half && el >= s.dur / 2){ W.flags.half = 1; say('Metà tempo'); }
   if(s.k === 'work' && s.dur >= 180 && !W.flags.last && rem <= 60){ W.flags.last = 1; say('Ultimo minuto'); }
   if(s.k === 'rest' && s.dur >= 15 && !W.flags.ready && rem <= 5.5){ W.flags.ready = 1; say('Pronti'); }
@@ -2477,12 +2565,14 @@ function wodLayout(){
   if(!W) return;
   const s = W.segs[W.i], next = W.segs[W.i + 1], cnt = roundsCounting(W.c.mode) && s.k === 'work';
   $('#wLabel').textContent = W.paused ? 'In pausa' : s.label;
-  $('#wRound').textContent = W.c.mode === 'circuit'
-    ? (s.k === 'work' ? `Esercizio ${s.st}/${s.sts} · Giro ${s.r}/${s.rt}` : s.nextEx ? `Prossimo: ${EX[s.nextEx].n}` : '')
+  const seq = W.c.mode === 'circuit' || W.c.mode === 'warmup';
+  $('#wRound').textContent = seq
+    ? (s.k === 'work' ? `Esercizio ${s.st}/${s.sts}` + (s.r ? ` · Giro ${s.r}/${s.rt}` : '') : s.nextEx ? `Prossimo: ${EX[s.nextEx].n}` : '')
     : [s.set && s.sets > 1 ? `Serie ${s.set}/${s.sets}` : '', s.r ? `Round ${s.r}/${s.rt}` : ''].filter(Boolean).join(' · ');
   const figId = s.ex || s.nextEx || null, fig = $('#wFig');
   if(fig.dataset.id !== String(figId)){ fig.dataset.id = String(figId); fig.hidden = !figId; fig.innerHTML = figId ? figSVG(figId) : ''; if(figId) hookFigs(fig); }
-  $('#wNext').textContent = W.c.mode === 'circuit' && s.k !== 'work' ? '' : next ? `Dopo: ${next.label}${isFinite(next.dur) ? ' ' + mmss(next.dur) : ''}` : 'Ultimo blocco';
+  const nextWork = W.segs.slice(W.i + 1).find(x => x.k === 'work');
+  $('#wNext').textContent = seq && s.k !== 'work' ? '' : W.c.mode === 'warmup' ? (nextWork ? 'Dopo: ' + nextWork.label : 'Ultimo esercizio') : next ? `Dopo: ${next.label}${isFinite(next.dur) ? ' ' + mmss(next.dur) : ''}` : 'Ultimo blocco';
   $('#wRounds').hidden = !roundsCounting(W.c.mode);
   $('#wRounds').innerHTML = `<b class="num">${W.splits.length}</b><span>${W.splits.length === 1 ? 'giro' : 'giri'}${W.splits.length ? ' · ultimo ' + mmss((W.splits[W.splits.length - 1] - (W.splits[W.splits.length - 2] || 0)) / 1000) : ''}</span>`;
   $('#wLap').hidden = !cnt; $('#wUndo').hidden = !cnt || !W.splits.length;
@@ -2525,8 +2615,21 @@ function wodFinish(reason){
   const total = reason === 'cap' ? s.dur : reason === 'done' ? workDur(W.segs) : worked;
   [0, .2, .4].forEach((t, i) => tone(i === 2 ? 1568 : 1046, .25, t));
   haptic([150, 80, 150]);
-  say(reason === 'cap' ? 'Tempo scaduto' : reason === 'stop' ? 'Timer fermato' : 'Finito! Ottimo lavoro');
+  say(reason === 'cap' ? 'Tempo scaduto' : reason === 'stop' ? 'Timer fermato' : W.c.mode === 'warmup' ? 'Riscaldamento finito. Ora si parte!' : 'Finito! Ottimo lavoro');
   W.result = {total: Math.round(total), splits: W.splits.map(x => Math.round(x / 1000)), reason};
+  if(W.c.mode === 'warmup'){
+    const after = W.after, act = !!state.active;
+    $('#wod').dataset.phase = 'done';
+    $('#wod').innerHTML = `
+    <div class="wtop"><div class="wmode">${esc(wodSummaryLabel(W.c))}</div></div>
+    <div class="wmid"><div class="wlabel">${reason === 'stop' ? 'Riscaldamento interrotto' : 'Sei pronto!'}</div>
+      <div class="wbig num">${mmss(W.result.total)}</div>
+      <div class="wsmall">Prima delle serie vere fai 1–2 serie leggere del primo esercizio: metà carico, poi circa il 70%.</div></div>
+    <div class="wctl"><button class="wbtn ghost" id="wDiscard">Chiudi</button>${act || after != null ? `<button class="wbtn strong" id="wAfter">${act ? "Torna all'allenamento" : 'Inizia allenamento'}</button>` : ''}</div>`;
+    $('#wDiscard').onclick = closeWod;
+    const a = $('#wAfter'); if(a) a.onclick = () => { closeWod(); showTab('oggi'); if(!state.active) startSession(after); };
+    return;
+  }
   const sp = W.result.splits;
   $('#wod').dataset.phase = 'done';
   $('#wod').innerHTML = `
