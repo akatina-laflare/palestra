@@ -91,6 +91,13 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;border-wid
 @keyframes pulse{50%{opacity:.35}}
 .iconbtn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--ink);cursor:pointer;padding:0;transition:transform .2s var(--spring),background .2s}
 .iconbtn svg{width:20px;height:20px}
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.setrow:last-child{border-bottom:0}
+.tg{flex:none;position:relative;width:51px;height:31px;border-radius:999px;border:0;padding:0;background:var(--sunken);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;transition:background .25s}
+.tg::after{content:'';position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25);transition:transform .3s var(--spring)}
+.tg[aria-checked="true"]{background:var(--accent)}
+.tg[aria-checked="true"]::after{transform:translateX(20px)}
+.hapsw{position:fixed;left:-200px;top:0;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
 .iconbtn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .iconbtn:active{transform:scale(.9)}
 
@@ -361,6 +368,7 @@ details[open] summary::before{transform:rotate(45deg)}
       <h1><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6.5" fill="var(--accent)"/><g fill="var(--on-accent)"><rect x="5.6" y="7.4" width="2.4" height="9.2" rx="1.1"/><rect x="16" y="7.4" width="2.4" height="9.2" rx="1.1"/><rect x="3.4" y="9.4" width="1.8" height="5.2" rx=".8"/><rect x="18.8" y="9.4" width="1.8" height="5.2" rx=".8"/><rect x="7.6" y="11" width="8.8" height="2" rx=".9"/></g></svg>Ghisa</h1>
       <div class="hbtns">
         <span class="status glass" id="saveState" data-s="local" role="status"><i></i><span>…</span></span>
+        <button class="iconbtn glass" id="hSet" aria-label="Impostazioni" title="Impostazioni"></button>
         <button class="iconbtn glass" id="hCoach" data-tab="coach" aria-pressed="false" aria-label="Coach" title="Coach"></button>
         <button class="iconbtn glass" id="hProfilo" data-tab="profilo" aria-pressed="false" aria-label="Profilo" title="Profilo"></button>
       </div>
@@ -416,7 +424,19 @@ const fmt = (n, d = 1) => (Math.round(n * 10 ** d) / 10 ** d).toLocaleString('it
 const dItal = s => { const [, m, d] = s.split('-'); return `${d}/${m}`; };
 const uidGen = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const num = v => { const n = parseFloat(String(v ?? '').replace(',', '.')); return isFinite(n) ? n : 0; };
-const haptic = p => { try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} };
+const canVibrate = typeof navigator.vibrate === 'function';
+let hapSw = null;
+function iosTap(){ // iOS has no Vibration API: toggling a native switch control gives a system haptic tick (iOS 18+)
+  try{
+    if(!hapSw){ hapSw = document.createElement('label'); hapSw.className = 'hapsw'; hapSw.setAttribute('aria-hidden', 'true'); const i = document.createElement('input'); i.type = 'checkbox'; i.setAttribute('switch', ''); i.tabIndex = -1; hapSw.append(i); document.body.append(hapSw); }
+    hapSw.click();
+  }catch(e){}
+}
+const haptic = p => {
+  try{ if(state.settings.vibe === false) return; }catch(e){}
+  if(canVibrate){ try{ navigator.vibrate(p); }catch(e){} return; }
+  let t = 0; (Array.isArray(p) ? p : [p]).forEach((d, i) => { if(i % 2 === 0) for(let k = 0; k < (d >= 100 ? 3 : 1); k++) setTimeout(iosTap, t + k * 80); t += d; });
+};
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const ICON = {
@@ -429,12 +449,13 @@ const ICON = {
   coach:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/>',
   profilo:'<circle cx="12" cy="8" r="4.5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
   check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
 };
 const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]}</svg>`;
 const TABS = ['oggi','scheda','timer','esercizi','nutrizione','progressi','coach','profilo'];
 const TAB_LABEL = {oggi:'Oggi', scheda:'Scheda', timer:'Timer', esercizi:'Esercizi', nutrizione:'Nutrizione', progressi:'Progressi', coach:'Coach', profilo:'Profilo'};
 document.querySelectorAll('#dock button').forEach(b => b.innerHTML = icon(b.dataset.tab) + `<span>${TAB_LABEL[b.dataset.tab]}</span>`);
-$('#hCoach').innerHTML = icon('coach'); $('#hProfilo').innerHTML = icon('profilo');
+$('#hSet').innerHTML = icon('settings'); $('#hCoach').innerHTML = icon('coach'); $('#hProfilo').innerHTML = icon('profilo');
 
 let toastT = null;
 function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400); }
@@ -1015,7 +1036,7 @@ const LEVELS = {beginner:'Principiante (meno di 6 mesi)', inter:'Intermedio (6 m
 
 
 /* ================= state & storage ================= */
-const DEFAULT = {profile:{sex:'m', age:28, height:178, weight:78, activity:'1.375', goal:'ricomp', level:'beginner', days:3, meals:4, example:true}, workouts:[], weights:[], active:null, chat:[], pending:[], swaps:{}, food:[], foodDirty:[], wods:[], timerCfg:null, savedAt:0};
+const DEFAULT = {profile:{sex:'m', age:28, height:178, weight:78, activity:'1.375', goal:'ricomp', level:'beginner', days:3, meals:4, example:true}, workouts:[], weights:[], active:null, chat:[], pending:[], swaps:{}, food:[], foodDirty:[], wods:[], timerCfg:null, settings:{sound:true, vibe:true, voice:false}, savedAt:0};
 let state = structuredClone(DEFAULT);
 const LS = 'ghisa-coach-v2';
 const SYNC = {stateRef:null, woCol:null, chain:Promise.resolve(), t:null};
@@ -1029,6 +1050,7 @@ function merge(s){
   m.pending = Array.isArray(m.pending) ? m.pending : [];
   m.swaps = m.swaps && typeof m.swaps === 'object' && !Array.isArray(m.swaps) ? m.swaps : {};
   ['food','foodDirty','wods'].forEach(k => { if(!Array.isArray(m[k])) m[k] = []; });
+  m.settings = {...DEFAULT.settings, ...(m.settings && typeof m.settings === 'object' ? m.settings : {})};
   return m;
 }
 function setStatus(s){
@@ -1036,7 +1058,7 @@ function setStatus(s){
   el.querySelector('span').textContent = {ok:'Sincronizzato', saving:'Salvataggio', error:'Non sincronizzato', local:'Su questo dispositivo', ready:'Pronto'}[s];
   el.title = {ok:'Dati salvati nel tuo account Claude', saving:'Salvataggio in corso', error:'Non riesco a salvare nel tuo account: i dati restano su questo dispositivo e riprovo alla prossima modifica', local:'Dati salvati solo in questo browser', ready:'Pronto'}[s];
 }
-const remoteState = () => ({profile:state.profile, weights:state.weights, active:state.active, swaps:state.swaps, wods:state.wods.slice(0, 100), timerCfg:state.timerCfg, chat:state.chat.slice(-30).map(m => ({role:m.role, content:String(m.content).slice(0, 3000)}))});
+const remoteState = () => ({profile:state.profile, weights:state.weights, active:state.active, swaps:state.swaps, wods:state.wods.slice(0, 100), timerCfg:state.timerCfg, settings:state.settings, chat:state.chat.slice(-30).map(m => ({role:m.role, content:String(m.content).slice(0, 3000)}))});
 function queue(fn){ SYNC.chain = SYNC.chain.then(fn).catch(e => { setStatus('error'); throw e; }).catch(() => {}); return SYNC.chain; }
 function flushPending(){
   if(!SYNC.woCol) return;
@@ -1091,7 +1113,7 @@ async function initStore(){
     const merged = [...remoteWos.values()].filter(w => !(pendingIds.has(w.id) && !state.workouts.some(x => x.id === w.id)));
     if(remote && (remote.savedAt || 0) > (state.savedAt || 0)){
       const r = merge(remote.state);
-      state.profile = r.profile; state.weights = r.weights; state.active = r.active; state.chat = r.chat; state.swaps = r.swaps; state.wods = r.wods; state.timerCfg = r.timerCfg || state.timerCfg; state.savedAt = remote.savedAt;
+      state.profile = r.profile; state.weights = r.weights; state.active = r.active; state.chat = r.chat; state.swaps = r.swaps; state.wods = r.wods; state.timerCfg = r.timerCfg || state.timerCfg; state.settings = {...state.settings, ...(r.settings || {})}; state.savedAt = remote.savedAt;
     }
     const dirty = new Set(state.foodDirty);
     const remoteFood = fsnap.docs.flatMap(d => { const x = d.data(); return dirty.has(x.date) || !Array.isArray(x.entries) ? [] : x.entries; });
@@ -1368,7 +1390,7 @@ function openEx(id){
   const X = EX[id], p = presc(id);
   const yt = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(X.n + ' esecuzione corretta');
   const alts = alternatives(id).slice(0, 8);
-  const kind = {iso:'isolamento', core:'core', cardio:'cardio', comp:'multiarticolare'}[X.type];
+  const kind = {iso:'isolamento', core:'core', cardio:'cardio', comp:'multiarticolare', mob:'riscaldamento'}[X.type] || 'esercizio';
   openSheet(`
     <div class="row between" style="align-items:flex-start;flex-wrap:nowrap"><div style="min-width:0"><span class="eyebrow">${esc(X.g)} · ${kind} · ${esc(X.eq)}</span><h2 id="sheetTitle">${esc(X.n)}</h2></div><button class="btn sm" data-close>Chiudi</button></div>
     <div class="demo">
@@ -1385,6 +1407,32 @@ function openEx(id){
         <p class="small muted">L'animazione mostra lo schema del movimento. Per un video reale: <a href="${yt}" target="_blank" rel="noopener">cerca su YouTube</a>.</p></div>
     </div>
     ${alts.length ? `<div style="display:grid;gap:8px"><h3>Alternative</h3><div class="row" style="gap:8px">${alts.map(a => `<button class="chip" data-ex="${a}">${esc(EX[a].n)}</button>`).join('')}</div></div>` : ''}`);
+}
+function openSettings(){
+  const S = state.settings;
+  const row = (k, t, d) => `<div class="setrow"><div style="min-width:0"><strong>${t}</strong><div class="small muted">${d}</div></div><button class="tg" type="button" role="switch" data-set="${k}" aria-checked="${!!S[k]}" aria-label="${t}"></button></div>`;
+  openSheet(`
+    <div class="row between" style="align-items:flex-start;flex-wrap:nowrap"><div style="min-width:0"><span class="eyebrow">Ghisa</span><h2 id="sheetTitle">Impostazioni</h2></div><button class="btn sm" data-close>Chiudi</button></div>
+    <div class="card glass" style="gap:0"><h3>Avvisi</h3>
+      ${row('sound', 'Suoni', 'Bip a fine recupero, negli ultimi 3 secondi e a ogni cambio del timer.')}
+      ${row('vibe', 'Vibrazione', canVibrate ? 'Vibra a fine recupero, negli ultimi secondi e a ogni cambio del timer.' : 'Su iPhone: colpetti aptici del sistema a ogni avviso (iOS 18 o successivo).')}
+      ${row('voice', 'Voce', 'Legge il nome degli esercizi nei circuiti e nel riscaldamento.')}
+    </div>
+    <div class="row"><button class="btn" id="setTest">Prova suono e vibrazione</button></div>
+    ${canVibrate ? '' : `<p class="small muted">Su iPhone Apple non permette alle web app di vibrare come le app dell'App Store: Ghisa usa il feedback aptico del sistema, più leggero. Se non senti niente, controlla in Impostazioni dell'iPhone → Suoni e feedback aptico che «Feedback aptico di sistema» sia attivo. Con il telefono bloccato iOS ferma suoni e vibrazioni delle web app.</p>`}
+    <div class="card glass"><h3>Profilo e aspetto</h3><p class="small muted">Dati personali, obiettivo, colore principale e chiave del coach.</p><div class="row"><button class="btn sm" id="setProf">Apri il profilo</button></div></div>`);
+  const sh = $('#sheet');
+  sh.querySelectorAll('[data-set]').forEach(b => b.onclick = () => {
+    const k = b.dataset.set; S[k] = !S[k]; b.setAttribute('aria-checked', S[k]); persist();
+    if(k === 'vibe' && S[k]) haptic(30);
+    if(k === 'voice' && !S[k]) try{ speechSynthesis.cancel(); }catch(e){}
+    if($('#p-timer').querySelector('[data-tog]')) renderTimer();
+  });
+  $('#setTest').onclick = () => {
+    if(!S.sound && !S.vibe){ toast('Suoni e vibrazione sono spenti'); return; }
+    audio(); beep(); haptic([200, 100, 200]);
+  };
+  $('#setProf').onclick = () => { closeSheet(); showTab('profilo'); };
 }
 function closeSheet(){
   const ov = $('#overlay'), sheet = $('#sheet');
@@ -1489,6 +1537,7 @@ function showTab(t, opts = {}){
   if(prev !== t) haptic(5);
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if(b) showTab(b.dataset.tab); });
+$('#hSet').onclick = openSettings;
 document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if(g) showTab(g.dataset.go); });
 window.addEventListener('resize', placeIndicator);
 (() => { // horizontal swipe on the page switches section
@@ -1696,7 +1745,7 @@ setInterval(() => { const e = $('#elapsed'); if(e && state.active) e.textContent
 let tEnd = 0, tTotal = 0, tInt = null, actx = null;
 const RING = 2 * Math.PI * 19;
 function audio(){ try{ actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if(actx.state === 'suspended') actx.resume(); }catch(e){ actx = null; } }
-function beep(){ if(!actx) return; try{ [0, .22, .44].forEach(d => { const o = actx.createOscillator(), g = actx.createGain(); o.type = 'sine'; o.frequency.value = d > .4 ? 1175 : 880; g.gain.setValueAtTime(.0001, actx.currentTime + d); g.gain.exponentialRampToValueAtTime(.25, actx.currentTime + d + .02); g.gain.exponentialRampToValueAtTime(.0001, actx.currentTime + d + .18); o.connect(g).connect(actx.destination); o.start(actx.currentTime + d); o.stop(actx.currentTime + d + .2); }); }catch(e){} }
+function beep(){ if(!actx || !state.settings.sound) return; try{ [0, .22, .44].forEach(d => { const o = actx.createOscillator(), g = actx.createGain(); o.type = 'sine'; o.frequency.value = d > .4 ? 1175 : 880; g.gain.setValueAtTime(.0001, actx.currentTime + d); g.gain.exponentialRampToValueAtTime(.25, actx.currentTime + d + .02); g.gain.exponentialRampToValueAtTime(.0001, actx.currentTime + d + .18); o.connect(g).connect(actx.destination); o.start(actx.currentTime + d); o.stop(actx.currentTime + d + .2); }); }catch(e){} }
 function startTimer(sec){
   audio();
   tTotal = sec; tEnd = Date.now() + sec * 1000;
@@ -2425,7 +2474,7 @@ function renderTimer(){
     <div class="modes" role="group" aria-label="Tipo di timer">${Object.entries(WOD_MODES).map(([k, v]) => `<button class="mode glass" type="button" data-mode="${k}" aria-pressed="${c.mode === k}"><strong>${v.n}</strong><span class="small muted">${v.d}</span></button>`).join('')}</div>
     <div class="card glass" id="wodSet"><h3>${WOD_MODES[c.mode].n}</h3>${wodSettingsHTML()}</div>
     <div class="card glass">${stepper('prep')}
-      <div class="row" style="gap:8px"><button class="chip" type="button" data-tog="voice" aria-pressed="${c.voice}">Voce</button><button class="chip" type="button" data-tog="sound" aria-pressed="${c.sound}">Suoni</button></div></div>
+      <div class="row" style="gap:8px"><button class="chip" type="button" data-tog="sound" aria-pressed="${state.settings.sound}">Suoni</button><button class="chip" type="button" data-tog="vibe" aria-pressed="${state.settings.vibe}">Vibrazione</button><button class="chip" type="button" data-tog="voice" aria-pressed="${state.settings.voice}">Voce</button></div></div>
     <button class="btn primary big" id="wodGo">Avvia${tot ? ' · ' + mmss(tot) : ''}</button>
     ${state.wods.length ? `<div class="card glass"><h3>Ultimi allenamenti a tempo</h3>${state.wods.slice(0, 4).map(w => `<div class="row between small" style="flex-wrap:nowrap"><span style="min-width:0">${dItal(w.date)} · ${esc(w.label)}</span><span class="num">${mmss(w.total)}${w.rounds ? ' · ' + w.rounds + ' giri' : ''}</span></div>`).join('')}<div><button class="btn ghost sm" data-go="progressi">Vedi lo storico</button></div></div>` : ''}`;
   bindTimerSettings(el);
@@ -2465,7 +2514,7 @@ function bindTimerSettings(el){
   el.querySelectorAll('[data-circ-details]').forEach(d => d.addEventListener('toggle', () => { if(d.open) openCirc = d.dataset.circDetails; else if(openCirc === d.dataset.circDetails) openCirc = null; }));
   if(!el.querySelector('.modes')){ bindSteppers(el, c); hookFigs(el); return; }
   el.querySelector('.modes').onclick = e => { const b = e.target.closest('[data-mode]'); if(!b || c.mode === b.dataset.mode) return; c.mode = b.dataset.mode; haptic(6); refresh(); };
-  el.querySelectorAll('[data-tog]').forEach(b => b.onclick = () => { c[b.dataset.tog] = !c[b.dataset.tog]; haptic(5); refresh(); });
+  el.querySelectorAll('[data-tog]').forEach(b => b.onclick = () => { const k = b.dataset.tog; state.settings[k] = !state.settings[k]; if(k === 'voice' && !state.settings.voice) try{ speechSynthesis.cancel(); }catch(e){} haptic(k === 'vibe' ? 30 : 5); refresh(); });
   el.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => { Object.assign(c.tabata, b.dataset.preset === 'tabata' ? {work:20, rest:10, rounds:8} : {work:30, rest:15, rounds:6}); haptic(6); refresh(); });
   bindSteppers(el, c);
   el.querySelectorAll('.mixname').forEach(i => i.oninput = () => { c.mix.steps[+i.dataset.i].name = i.value; persist(); });
@@ -2495,20 +2544,20 @@ function renderTimerSoft(){ if($('#p-timer').querySelector('[data-path="tabata.s
 let W = null;
 const clk = () => (W.paused ? W.pauseAt : performance.now()) - W.pausedTotal;
 function tone(freq, dur, at = 0, vol = .28){
-  if(!W || !W.c.sound || !actx) return;
+  if(!W || !state.settings.sound || !actx) return;
   try{ const t = actx.currentTime + at, o = actx.createOscillator(), g = actx.createGain(); o.type = 'sine'; o.frequency.value = freq;
     g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
     o.connect(g).connect(actx.destination); o.start(t); o.stop(t + dur + .02); }catch(e){}
 }
 function say(text){
-  if(!W || !W.c.voice || !('speechSynthesis' in window)) return;
+  if(!W || !state.settings.voice || !('speechSynthesis' in window)) return;
   try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'it-IT'; u.rate = 1.05; const v = speechSynthesis.getVoices().find(x => /^it/i.test(x.lang)); if(v) u.voice = v; speechSynthesis.speak(u); }catch(e){}
 }
 function wodStart(opt){
   const base = wodCfg(), c = typeof opt === 'string' ? {...base, mode:'circuit', circuit:opt} : opt && opt.warmup ? {...base, mode:'warmup', warmup:opt.warmup} : base, segs = buildSegs(c);
   if(!segs.some(s => s.k === 'work')){ toast('Aggiungi almeno un blocco di lavoro'); haptic([10, 40, 10]); return; }
   audio();
-  try{ if('speechSynthesis' in window && c.voice){ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } }catch(e){} // unlocks speech on iOS inside the tap
+  try{ if('speechSynthesis' in window && state.settings.voice){ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } }catch(e){} // unlocks speech on iOS inside the tap
   W = {c, segs, i:0, paused:false, pauseAt:0, pausedTotal:0, segStart:performance.now(), workStart:null, splits:[], cue:'', flags:{}, done:false, date:iso(), after: opt && opt.after != null ? opt.after : null};
   openWod(); enterSeg();
   lockScreen(true);
