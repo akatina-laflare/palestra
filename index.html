@@ -1025,6 +1025,22 @@ const MUSCLE_SPLITS = {
   6:[...['petto','dorso','gambe','spalle'].map(k => ({n:GW(k).n, ex:GW(k).ex})), {n:'Bicipiti e tricipiti', ex:['curl_bil','hammer','curl_scott','french','pushdown_corda','ohtri']}, {n:'Glutei e addome', ex:['hipthrust','bulgaro','slanci','abductor','legraise_sbarra','plank']}],
 };
 const STYLES = {auto:'Full body e misti', muscoli:'Per gruppo muscolare'};
+/* equivalent exercises the plan rotates through: main lifts change every ROT_WEEKS weeks (so loads can progress), the rest every time the session is repeated */
+const VARIANTS = [
+  ['panca','panca_m','chest_press'], ['panca_incl_m','panca_incl'], ['croci_cavi','croci_m','pecdeck'], ['dip','panca_decl'],
+  ['stacco','stacco_sumo'], ['rumeno','goodmorning'], ['lat','lat_stretta','trazioni','chinup'], ['rematore','rematore_m','tbar'], ['pulley','rem_inverso'],
+  ['pulldown_tese','pullover'], ['hyper','goodmorning'],
+  ['lento','lento_m','arnold','shoulder_mac','push_press'], ['alzate','alzate_cavo'], ['alzate_post','pec_inversa','facepull'],
+  ['curl','curl_bil','curl_cavo','curl_scott','curl_conc'], ['hammer','curl_inverso'],
+  ['pushdown','pushdown_corda','kickback'], ['french','ohtri'], ['panca_stretta','dip_panca'],
+  ['squat','front_squat','hack'], ['legpress','goblet'], ['affondi','bulgaro','affondi_inv','stepup','affondi_cam'], ['legcurl','legcurl_s'], ['calf','calf_seduto'],
+  ['slanci','abductor'],
+  ['plank','deadbug','birddog','abwheel'], ['side_plank','russian'], ['crunch','crunch_cavo','legraise','legraise_sbarra'],
+  ['cyclette','vogatore','ellittica','tapis'], ['burpee','mountain','jj','corda'],
+];
+const VAR_OF = {}; VARIANTS.forEach(g => g.forEach(id => { if(!VAR_OF[id]) VAR_OF[id] = g; }));
+const HARD = new Set(['trazioni','chinup','dip','legraise_sbarra','front_squat','push_press','stacco_sumo','goodmorning','abwheel','tbar']);
+const ROT_WEEKS = 4;
 const GOALS = {
   cut:{l:'Dimagrire', kcal:-0.20, prot:2.0, s:3, r:[12,15], rest:60, wk:[-1.0,-0.5]},
   ricomp:{l:'Tonificare / ricomposizione', kcal:-0.05, prot:2.0, s:3, r:[8,12], rest:90, wk:[-0.25,0.1]},
@@ -1036,7 +1052,7 @@ const LEVELS = {beginner:'Principiante (meno di 6 mesi)', inter:'Intermedio (6 m
 
 
 /* ================= state & storage ================= */
-const DEFAULT = {profile:{sex:'m', age:28, height:178, weight:78, activity:'1.375', goal:'ricomp', level:'beginner', days:3, meals:4, example:true}, workouts:[], weights:[], active:null, chat:[], pending:[], swaps:{}, food:[], foodDirty:[], wods:[], timerCfg:null, settings:{sound:true, vibe:true, voice:false}, savedAt:0};
+const DEFAULT = {profile:{sex:'m', age:28, height:178, weight:78, activity:'1.375', goal:'ricomp', level:'beginner', days:3, meals:4, example:true}, workouts:[], weights:[], active:null, chat:[], pending:[], swaps:{}, food:[], foodDirty:[], wods:[], timerCfg:null, rot:{}, settings:{sound:true, vibe:true, voice:false}, savedAt:0};
 let state = structuredClone(DEFAULT);
 const LS = 'ghisa-coach-v2';
 const SYNC = {stateRef:null, woCol:null, chain:Promise.resolve(), t:null};
@@ -1050,6 +1066,7 @@ function merge(s){
   m.pending = Array.isArray(m.pending) ? m.pending : [];
   m.swaps = m.swaps && typeof m.swaps === 'object' && !Array.isArray(m.swaps) ? m.swaps : {};
   ['food','foodDirty','wods'].forEach(k => { if(!Array.isArray(m[k])) m[k] = []; });
+  m.rot = m.rot && typeof m.rot === 'object' && !Array.isArray(m.rot) ? m.rot : {};
   m.settings = {...DEFAULT.settings, ...(m.settings && typeof m.settings === 'object' ? m.settings : {})};
   return m;
 }
@@ -1058,7 +1075,7 @@ function setStatus(s){
   el.querySelector('span').textContent = {ok:'Sincronizzato', saving:'Salvataggio', error:'Non sincronizzato', local:'Su questo dispositivo', ready:'Pronto'}[s];
   el.title = {ok:'Dati salvati nel tuo account Claude', saving:'Salvataggio in corso', error:'Non riesco a salvare nel tuo account: i dati restano su questo dispositivo e riprovo alla prossima modifica', local:'Dati salvati solo in questo browser', ready:'Pronto'}[s];
 }
-const remoteState = () => ({profile:state.profile, weights:state.weights, active:state.active, swaps:state.swaps, wods:state.wods.slice(0, 100), timerCfg:state.timerCfg, settings:state.settings, chat:state.chat.slice(-30).map(m => ({role:m.role, content:String(m.content).slice(0, 3000)}))});
+const remoteState = () => ({profile:state.profile, weights:state.weights, active:state.active, swaps:state.swaps, wods:state.wods.slice(0, 100), timerCfg:state.timerCfg, rot:state.rot, settings:state.settings, chat:state.chat.slice(-30).map(m => ({role:m.role, content:String(m.content).slice(0, 3000)}))});
 function queue(fn){ SYNC.chain = SYNC.chain.then(fn).catch(e => { setStatus('error'); throw e; }).catch(() => {}); return SYNC.chain; }
 function flushPending(){
   if(!SYNC.woCol) return;
@@ -1113,7 +1130,7 @@ async function initStore(){
     const merged = [...remoteWos.values()].filter(w => !(pendingIds.has(w.id) && !state.workouts.some(x => x.id === w.id)));
     if(remote && (remote.savedAt || 0) > (state.savedAt || 0)){
       const r = merge(remote.state);
-      state.profile = r.profile; state.weights = r.weights; state.active = r.active; state.chat = r.chat; state.swaps = r.swaps; state.wods = r.wods; state.timerCfg = r.timerCfg || state.timerCfg; state.settings = {...state.settings, ...(r.settings || {})}; state.savedAt = remote.savedAt;
+      state.profile = r.profile; state.weights = r.weights; state.active = r.active; state.chat = r.chat; state.swaps = r.swaps; state.wods = r.wods; state.timerCfg = r.timerCfg || state.timerCfg; state.settings = {...state.settings, ...(r.settings || {})}; state.rot = r.rot; state.savedAt = remote.savedAt;
     }
     const dirty = new Set(state.foodDirty);
     const remoteFood = fsnap.docs.flatMap(d => { const x = d.data(); return dirty.has(x.date) || !Array.isArray(x.entries) ? [] : x.entries; });
@@ -1146,14 +1163,30 @@ function nutr(){
 const baseId = id => state.profile.level === 'beginner' && BEGINNER_SWAP[id] ? BEGINNER_SWAP[id] : id;
 const planSig = () => (state.profile.style === 'muscoli' ? 'm' : '') + Math.min(6, Math.max(2, +state.profile.days || 3));
 const planKey = (di, pos) => `${planSig()}:${di}:${pos}`;
+const rotKey = ref => String(ref).startsWith('g:') ? String(ref) : 'p:' + planSig() + ':' + (+ref);
+function timesDone(key){
+  if(key.startsWith('g:')){ const g = GW(key.slice(2)); return state.workouts.filter(w => w.dayIdx == null && w.n === g.n).length; }
+  const [, sig, di] = key.split(':'); return state.workouts.filter(w => w.dayIdx === +di && (w.plan || sig) === sig).length;
+}
+function rotBlock(){ return state.workouts.length ? Math.floor((dayNum(iso()) - dayNum(state.workouts[0].date)) / 7 / ROT_WEEKS) : 0; }
+function rotateDay(ids, key){
+  const bump = state.rot[key] || 0, n = timesDone(key) + bump, blk = rotBlock() + bump, beg = state.profile.level === 'beginner', used = new Set();
+  return ids.map(id => {
+    const g = (VAR_OF[id] || [id]).filter(v => EX[v] && (v === id || !(beg && HARD.has(v)))), at = g.indexOf(id);
+    const ring = at < 0 ? [id] : [...g.slice(at), ...g.slice(0, at)], step = EX[id].type === 'comp' ? blk : n;
+    for(let k = 0; k < ring.length; k++){ const v = ring[(step + k) % ring.length]; if(!used.has(v)){ used.add(v); return v; } }
+    used.add(id); return id;
+  });
+}
 function split(){
   const d = Math.min(6, Math.max(2, +state.profile.days || 3));
   const src = state.profile.style === 'muscoli' ? MUSCLE_SPLITS : SPLITS;
-  return src[d].map((day, di) => ({...day, base: day.ex.map(baseId), ex: day.ex.map((id, pos) => {
+  return src[d].map((day, di) => { const rot = rotateDay(day.ex.map(baseId), rotKey(di)); return {...day, base: rot, ex: rot.map((id, pos) => {
     const sw = state.swaps[planKey(di, pos)];
-    return sw && EX[sw] ? sw : baseId(id);
-  })}));
+    return sw && EX[sw] ? sw : id;
+  })}; });
 }
+const groupEx = k => rotateDay(GW(k).ex.map(baseId), 'g:' + k);
 const UNIT_LONG = {rip:'ripetizioni', s:'secondi', min:'minuti'};
 function presc(id){
   const G = GOALS[state.profile.goal] || GOALS.ricomp, X = EX[id];
@@ -1206,7 +1239,7 @@ function nextDayIdx(){
   return 0;
 }
 function resolveDay(ref){
-  if(typeof ref === 'string' && ref.startsWith('g:')){ const g = GW(ref.slice(2)); return {day:{n:g.n, ex:g.ex.map(baseId)}, dayIdx:null}; }
+  if(typeof ref === 'string' && ref.startsWith('g:')){ const g = GW(ref.slice(2)); return {day:{n:g.n, ex:groupEx(g.key)}, dayIdx:null}; }
   const i = +ref, sp = split(); return {day: sp[i] || sp[0], dayIdx: sp[i] ? i : 0};
 }
 const estMin = ex => Math.round((8 + ex.reduce((a, id) => { const p = presc(id); return a + (p.unit === 'min' ? p.r[0] : p.s * ((p.unit === 's' ? p.r[1] : 40) + p.rest) / 60); }, 0)) / 5) * 5;
@@ -1588,6 +1621,7 @@ function renderOggi(){
       </div>
       <div style="display:grid;gap:6px"><span class="small muted">Oppure allena un gruppo muscolare:</span><div class="chiprow" id="gChips">${GROUP_WORKOUTS.map(g => `<button class="chip" data-gpick="g:${g.key}" aria-pressed="false">${esc(g.n)}</button>`).join('')}</div></div>
       <div id="nextList">${dayList(sp[idx])}</div>
+      <div class="row between" style="flex-wrap:nowrap;gap:10px"><span class="small muted" style="min-width:0">Gli esercizi cambiano a ogni seduta; i fondamentali ogni ${ROT_WEEKS} settimane.</span><button class="btn ghost sm" id="reroll" style="flex:none">Cambia esercizi</button></div>
       <div class="note small wurow" id="wuRow">${wuNote(sp[idx])}</div>
       <div class="row"><button class="btn primary" id="startW">Inizia allenamento</button></div>
     </div>
@@ -1613,9 +1647,11 @@ function renderOggi(){
     $('#nextList').innerHTML = dayList(day); hookFigs($('#nextList'));
   };
   $('#pickDay').onchange = e => { pick(e.target.value); haptic(5); };
+  $('#reroll').onclick = () => { const ref = $('#pickDay').value; reroll(ref); pick(ref); haptic(8); const l = $('#nextList'); l.animate?.([{opacity:.25}, {opacity:1}], {duration:260}); renderScheda(); };
   $('#gChips').onclick = e => { const c = e.target.closest('[data-gpick]'); if(!c) return; pick(c.getAttribute('aria-pressed') === 'true' ? String(idx) : c.dataset.gpick); haptic(5); };
   hookFigs(el);
 }
+function reroll(ref){ const k = rotKey(ref); state.rot[k] = (state.rot[k] || 0) + 1; persist(); }
 const dayList = d => d.ex.map(id => exRow(id, `<div class="hint">${esc(suggest(id).text)}</div>`)).join('');
 
 /* ================= session ================= */
@@ -1789,11 +1825,11 @@ function renderScheda(){
     <div><span class="eyebrow">${p.days} giorni · ${esc(G.l)} · ${esc(LEVELS[p.level].split(' (')[0])}</span><h2>La tua scheda</h2></div>
     <div class="seg glass" role="group" aria-label="Organizzazione della scheda">${Object.entries(STYLES).map(([k, l]) => `<button data-style="${k}" aria-pressed="${(p.style || 'auto') === k}">${l}</button>`).join('')}</div>
     <p class="muted">${p.style === 'muscoli' ? 'Ogni seduta allena uno o due gruppi muscolari. È adatta soprattutto se ti alleni 4 o più volte a settimana.' : 'Ogni seduta allena più muscoli: è la scelta migliore se ti alleni 2–3 volte a settimana o se sei all\'inizio.'} Esegui le sedute in ordine: dopo l'ultima ricominci dalla prima.</p>
-    <div class="grid2">${sp.map((d, i) => `<div class="card glass"><div class="row between"><div style="min-width:0"><span class="eyebrow">Seduta ${i + 1} · circa ${estMin(d.ex)} min</span><h3>${esc(d.n)}</h3></div><button class="btn primary sm" data-start="${i}">Inizia</button></div><div>${d.ex.map((id, pos) => exRow(id, id !== d.base[pos] ? '<span><span class="tag">sostituito</span></span>' : '', planKey(i, pos))).join('')}</div></div>`).join('')}</div>
-    <p class="small muted">Tocca «Cambia» per sostituire un esercizio con un'alternativa: utile se la macchina è occupata o non c'è nella tua palestra.</p>
+    <div class="grid2">${sp.map((d, i) => `<div class="card glass"><div class="row between"><div style="min-width:0"><span class="eyebrow">Seduta ${i + 1} · circa ${estMin(d.ex)} min</span><h3>${esc(d.n)}</h3></div><div class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn ghost sm" data-reroll="${i}">Cambia esercizi</button><button class="btn primary sm" data-start="${i}">Inizia</button></div></div><div>${d.ex.map((id, pos) => exRow(id, id !== d.base[pos] ? '<span><span class="tag">sostituito</span></span>' : '', planKey(i, pos))).join('')}</div></div>`).join('')}</div>
+    <p class="small muted">Gli esercizi cambiano da soli: quelli complementari a ogni seduta, i fondamentali (squat, panca, stacchi, rematori…) ogni ${ROT_WEEKS} settimane, così hai il tempo di aumentare i carichi. «Cambia esercizi» li varia subito; «Cambia» su un esercizio lo sostituisce con quello che preferisci e lo tiene fisso.</p>
     <div id="gruppi"><span class="eyebrow">Fuori dalla rotazione</span><h2>Allenamenti per gruppo muscolare</h2></div>
     <p class="muted">Sedute pronte per un singolo muscolo, da fare quando vuoi. Non spostano la rotazione della tua scheda.</p>
-    <div class="grid2">${GROUP_WORKOUTS.map(g => { const ex = g.ex.map(baseId); return `<div class="card glass gcard">
+    <div class="grid2">${GROUP_WORKOUTS.map(g => { const ex = groupEx(g.key); return `<div class="card glass gcard">
       <div class="top"><div style="min-width:0"><span class="eyebrow">${ex.length} esercizi · circa ${estMin(ex)} min</span><h3>${esc(g.n)}</h3><p class="small muted">${esc(ex.map(id => EX[id].n).join(' · '))}</p></div>${figSVG(ex[0])}</div>
       <details><summary class="small muted">Vedi gli esercizi</summary><div style="padding-top:8px">${ex.map(id => exRow(id)).join('')}</div></details>
       <div class="row"><button class="btn primary sm" data-gstart="${g.key}">Inizia allenamento</button></div></div>`; }).join('')}</div>
@@ -1812,6 +1848,7 @@ function renderScheda(){
     }});
   });
   el.querySelectorAll('[data-start]').forEach(b => b.onclick = () => { if(!state.active) showTab('oggi'); startSession(+b.dataset.start); });
+  el.querySelectorAll('[data-reroll]').forEach(b => b.onclick = () => { reroll(b.dataset.reroll); renderAll(); toast(`${sp[+b.dataset.reroll].n}: esercizi cambiati`); });
   el.querySelectorAll('[data-gstart]').forEach(b => b.onclick = () => { if(!state.active) showTab('oggi'); startSession('g:' + b.dataset.gstart); });
   el.querySelectorAll('[data-style]').forEach(b => b.onclick = () => {
     if((state.profile.style || 'auto') === b.dataset.style) return;

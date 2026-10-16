@@ -5,6 +5,7 @@ App web in italiano per seguire l'allenamento in palestra, in un unico file (`in
 ## Cosa fa
 
 - **Scheda personalizzata**: full body e misti oppure divisa per gruppo muscolare, da 2 a 6 giorni a settimana, con serie, ripetizioni e recuperi in base all'obiettivo (dimagrire, tonificare, massa, forza).
+- **Esercizi che cambiano**: gli esercizi complementari cambiano a ogni seduta, i fondamentali ogni 4 settimane (così si possono aumentare i carichi); «Cambia esercizi» li varia subito. Ai principianti non vengono proposte le varianti difficili.
 - **Allenamenti per gruppo muscolare**: petto, dorso, gambe, spalle, bicipiti, tricipiti, glutei, addome, cardio.
 - **Registro dell'allenamento**: chili e ripetizioni per ogni serie, timer di recupero, suggerimenti di progressione in base alla volta precedente.
 - **105 esercizi** con animazione del movimento, passaggi, errori da evitare e alternative. Ogni esercizio della scheda si può sostituire.
