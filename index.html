@@ -83,6 +83,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;border-wid
 .brand h1{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:.03em;margin:0;text-transform:uppercase;display:flex;align-items:center;gap:9px;line-height:1}
 .logo{width:26px;height:26px;flex:0 0 auto;border-radius:7px;box-shadow:0 4px 10px -4px var(--accent)}
 .hbtns{display:flex;align-items:center;gap:8px}
+.syncline{display:flex;align-items:center;gap:8px}.syncline i{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}.syncline[data-s="ok"] i{background:var(--green)}.syncline[data-s="saving"] i{background:var(--yellow)}.syncline[data-s="error"] i{background:var(--yellow)}
 .status{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--muted);height:40px;min-width:40px;padding:0 14px;border-radius:999px;white-space:nowrap}
 .status i{width:7px;height:7px;border-radius:50%;background:var(--muted);flex:0 0 auto;transition:background .3s}
 .status[data-s="ok"] i{background:var(--green)}
@@ -93,7 +94,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;border-wid
 .iconbtn svg{width:20px;height:20px}
 .setrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
 .setrow:last-child{border-bottom:0}
-.tg{flex:none;position:relative;width:51px;height:31px;border-radius:999px;border:0;padding:0;background:var(--sunken);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;transition:background .25s}
+.tg{flex:none;position:relative;width:51px;height:31px;border-radius:999px;border:0;padding:0;background:color-mix(in srgb,var(--ink) 18%,transparent);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;transition:background .25s}
 .tg::after{content:'';position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25);transition:transform .3s var(--spring)}
 .tg[aria-checked="true"]{background:var(--accent)}
 .tg[aria-checked="true"]::after{transform:translateX(20px)}
@@ -369,10 +370,8 @@ details[open] summary::before{transform:rotate(45deg)}
     <div class="brand">
       <h1><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6.5" fill="var(--accent)"/><g fill="var(--on-accent)"><rect x="5.6" y="7.4" width="2.4" height="9.2" rx="1.1"/><rect x="16" y="7.4" width="2.4" height="9.2" rx="1.1"/><rect x="3.4" y="9.4" width="1.8" height="5.2" rx=".8"/><rect x="18.8" y="9.4" width="1.8" height="5.2" rx=".8"/><rect x="7.6" y="11" width="8.8" height="2" rx=".9"/></g></svg>Ghisa</h1>
       <div class="hbtns">
-        <span class="status glass" id="saveState" data-s="local" role="status"><i></i><span>…</span></span>
-        <button class="iconbtn glass" id="hSet" aria-label="Impostazioni" title="Impostazioni"></button>
+        <button class="iconbtn glass" id="hSet" data-tab="profilo" aria-pressed="false" aria-label="Impostazioni" title="Impostazioni"></button>
         <button class="iconbtn glass" id="hCoach" data-tab="coach" aria-pressed="false" aria-label="Coach" title="Coach"></button>
-        <button class="iconbtn glass" id="hProfilo" data-tab="profilo" aria-pressed="false" aria-label="Profilo" title="Profilo"></button>
       </div>
     </div>
   </div>
@@ -475,9 +474,9 @@ const ICON = {
 };
 const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]}</svg>`;
 const TABS = ['oggi','scheda','timer','esercizi','nutrizione','progressi','coach','profilo'];
-const TAB_LABEL = {oggi:'Oggi', scheda:'Scheda', timer:'Timer', esercizi:'Esercizi', nutrizione:'Nutrizione', progressi:'Progressi', coach:'Coach', profilo:'Profilo'};
+const TAB_LABEL = {oggi:'Oggi', scheda:'Scheda', timer:'Timer', esercizi:'Esercizi', nutrizione:'Nutrizione', progressi:'Progressi', coach:'Coach', profilo:'Impostazioni'};
 document.querySelectorAll('#dock button').forEach(b => b.innerHTML = icon(b.dataset.tab) + `<span>${TAB_LABEL[b.dataset.tab]}</span>`);
-$('#hSet').innerHTML = icon('settings'); $('#hCoach').innerHTML = icon('coach'); $('#hProfilo').innerHTML = icon('profilo');
+$('#hSet').innerHTML = icon('settings'); $('#hCoach').innerHTML = icon('coach');
 
 let toastT = null;
 function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400); }
@@ -1092,11 +1091,9 @@ function merge(s){
   m.settings = {...DEFAULT.settings, ...(m.settings && typeof m.settings === 'object' ? m.settings : {})};
   return m;
 }
-function setStatus(s){
-  const el = $('#saveState'); el.dataset.s = s;
-  el.querySelector('span').textContent = {ok:'Sincronizzato', saving:'Salvataggio', error:'Non sincronizzato', local:'Su questo dispositivo', ready:'Pronto'}[s];
-  el.title = {ok:'Dati salvati nel tuo account Claude', saving:'Salvataggio in corso', error:'Non riesco a salvare nel tuo account: i dati restano su questo dispositivo e riprovo alla prossima modifica', local:'Dati salvati solo in questo browser', ready:'Pronto'}[s];
-}
+let syncS = 'local';
+const SYNC_TXT = {ok:'Dati salvati nel tuo account Claude: li ritrovi su ogni dispositivo.', saving:'Salvataggio in corso…', error:'Non riesco a salvare nel tuo account: i dati restano su questo dispositivo e riprovo alla prossima modifica.', local:'Dati salvati solo su questo dispositivo.', ready:'Pronto.'};
+function setStatus(s){ syncS = s; const el = $('#syncLine'); if(el){ el.dataset.s = s; el.querySelector('span').textContent = SYNC_TXT[s]; } }
 const remoteState = () => ({profile:state.profile, weights:state.weights, active:state.active, swaps:state.swaps, wods:state.wods.slice(0, 100), timerCfg:state.timerCfg, rot:state.rot, settings:state.settings, chat:state.chat.slice(-30).map(m => ({role:m.role, content:String(m.content).slice(0, 3000)}))});
 function queue(fn){ SYNC.chain = SYNC.chain.then(fn).catch(e => { setStatus('error'); throw e; }).catch(() => {}); return SYNC.chain; }
 function flushPending(){
@@ -1125,7 +1122,7 @@ function persist(){
   SYNC.t = setTimeout(() => {
     flushPending();
     queue(async () => { await SYNC.stateRef.set({state: JSON.parse(JSON.stringify(remoteState())), savedAt: state.savedAt, v:2}); })
-      .then(() => { if($('#saveState').dataset.s === 'saving') setStatus('ok'); });
+      .then(() => { if(syncS === 'saving') setStatus('ok'); });
   }, 600);
 }
 function markWorkout(id){ if(!state.pending.includes(id)) state.pending.push(id); persist(); }
@@ -1463,31 +1460,29 @@ function openEx(id){
     </div>
     ${alts.length ? `<div style="display:grid;gap:8px"><h3>Alternative</h3><div class="row" style="gap:8px">${alts.map(a => `<button class="chip" data-ex="${a}">${esc(EX[a].n)}</button>`).join('')}</div></div>` : ''}`);
 }
-function openSettings(){
+function settingsHTML(){
   const S = state.settings;
   const row = (k, t, d) => `<div class="setrow"><div style="min-width:0"><strong>${t}</strong><div class="small muted">${d}</div></div><button class="tg" type="button" role="switch" data-set="${k}" aria-checked="${!!S[k]}" aria-label="${t}"></button></div>`;
-  openSheet(`
-    <div class="row between" style="align-items:flex-start;flex-wrap:nowrap"><div style="min-width:0"><span class="eyebrow">Ghisa</span><h2 id="sheetTitle">Impostazioni</h2></div><button class="btn sm" data-close>Chiudi</button></div>
-    <div class="card glass" style="gap:0"><h3>Avvisi</h3>
+  return `<div class="card glass" style="gap:0"><h3>Avvisi</h3>
       ${row('sound', 'Suoni', 'Bip a fine recupero, negli ultimi 3 secondi e a ogni cambio del timer.')}
       ${row('vibe', 'Vibrazione', canVibrate ? 'Vibra a fine recupero, negli ultimi secondi e a ogni cambio del timer.' : 'Su iPhone: un colpetto quando tocchi i pulsanti principali (✓ delle serie, timer, barra in basso).')}
       ${row('voice', 'Voce', 'Legge il nome degli esercizi nei circuiti e nel riscaldamento.')}
-    </div>
-    <div class="row"><button class="btn" id="setTest">Prova suono e vibrazione</button></div>
-    ${canVibrate ? '' : `<div class="note small"><strong>Vibrazione su iPhone</strong><br>Da iOS 26.5 Apple non permette più a nessuna web app di far vibrare il telefono da sola: per questo a fine recupero e nei cambi del timer l'avviso è il suono (con la suoneria attiva o le cuffie) e lo schermo che lampeggia. Il colpetto aptico c'è quando tocchi i pulsanti principali. Se non lo senti, in Impostazioni dell'iPhone → Suoni e feedback aptico attiva «Feedback aptico di sistema». La vibrazione vera a ogni avviso è possibile solo con un'app installata dall'App Store.</div>`}
-    <div class="card glass"><h3>Profilo e aspetto</h3><p class="small muted">Dati personali, obiettivo, colore principale e chiave del coach.</p><div class="row"><button class="btn sm" id="setProf">Apri il profilo</button></div></div>`);
-  const sh = $('#sheet');
-  sh.querySelectorAll('[data-set]').forEach(b => b.onclick = () => {
+      <div class="row" style="padding-top:10px"><button class="btn sm" id="setTest">Prova suono e vibrazione</button></div>
+      ${canVibrate ? '' : `<p class="small muted" style="padding-top:10px">Da iOS 26.5 Apple non permette più a nessuna web app di far vibrare l'iPhone da sola: a fine recupero e nei cambi del timer l'avviso è il suono (con la suoneria attiva o le cuffie) e lo schermo. Il colpetto aptico c'è quando tocchi i pulsanti principali; se non lo senti, attiva «Feedback aptico di sistema» in Impostazioni dell'iPhone → Suoni e feedback aptico.</p>`}
+    </div>`;
+}
+function bindSettings(el){
+  const S = state.settings;
+  el.querySelectorAll('[data-set]').forEach(b => b.onclick = () => {
     const k = b.dataset.set; S[k] = !S[k]; b.setAttribute('aria-checked', S[k]); persist();
     if(k === 'vibe'){ setHaptics(S[k]); if(S[k]) haptic(30); }
     if(k === 'voice' && !S[k]) try{ speechSynthesis.cancel(); }catch(e){}
     if($('#p-timer').querySelector('[data-tog]')) renderTimer();
   });
-  $('#setTest').onclick = () => {
+  el.querySelector('#setTest').onclick = () => {
     if(!S.sound && !S.vibe){ toast('Suoni e vibrazione sono spenti'); return; }
     audio(); beep(); haptic([200, 100, 200]);
   };
-  $('#setProf').onclick = () => { closeSheet(); showTab('profilo'); };
 }
 function closeSheet(){
   const ov = $('#overlay'), sheet = $('#sheet');
@@ -1580,7 +1575,7 @@ function showTab(t, opts = {}){
   if(prev === t && opts.scroll !== false && opts.animate !== false){ window.scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'}); return; }
   if(prev !== t) tabScroll[prev] = window.scrollY;
   document.querySelectorAll('#dock button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === t));
-  $('#hCoach').setAttribute('aria-pressed', t === 'coach'); $('#hProfilo').setAttribute('aria-pressed', t === 'profilo');
+  $('#hCoach').setAttribute('aria-pressed', t === 'coach'); $('#hSet').setAttribute('aria-pressed', t === 'profilo');
   document.querySelectorAll('section.panel').forEach(s => {
     const on = s.id === 'p-' + t; s.hidden = !on;
     s.classList.remove('in-r', 'in-l', 'in-f');
@@ -1592,7 +1587,6 @@ function showTab(t, opts = {}){
   if(prev !== t) haptic(5);
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if(b) showTab(b.dataset.tab); });
-$('#hSet').onclick = openSettings;
 document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if(g) showTab(g.dataset.go); });
 window.addEventListener('resize', placeIndicator);
 (() => { // horizontal swipe on the page switches section
@@ -2047,9 +2041,9 @@ const sampleErr = c => ({
   sampling_disabled:'Claude non è disponibile per questo account.',
   session_expired:'Sessione scaduta: accedi di nuovo a Claude.',
   refused:'Il coach non può rispondere a questa richiesta. Prova a riformularla.',
-  bad_key:'La chiave API non è valida o è stata revocata. Controllala in Profilo → Coach AI.',
+  bad_key:'La chiave API non è valida o è stata revocata. Controllala in Impostazioni → Coach AI.',
   network:'Non riesco a raggiungere Claude. Controlla la connessione e riprova.',
-  no_ai:'Per usare il coach qui, inserisci la tua chiave API di Claude in Profilo → Coach AI.',
+  no_ai:'Per usare il coach qui, inserisci la tua chiave API di Claude in Impostazioni → Coach AI.',
   images_unavailable:'Da questa versione di Claude non posso ricevere foto. Aggiorna l\'app Claude o usa la web app con la tua chiave.',
   image_rejected:'Non riesco a leggere questa foto. Prova con un\'altra immagine.',
   invalid_json:'La risposta è arrivata in un formato illeggibile. Riprova.',
@@ -2949,7 +2943,7 @@ async function ask(){
   chatBusy = true; $('#chatSend').disabled = true;
   const src = await aiSource();
   const box = $('#chatBox');
-  if(!src){ $('#chatNote').innerHTML = esc(sampleErr('no_ai')) + ' <button class="btn ghost sm" data-go="profilo">Vai al Profilo</button>'; chatBusy = false; $('#chatSend').disabled = false; return; }
+  if(!src){ $('#chatNote').innerHTML = esc(sampleErr('no_ai')) + ' <button class="btn ghost sm" data-go="profilo">Vai alle Impostazioni</button>'; chatBusy = false; $('#chatSend').disabled = false; return; }
   if(!state.chat.length) box.innerHTML = '';
   state.chat.push({role:'user', content:q});
   box.insertAdjacentHTML('beforeend', `<div class="msg u">${fmtMsg(q)}</div><div class="msg a" id="pending">${typing}</div>`);
@@ -2978,7 +2972,9 @@ function renderProfilo(){
   const opt = (obj, v) => Object.entries(obj).map(([k, l]) => `<option value="${k}" ${String(v) === k ? 'selected' : ''}>${esc(typeof l === 'string' ? l : l.l)}</option>`).join('');
   const el = $('#p-profilo');
   el.innerHTML = `
-    <div><span class="eyebrow">I calcoli partono da qui</span><h2>Il tuo profilo</h2></div>
+    <div><span class="eyebrow">Avvisi, profilo e app</span><h2>Impostazioni</h2></div>
+    ${settingsHTML()}
+    <div style="padding-top:6px"><span class="eyebrow">I calcoli partono da qui</span><h2>Il tuo profilo</h2></div>
     ${p.example ? `<div class="example"><span>Questi sono valori di esempio. Sostituiscili con i tuoi e premi Salva.</span></div>` : ''}
     <form class="card glass" id="pForm" novalidate>
       <div class="formgrid">
@@ -3012,10 +3008,12 @@ function renderProfilo(){
       <p class="small muted" id="accName">${esc((ACCENTS.find(a => a[0] === (p.accent || 'blu')) || ACCENTS[0])[1])}</p>
     </div>
     <div class="card glass"><h3>Dove sono salvati i dati</h3>
-      <p class="small">${SYNC.stateRef ? 'Nel tuo account Claude, visibili solo a te: li ritrovi su qualsiasi dispositivo da cui apri questa pagina.' : 'Solo in questo browser. Apri la pagina su claude.ai con il tuo account per salvarli nel tuo account.'}</p>
+      <p class="small syncline" id="syncLine" data-s="${syncS}"><i></i><span>${SYNC_TXT[syncS]}</span></p>
+      <p class="small muted">${SYNC.stateRef ? 'Visibili solo a te.' : 'Aprendo l\'app su claude.ai con il tuo account i dati si salvano anche nel tuo account.'}</p>
       <div id="resetBox" class="row"><button class="btn ghost sm" id="resetBtn">Cancella tutti i dati</button></div>
     </div>
     <p class="small muted">Le indicazioni su allenamento e alimentazione sono generali e non sostituiscono medico o nutrizionista.</p>`;
+  bindSettings(el);
   $('#pForm').onsubmit = e => {
     e.preventDefault();
     const g = k => $('#pf-' + k).value, err = $('#pErr');
