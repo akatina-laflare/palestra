@@ -9,14 +9,21 @@ App web in italiano per seguire l'allenamento in palestra, in un unico file (`in
 - **Registro dell'allenamento**: chili e ripetizioni per ogni serie, timer di recupero, suggerimenti di progressione in base alla volta precedente.
 - **97 esercizi** con animazione del movimento, passaggi, errori da evitare e alternative. Ogni esercizio della scheda si può sostituire.
 - **Nutrizione**: calorie (formula Mifflin-St Jeor), proteine, carboidrati, grassi, acqua e fibre, divisione nei pasti ed equivalenze tra alimenti.
-- **Progressi**: pesate con media mobile a 7 giorni, record personali con massimale stimato, storico degli allenamenti.
+- **Timer**: For Time, AMRAP, EMOM, Tabata, intervalli e Mix, con conto alla rovescia, voce e suoni, contagiri con tempi di ogni giro, schermo sempre acceso e storico.
+- **Foto dei pasti**: scatti una foto e Claude stima alimenti, grammi, calorie e macronutrienti; correggi le quantità e salvi il pasto nel diario del giorno.
+- **Progressi**: pesate con media mobile a 7 giorni, record personali con massimale stimato, storico degli allenamenti e dei timer.
 - **Grafica liquid glass**, tema chiaro e scuro, colore principale a scelta, gesti (swipe tra le sezioni, trascinare per chiudere).
 
 ## Come usarla
 
 Apri `index.html` in un browser. I dati vengono salvati nel browser del dispositivo.
 
-Il salvataggio nell'account e il coach AI (chat e menù del giorno) funzionano solo quando la pagina è aperta come Artifact su claude.ai. Fuori da lì l'app funziona comunque, senza quelle due funzioni.
+Coach, menù del giorno e foto dei pasti usano Claude:
+
+- aperta come Artifact su claude.ai, l'app usa l'account Claude di chi la apre;
+- come web app (per esempio da GitHub Pages) usa l'API di Claude con una chiave personale, da inserire in Profilo → Coach AI. La chiave resta solo nel browser del dispositivo e i costi vanno sull'account API.
+
+Il salvataggio nell'account Claude funziona solo su claude.ai; nella web app i dati restano nel browser.
 
 ## Nota
 

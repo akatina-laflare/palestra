@@ -97,11 +97,11 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;border-wid
 /* bottom tab capsule */
 nav.dock{position:fixed;z-index:9;left:0;right:0;margin-inline:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));
   width:min(480px,calc(100% - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));
-  border-radius:999px;padding:6px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+  border-radius:999px;padding:6px;display:grid;grid-template-columns:repeat(6,1fr);gap:2px}
 nav.dock .ind{position:absolute;top:6px;bottom:6px;left:0;width:0;border-radius:999px;background:var(--glass-strong);
   box-shadow:0 4px 14px -6px var(--glass-shadow),inset 0 1px 0 var(--sheen);border:1px solid var(--glass-edge);
   transition:transform .45s var(--spring),width .45s var(--spring),opacity .25s}
-nav.dock button{position:relative;z-index:1;background:none;border:0;color:var(--muted);display:grid;justify-items:center;gap:1px;padding:6px 2px 5px;border-radius:999px;cursor:pointer;font:600 10.5px var(--body);letter-spacing:.02em;transition:color .25s,transform .2s var(--spring);min-width:0}
+nav.dock button{position:relative;z-index:1;background:none;border:0;color:var(--muted);display:grid;justify-items:center;gap:1px;padding:6px 2px 5px;border-radius:999px;cursor:pointer;font:600 10px var(--body);letter-spacing:.01em;transition:color .25s,transform .2s var(--spring);min-width:0}
 nav.dock button svg{width:22px;height:22px}
 nav.dock button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 nav.dock button[aria-selected="true"]{color:var(--accent)}
@@ -189,6 +189,47 @@ ol.steps li::before{content:counter(st);width:24px;height:24px;border-radius:50%
 .sw{width:44px;height:44px;border-radius:50%;border:3px solid var(--glass-edge);cursor:pointer;box-shadow:0 4px 12px -6px var(--glass-shadow);transition:transform .2s var(--spring)}
 .sw:active{transform:scale(.9)}
 .sw[aria-pressed="true"]{border-color:var(--ink);outline:2px solid var(--glass-strong);outline-offset:-6px}
+.phrow{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:start}
+.phimg{width:96px;height:96px;object-fit:cover;border-radius:16px;display:block}
+.gin{width:68px;min-height:36px;padding:0 8px;text-align:right;font-family:var(--mono);border-radius:10px}
+.modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:10px}
+.mode{border-radius:20px;padding:14px;text-align:left;display:grid;gap:2px;align-content:start;cursor:pointer;font:inherit;color:var(--ink);transition:transform .2s var(--spring),background .25s,color .25s}
+.mode:active{transform:scale(.97)}
+.mode strong{font:700 22px/1.1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.mode[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:transparent;box-shadow:0 10px 24px -12px var(--accent)}
+.mode[aria-pressed="true"] .muted{color:inherit;opacity:.85}
+.stepper{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
+.stp{display:grid;grid-template-columns:44px minmax(92px,auto) 44px;align-items:center;gap:6px}
+.stp button{width:44px;height:44px;border-radius:14px;border:1px solid var(--glass-edge);background:var(--field);color:var(--ink);font:500 22px/1 var(--body);cursor:pointer;display:grid;place-items:center;transition:transform .15s var(--spring)}
+.stp button:active{transform:scale(.9)}
+.stp output{text-align:center;font:600 18px var(--mono);font-variant-numeric:tabular-nums}
+.mixrow{display:grid;gap:10px;padding:12px;border-radius:16px;background:var(--sunken)}
+.btn.big{min-height:56px;font-size:18px;width:100%}
+.wod{position:fixed;inset:0;z-index:60;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;color:#fff;background:var(--wbg);--wbg:#B8690A;
+  padding:calc(env(safe-area-inset-top,0px) + 14px) max(18px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 18px) max(18px,env(safe-area-inset-left,0px));
+  transition:background .45s var(--ease)}
+.wod[data-phase="work"]{--wbg:#15803D}.wod[data-phase="rest"]{--wbg:#1D5FBF}.wod[data-phase="pause"]{--wbg:#3F4652}.wod[data-phase="done"]{--wbg:#151A22}
+.wod.flash .wbig{animation:wpop .4s var(--spring)}
+@keyframes wpop{from{transform:scale(1.07)}}
+.wtop{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.wmode{font:700 20px/1.1 var(--display);letter-spacing:.04em;text-transform:uppercase}
+.wsmall{font-size:14px;opacity:.88;font-variant-numeric:tabular-nums}
+.wmid{display:grid;align-content:center;justify-items:center;text-align:center;gap:10px;min-height:0}
+.wlabel{font:700 clamp(26px,7vw,48px)/1 var(--display);text-transform:uppercase;letter-spacing:.04em}
+.wbig{font:700 min(34vw,40vh)/.9 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.wbig.long{font-size:min(25vw,34vh)}
+.wbar{width:min(100%,560px);height:8px;border-radius:4px;background:rgba(255,255,255,.25);overflow:hidden}
+.wbar span{display:block;height:100%;background:#fff;transform-origin:left center;transform:scaleX(0)}
+.wrounds{display:flex;gap:10px;align-items:baseline;font-size:16px}
+.wrounds b{font:700 46px/1 var(--display)}
+.wrounds.pop b{animation:wpop .35s var(--spring)}
+.wsplits{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;max-width:600px;font-size:14px;opacity:.92;max-height:28vh;overflow:auto}
+.wctl{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.wbtn{min-height:56px;min-width:120px;padding:0 24px;border-radius:999px;border:1.5px solid rgba(255,255,255,.55);background:rgba(255,255,255,.14);color:#fff;font:700 18px var(--body);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:transform .2s var(--spring),background .2s}
+.wbtn:active{transform:scale(.95)}
+.wbtn.strong{background:#fff;color:#111;border-color:#fff;flex:1 1 160px;max-width:320px}
+.wbtn.ghost{background:transparent;min-width:0;min-height:44px;font-size:15px;padding:0 18px}
+@media (orientation:landscape) and (max-height:520px){.wod{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);gap:8px 16px}.wtop{grid-column:1/-1}.wmid{gap:4px}.wlabel{font-size:26px}.wbig{font-size:min(22vw,50vh)}.wrounds b{font-size:34px}#wNext{display:none}.wctl{flex-direction:column;justify-content:center;flex-wrap:nowrap}.wctl .wbtn{min-width:150px}.wbtn.strong{flex:0 0 auto;min-height:96px}}
 .exrow.s3{grid-template-columns:58px minmax(0,1fr) auto}
 #libGrid{display:grid;gap:12px}
 .libh{display:flex;gap:8px;align-items:baseline;margin-top:10px}
@@ -240,7 +281,7 @@ ol.steps li::before{content:counter(st);width:24px;height:24px;border-radius:50%
 .timer small{display:block;font:500 11px var(--body);color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
 
 /* toast */
-.toast{position:fixed;z-index:40;left:0;right:0;margin-inline:auto;width:fit-content;top:calc(70px + env(safe-area-inset-top,0px));transform:translateY(-14px);opacity:0;pointer-events:none;
+.toast{position:fixed;z-index:70;left:0;right:0;margin-inline:auto;width:fit-content;top:calc(70px + env(safe-area-inset-top,0px));transform:translateY(-14px);opacity:0;pointer-events:none;
   border-radius:20px;padding:10px 18px;font-weight:600;font-size:14px;max-width:calc(100% - 32px);text-align:center;transition:transform .4s var(--spring),opacity .25s}
 .toast.show{transform:none;opacity:1}
 
@@ -323,6 +364,7 @@ details[open] summary::before{transform:rotate(45deg)}
 <main class="wrap" id="main">
   <section class="panel" id="p-oggi"></section>
   <section class="panel" id="p-scheda" hidden></section>
+  <section class="panel" id="p-timer" hidden></section>
   <section class="panel" id="p-esercizi" hidden></section>
   <section class="panel" id="p-nutrizione" hidden></section>
   <section class="panel" id="p-progressi" hidden></section>
@@ -335,6 +377,7 @@ details[open] summary::before{transform:rotate(45deg)}
   <span class="ind" id="ind" aria-hidden="true"></span>
   <button role="tab" data-tab="oggi" aria-selected="true"></button>
   <button role="tab" data-tab="scheda" aria-selected="false"></button>
+  <button role="tab" data-tab="timer" aria-selected="false"></button>
   <button role="tab" data-tab="esercizi" aria-selected="false"></button>
   <button role="tab" data-tab="nutrizione" aria-selected="false"></button>
   <button role="tab" data-tab="progressi" aria-selected="false"></button>
@@ -349,6 +392,8 @@ details[open] summary::before{transform:rotate(45deg)}
 </div>
 
 <div class="toast glass bar" id="toast" role="status" aria-live="polite"></div>
+
+<div class="wod" id="wod" hidden data-phase="prep" role="dialog" aria-label="Timer"></div>
 
 <div class="overlay" id="overlay" hidden>
   <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" tabindex="-1"></div>
@@ -370,6 +415,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ICON = {
   oggi:'<rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/><path d="m9 15 2 2 4-4"/>',
   scheda:'<rect x="8" y="2.5" width="8" height="4" rx="1"/><path d="M16 4.5h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2h2"/><path d="M12 11h4M12 16h4M8 11h.01M8 16h.01"/>',
+  timer:'<circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V10M9.5 2.5h5M12 2.5V6M18.4 7.1l1.6-1.6"/>',
   esercizi:'<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/>',
   nutrizione:'<path d="M3 2.5v6.5a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V2.5M7 2.5v19M21 15V2.5a5 5 0 0 0-5 5v5.5a2 2 0 0 0 2 2h3Zm0 0v6.5"/>',
   progressi:'<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-6"/><path d="M16 8h4v4"/>',
@@ -378,8 +424,8 @@ const ICON = {
   check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>',
 };
 const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]}</svg>`;
-const TABS = ['oggi','scheda','esercizi','nutrizione','progressi','coach','profilo'];
-const TAB_LABEL = {oggi:'Oggi', scheda:'Scheda', esercizi:'Esercizi', nutrizione:'Nutrizione', progressi:'Progressi', coach:'Coach', profilo:'Profilo'};
+const TABS = ['oggi','scheda','timer','esercizi','nutrizione','progressi','coach','profilo'];
+const TAB_LABEL = {oggi:'Oggi', scheda:'Scheda', timer:'Timer', esercizi:'Esercizi', nutrizione:'Nutrizione', progressi:'Progressi', coach:'Coach', profilo:'Profilo'};
 document.querySelectorAll('#dock button').forEach(b => b.innerHTML = icon(b.dataset.tab) + `<span>${TAB_LABEL[b.dataset.tab]}</span>`);
 $('#hCoach').innerHTML = icon('coach'); $('#hProfilo').innerHTML = icon('profilo');
 
@@ -922,7 +968,7 @@ const LEVELS = {beginner:'Principiante (meno di 6 mesi)', inter:'Intermedio (6 m
 
 
 /* ================= state & storage ================= */
-const DEFAULT = {profile:{sex:'m', age:28, height:178, weight:78, activity:'1.375', goal:'ricomp', level:'beginner', days:3, meals:4, example:true}, workouts:[], weights:[], active:null, chat:[], pending:[], swaps:{}, savedAt:0};
+const DEFAULT = {profile:{sex:'m', age:28, height:178, weight:78, activity:'1.375', goal:'ricomp', level:'beginner', days:3, meals:4, example:true}, workouts:[], weights:[], active:null, chat:[], pending:[], swaps:{}, food:[], foodDirty:[], wods:[], timerCfg:null, savedAt:0};
 let state = structuredClone(DEFAULT);
 const LS = 'ghisa-coach-v2';
 const SYNC = {stateRef:null, woCol:null, chain:Promise.resolve(), t:null};
@@ -935,6 +981,7 @@ function merge(s){
   m.chat = (m.chat || []).filter(x => x && x.content);
   m.pending = Array.isArray(m.pending) ? m.pending : [];
   m.swaps = m.swaps && typeof m.swaps === 'object' && !Array.isArray(m.swaps) ? m.swaps : {};
+  ['food','foodDirty','wods'].forEach(k => { if(!Array.isArray(m[k])) m[k] = []; });
   return m;
 }
 function setStatus(s){
@@ -942,7 +989,7 @@ function setStatus(s){
   el.querySelector('span').textContent = {ok:'Sincronizzato', saving:'Salvataggio', error:'Non sincronizzato', local:'Su questo dispositivo', ready:'Pronto'}[s];
   el.title = {ok:'Dati salvati nel tuo account Claude', saving:'Salvataggio in corso', error:'Non riesco a salvare nel tuo account: i dati restano su questo dispositivo e riprovo alla prossima modifica', local:'Dati salvati solo in questo browser', ready:'Pronto'}[s];
 }
-const remoteState = () => ({profile:state.profile, weights:state.weights, active:state.active, swaps:state.swaps, chat:state.chat.slice(-30).map(m => ({role:m.role, content:String(m.content).slice(0, 3000)}))});
+const remoteState = () => ({profile:state.profile, weights:state.weights, active:state.active, swaps:state.swaps, wods:state.wods.slice(0, 100), timerCfg:state.timerCfg, chat:state.chat.slice(-30).map(m => ({role:m.role, content:String(m.content).slice(0, 3000)}))});
 function queue(fn){ SYNC.chain = SYNC.chain.then(fn).catch(e => { setStatus('error'); throw e; }).catch(() => {}); return SYNC.chain; }
 function flushPending(){
   if(!SYNC.woCol) return;
@@ -951,6 +998,13 @@ function flushPending(){
     queue(async () => {
       if(w) await SYNC.woCol.doc(id).set(w); else await SYNC.woCol.doc(id).delete();
       state.pending = state.pending.filter(x => x !== id); saveLocal();
+    });
+  });
+  if(SYNC.foodCol) state.foodDirty.slice().forEach(d => {
+    const entries = state.food.filter(f => f.date === d);
+    queue(async () => {
+      if(entries.length) await SYNC.foodCol.doc(d).set({date:d, entries}); else await SYNC.foodCol.doc(d).delete();
+      state.foodDirty = state.foodDirty.filter(x => x !== d); saveLocal();
     });
   });
 }
@@ -976,9 +1030,9 @@ async function initStore(){
     const id = await user.id();
     if(!id){ setStatus('local'); return; }
     const stateRef = db.doc('data/users/' + id + '/state');
-    const woCol = stateRef.collection('workouts');
-    const [snap, wsnap] = await Promise.all([stateRef.get(), woCol.limit(1000).get()]);
-    SYNC.stateRef = stateRef; SYNC.woCol = woCol;
+    const woCol = stateRef.collection('workouts'), foodCol = stateRef.collection('food');
+    const [snap, wsnap, fsnap] = await Promise.all([stateRef.get(), woCol.limit(1000).get(), foodCol.limit(400).get()]);
+    SYNC.stateRef = stateRef; SYNC.woCol = woCol; SYNC.foodCol = foodCol;
     const before = JSON.stringify(state);
     const remote = snap.exists ? snap.data() : null;
     const remoteWos = new Map(wsnap.docs.map(d => [d.id, d.data()]));
@@ -990,14 +1044,17 @@ async function initStore(){
     const merged = [...remoteWos.values()].filter(w => !(pendingIds.has(w.id) && !state.workouts.some(x => x.id === w.id)));
     if(remote && (remote.savedAt || 0) > (state.savedAt || 0)){
       const r = merge(remote.state);
-      state.profile = r.profile; state.weights = r.weights; state.active = r.active; state.chat = r.chat; state.swaps = r.swaps; state.savedAt = remote.savedAt;
+      state.profile = r.profile; state.weights = r.weights; state.active = r.active; state.chat = r.chat; state.swaps = r.swaps; state.wods = r.wods; state.timerCfg = r.timerCfg || state.timerCfg; state.savedAt = remote.savedAt;
     }
+    const dirty = new Set(state.foodDirty);
+    const remoteFood = fsnap.docs.flatMap(d => { const x = d.data(); return dirty.has(x.date) || !Array.isArray(x.entries) ? [] : x.entries; });
+    state.food = [...remoteFood, ...state.food.filter(f => dirty.has(f.date))].sort((a, b) => a.ts - b.ts);
     state.workouts = [...merged, ...localOnly].map(w => merge({workouts:[w]}).workouts[0]).sort((a, b) => a.ts - b.ts);
     saveLocal();
     if(JSON.stringify(state) !== before) renderAll();
-    if(!remote || state.pending.length || (remote.savedAt || 0) < (state.savedAt || 0) || Array.isArray(remote.state && remote.state.workouts)) persist();
+    if(!remote || state.pending.length || state.foodDirty.length || (remote.savedAt || 0) < (state.savedAt || 0) || Array.isArray(remote.state && remote.state.workouts)) persist();
     else setStatus('ok');
-  }catch(e){ SYNC.stateRef = null; SYNC.woCol = null; setStatus('local'); }
+  }catch(e){ SYNC.stateRef = null; SYNC.woCol = null; SYNC.foodCol = null; setStatus('local'); }
 }
 
 /* ================= calculations ================= */
@@ -1385,7 +1442,7 @@ window.addEventListener('resize', placeIndicator);
 (() => { // horizontal swipe on the page switches section
   let x0 = null, y0 = 0, t0 = 0;
   const blocked = el => {
-    if(el.closest('input,textarea,select,.chart,.timer,.dock,#overlay')) return true;
+    if(el.closest('input,textarea,select,.chart,.timer,.dock,#overlay,#wod')) return true;
     const sc = el.closest('.scroll,.chiprow'); return !!(sc && sc.scrollWidth > sc.clientWidth + 2);
   };
   document.addEventListener('touchstart', e => {
@@ -1439,8 +1496,9 @@ function renderOggi(){
         <div class="row" style="align-items:baseline;gap:6px"><b class="num" style="font-size:34px;font-family:var(--display);line-height:1">${n.kcal.toLocaleString('it-IT')}</b><span class="muted">kcal</span></div>
         ${macroBar(n)}
         <div class="legend"><span><i class="dot p-c"></i>${n.p} g proteine</span><span><i class="dot c-c"></i>${n.c} g carboidrati</span><span><i class="dot f-c"></i>${n.f} g grassi</span></div>
+        ${(() => { const t = foodTot(foodToday()); return t.kcal ? `<p class="small">Mangiato finora <strong class="num">${Math.round(t.kcal).toLocaleString('it-IT')}</strong> kcal · rimangono <strong class="num">${Math.max(0, Math.round(n.kcal - t.kcal)).toLocaleString('it-IT')}</strong></p><div class="prog"><span style="width:${Math.min(100, t.kcal / n.kcal * 100)}%;background:var(--accent)"></span></div>` : ''; })()}
         <p class="small muted">Acqua: ${fmt(n.water)} litri · Fibre: ${n.fiber} g</p>
-        <div><button class="btn sm" data-go="nutrizione">Vedi il piano alimentare</button></div>
+        <div class="row"><button class="btn primary sm" data-go="nutrizione">Fotografa un pasto</button><button class="btn sm" data-go="nutrizione">Piano alimentare</button></div>
       </div>
     </div>`;
   $('#startW').onclick = () => startSession($('#pickDay').value);
@@ -1505,7 +1563,7 @@ function renderSession(el){
     <div class="card glass">
       <div class="row between" style="align-items:flex-end">
         <div style="min-width:0"><span class="eyebrow" id="elapsed">In corso · ${Math.max(0, Math.round((Date.now() - A.start) / 60000))} min</span><h2>${esc(A.n)}</h2></div>
-        <div class="row"><button class="btn ghost sm" id="cancelW">Annulla</button><button class="btn primary" id="finishW">Termina</button></div>
+        <div class="row"><button class="btn ghost sm" id="cancelW">Annulla</button><button class="btn sm" data-go="timer">Timer</button><button class="btn primary" id="finishW">Termina</button></div>
       </div>
       <div style="display:grid;gap:6px"><div class="prog"><span id="sProg"></span></div><span class="small muted num" id="sCount"></span></div>
       <div id="sessionMsg"></div>
@@ -1698,6 +1756,8 @@ function renderNutrizione(){
   el.innerHTML = `
     <div><span class="eyebrow">${esc(G.l)} · ${fmt(+p.weight)} kg</span><h2>Piano alimentare</h2></div>
     ${p.example ? `<div class="example"><span>Valori calcolati sul profilo di esempio.</span><button class="btn sm" data-go="profilo">Inserisci i tuoi dati</button></div>` : ''}
+    ${photoCardHTML()}
+    ${diaryHTML()}
     <div class="stats">
       <div class="stat glass"><span class="key" style="background:var(--ink)"></span><span>Calorie giornaliere</span><b class="num">${n.kcal.toLocaleString('it-IT')}</b><span>kcal</span></div>
       <div class="stat glass"><span class="key p-c"></span><span>Proteine</span><b class="num">${n.p} g</b><span>${fmt(n.p / p.weight)} g per kg</span></div>
@@ -1744,30 +1804,512 @@ function renderNutrizione(){
       <p class="small muted">Il coach compone una giornata di pasti che rispetta i tuoi numeri, con alimenti comuni in Italia.</p>
       <div id="menuOut"></div></div>`;
   $('#menuBtn').onclick = genMenu;
+  bindPhoto(); bindDiary(el);
+  if(photo){ renderPhotoForm(); if(photoRes) renderPhotoResult(); }
 }
+/* ================= AI: Claude inside claude.ai, Claude API with the user's own key everywhere else ================= */
 let sampleFn;
 async function getSample(){ if(sampleFn !== undefined) return sampleFn; try{ sampleFn = window.claude && window.claude.use ? await window.claude.use('sample') : null; }catch(e){ sampleFn = null; } return sampleFn; }
-const sampleErr = c => ({not_granted:'Hai negato l\'accesso a Claude per questa pagina. Ricarica la pagina per riprovare.', rate_limited:'Troppe richieste in poco tempo. Riprova tra qualche minuto.', sampling_disabled:'Claude non è disponibile per questo account.', session_expired:'Sessione scaduta: accedi di nuovo a Claude.', refused:'Il coach non può rispondere a questa domanda. Prova a riformularla.'}[c] || 'Il coach non ha risposto. Riprova.');
+const AI_MODEL = 'claude-opus-5-5';
+const SDK_URL = 'https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@0.131.0/+esm';
+const KEY_LS = 'ghisa-anthropic-key';
+const getKey = () => { try{ return localStorage.getItem(KEY_LS) || ''; }catch(e){ return ''; } };
+const setKey = k => { try{ if(k) localStorage.setItem(KEY_LS, k); else localStorage.removeItem(KEY_LS); }catch(e){} };
+let sdkMod = null;
+async function apiClient(){
+  if(!sdkMod) sdkMod = (await import(SDK_URL)).default;
+  return new sdkMod({apiKey: getKey(), dangerouslyAllowBrowser: true, maxRetries: 2});
+}
+async function aiSource(force){
+  if(force !== 'api'){ const s = await getSample(); if(s) return {kind:'claude', sample:s}; }
+  return getKey() ? {kind:'api'} : null;
+}
+function apiErr(e){
+  if(e && typeof e.code === 'string' && !(e instanceof Error)) return e;
+  const A = sdkMod || {};
+  if(A.APIUserAbortError && e instanceof A.APIUserAbortError) return {code:'cancelled'};
+  if((A.AuthenticationError && e instanceof A.AuthenticationError) || (A.PermissionDeniedError && e instanceof A.PermissionDeniedError)) return {code:'bad_key'};
+  if(A.RateLimitError && e instanceof A.RateLimitError) return {code:'rate_limited'};
+  if(A.APIConnectionError && e instanceof A.APIConnectionError) return {code:'network'};
+  if(A.BadRequestError && e instanceof A.BadRequestError) return {code:'invalid_request'};
+  if(A.APIError && e instanceof A.APIError) return {code:'upstream_error'};
+  if(e && e.name === 'AbortError') return {code:'cancelled'};
+  if(e instanceof TypeError) return {code:'network'}; // the SDK could not be downloaded
+  return {code:'upstream_error'};
+}
+// server-side fallback: if the model declines, the API re-runs the request on Anthropic's recommended model
+const API_BASE = {model: AI_MODEL, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default'};
+function mergeTurns(turns){
+  const out = [];
+  turns.forEach(t => { const last = out[out.length - 1]; if(last && last.role === t.role) last.content += '\n\n' + t.content; else out.push({role:t.role, content:String(t.content)}); });
+  while(out.length && out[0].role !== 'user') out.shift();
+  return out;
+}
+const textOf = msg => msg.content.filter(b => b.type === 'text').map(b => b.text).join('');
+async function aiText({system, turns, effort = 'low', signal, onText, force}){
+  const src = await aiSource(force); if(!src) throw {code:'no_ai'};
+  if(src.kind === 'claude'){ const {text} = await src.sample([{role:'user', content:system}, ...turns], {cache:false, signal, onText}); return text; }
+  try{
+    const client = await apiClient();
+    const stream = client.beta.messages.stream({...API_BASE, max_tokens:16000, output_config:{effort}, system, messages: mergeTurns(turns)});
+    if(signal) signal.addEventListener('abort', () => stream.abort(), {once:true});
+    let text = '';
+    stream.on('text', d => { text += d; onText && onText({text}); });
+    const msg = await stream.finalMessage();
+    if(msg.stop_reason === 'refusal') throw {code:'refused'};
+    return textOf(msg);
+  }catch(e){ throw apiErr(e); }
+}
+async function aiJSON({prompt, schema, images = [], effort = 'medium'}){
+  const src = await aiSource(); if(!src) throw {code:'no_ai'};
+  if(src.kind === 'claude'){
+    if(images.length){ const lim = await src.sample.limits().catch(() => null); if(!lim || !lim.images) throw {code:'images_unavailable'}; }
+    return src.sample.json(prompt + '\n\nRispondi solo con un oggetto JSON che rispetta questo schema: ' + JSON.stringify(schema),
+      {modelTier:'default', cache:false, ...(images.length ? {images: images.map(i => i.blob)} : {})});
+  }
+  try{
+    const client = await apiClient();
+    const content = [...images.map(i => ({type:'image', source:{type:'base64', media_type:i.type, data:i.b64}})), {type:'text', text:prompt}];
+    const msg = await client.beta.messages.create({...API_BASE, max_tokens:16000, output_config:{effort, format:{type:'json_schema', schema}}, messages:[{role:'user', content}]});
+    if(msg.stop_reason === 'refusal') throw {code:'refused'};
+    if(msg.stop_reason === 'max_tokens') throw {code:'invalid_json'};
+    return JSON.parse(textOf(msg));
+  }catch(e){ if(e instanceof SyntaxError) throw {code:'invalid_json'}; throw apiErr(e); }
+}
+const sampleErr = c => ({
+  not_granted:'Hai negato l\'accesso a Claude per questa pagina. Ricarica la pagina per riprovare.',
+  rate_limited:'Troppe richieste in poco tempo. Riprova tra qualche minuto.',
+  sampling_disabled:'Claude non è disponibile per questo account.',
+  session_expired:'Sessione scaduta: accedi di nuovo a Claude.',
+  refused:'Il coach non può rispondere a questa richiesta. Prova a riformularla.',
+  bad_key:'La chiave API non è valida o è stata revocata. Controllala in Profilo → Coach AI.',
+  network:'Non riesco a raggiungere Claude. Controlla la connessione e riprova.',
+  no_ai:'Per usare il coach qui, inserisci la tua chiave API di Claude in Profilo → Coach AI.',
+  images_unavailable:'Da questa versione di Claude non posso ricevere foto. Aggiorna l\'app Claude o usa la web app con la tua chiave.',
+  image_rejected:'Non riesco a leggere questa foto. Prova con un\'altra immagine.',
+  invalid_json:'La risposta è arrivata in un formato illeggibile. Riprova.',
+  invalid_request:'Claude non ha accettato la richiesta. Riprova con un\'altra foto o un testo più breve.',
+}[c] || 'Il coach non ha risposto. Riprova.');
 const typing = '<span class="typing" aria-label="Sto scrivendo"><i></i><i></i><i></i></span>';
+
+/* ================= food diary + photo analysis ================= */
+const MEALS = ['Colazione','Pranzo','Spuntino','Cena'];
+const mealNow = () => { const h = new Date().getHours(); return h < 11 ? 'Colazione' : h < 15 ? 'Pranzo' : h < 18.5 ? 'Spuntino' : 'Cena'; };
+const foodToday = () => state.food.filter(f => f.date === iso());
+const foodTot = list => list.reduce((a, f) => ({kcal:a.kcal + num(f.kcal), p:a.p + num(f.p), c:a.c + num(f.c), f:a.f + num(f.f)}), {kcal:0, p:0, c:0, f:0});
+function markFood(date){ if(!state.foodDirty.includes(date)) state.foodDirty.push(date); persist(); }
+function addFood(entry){
+  state.food.push({id: uidGen(), ts: Date.now(), date: iso(), ...entry});
+  const cut = dayNum(iso()) - 120; state.food = state.food.filter(f => dayNum(f.date) >= cut);
+  markFood(iso());
+}
+async function prepImage(file){
+  const url = URL.createObjectURL(file);
+  try{
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej({code:'image_rejected'}); i.src = url; });
+    const sc = Math.min(1, 1280 / Math.max(img.naturalWidth, img.naturalHeight));
+    const cv = document.createElement('canvas'); cv.width = Math.round(img.naturalWidth * sc); cv.height = Math.round(img.naturalHeight * sc);
+    cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+    const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', .85));
+    const dataUrl = cv.toDataURL('image/jpeg', .85);
+    return {blob, type:'image/jpeg', b64: dataUrl.slice(dataUrl.indexOf(',') + 1), preview: dataUrl};
+  } finally { URL.revokeObjectURL(url); }
+}
+const FOOD_SCHEMA = {type:'object', additionalProperties:false, required:['e_cibo','piatto','affidabilita','alimenti','consiglio'], properties:{
+  e_cibo:{type:'boolean'}, piatto:{type:'string'}, affidabilita:{type:'string', enum:['alta','media','bassa']},
+  alimenti:{type:'array', items:{type:'object', additionalProperties:false, required:['nome','grammi','kcal','proteine','carboidrati','grassi'], properties:{
+    nome:{type:'string'}, grammi:{type:'number'}, kcal:{type:'number'}, proteine:{type:'number'}, carboidrati:{type:'number'}, grassi:{type:'number'}}}},
+  consiglio:{type:'string'}}};
+let photo = null, photoRes = null;
+function photoCardHTML(){
+  return `<div class="card glass" id="photoCard">
+    <div><span class="eyebrow">Foto del piatto</span><h3>Quanto vale questo pasto?</h3></div>
+    <p class="small muted">Scatta una foto: Claude riconosce gli alimenti, stima grammi, calorie e macronutrienti e ti dà un consiglio. Poi puoi correggere le quantità e salvarlo nel diario.</p>
+    <div class="row"><label class="btn primary" for="phCam">Scatta una foto</label><input id="phCam" type="file" accept="image/*" capture="environment" hidden>
+      <label class="btn" for="phGal">Scegli dalla galleria</label><input id="phGal" type="file" accept="image/*" hidden></div>
+    <div id="phOut"></div></div>`;
+}
+function bindPhoto(){
+  const onPick = async e => {
+    const f = e.target.files && e.target.files[0]; e.target.value = ''; if(!f) return;
+    $('#phOut').innerHTML = `<p class="muted row">${typing} Preparo la foto…</p>`;
+    try{ photo = await prepImage(f); photoRes = null; renderPhotoForm(); }catch(err){ $('#phOut').innerHTML = `<p class="muted">${esc(sampleErr(err && err.code))}</p>`; }
+  };
+  $('#phCam').onchange = onPick; $('#phGal').onchange = onPick;
+}
+function renderPhotoForm(){
+  $('#phOut').innerHTML = `<div class="phrow"><img class="phimg" src="${photo.preview}" alt="La foto del pasto"><div style="display:grid;gap:8px;min-width:0">
+      <label class="f">Dettagli che la foto non mostra (facoltativo)<input id="phNote" placeholder="es. condito con un cucchiaio d'olio, porzione da 100 g"></label>
+      <div class="row"><button class="btn primary" id="phGo">Analizza</button><button class="btn ghost sm" id="phX">Annulla</button></div></div></div>
+    <div id="phRes"></div>`;
+  $('#phGo').onclick = analyzePhoto;
+  $('#phX').onclick = () => { photo = null; $('#phOut').innerHTML = ''; };
+}
+async function analyzePhoto(){
+  const n = nutr(), t = foodTot(foodToday()), p = state.profile, btn = $('#phGo');
+  btn.disabled = true; $('#phRes').innerHTML = `<p class="muted row">${typing} Riconosco gli alimenti…</p>`;
+  const note = ($('#phNote').value || '').trim();
+  try{
+    const r = await aiJSON({images:[photo], effort:'medium', schema: FOOD_SCHEMA, prompt:
+`Sei un nutrizionista sportivo italiano. Nella foto c'è un pasto: riconosci ogni alimento visibile e stima il peso in grammi (cotto, come appare nel piatto) e i valori nutrizionali, usando porzioni realistiche e le tabelle nutrizionali italiane (CREA). Considera anche condimenti probabili ma non visibili, come l'olio, e indicali come alimento a parte.
+${note ? 'Dettagli dati dalla persona: ' + note + '\n' : ''}Se la foto non mostra cibo, metti e_cibo a false e lascia alimenti vuoto.
+"affidabilita" è quanto sei sicuro della stima. "consiglio" è un consiglio breve (massimo 2 frasi, in italiano, dando del tu) su come questo pasto si inserisce nella giornata.
+Contesto: ${p.sex === 'm' ? 'uomo' : 'donna'}, ${p.weight} kg, obiettivo: ${GOALS[p.goal].l}. Target giornaliero ${n.kcal} kcal, proteine ${n.p} g, carboidrati ${n.c} g, grassi ${n.f} g. Già mangiato oggi: ${Math.round(t.kcal)} kcal, P ${Math.round(t.p)} g, C ${Math.round(t.c)} g, G ${Math.round(t.f)} g.`});
+    if(!r || !r.e_cibo || !Array.isArray(r.alimenti) || !r.alimenti.length){ $('#phRes').innerHTML = `<p class="muted">Non vedo cibo in questa foto. Prova con una foto del piatto dall'alto, con buona luce.</p>`; btn.disabled = false; return; }
+    photoRes = {piatto: String(r.piatto || 'Pasto'), aff: r.affidabilita, consiglio: String(r.consiglio || ''), items: r.alimenti.map(a => {
+      const g = Math.max(1, num(a.grammi));
+      return {nome:String(a.nome), g, base:{kcal:num(a.kcal)/g, p:num(a.proteine)/g, c:num(a.carboidrati)/g, f:num(a.grassi)/g}};
+    })};
+    renderPhotoResult(); haptic(10);
+  }catch(e){ $('#phRes').innerHTML = `<p class="muted">${esc(sampleErr(e && e.code))}</p>`; }
+  if($('#phGo')) $('#phGo').disabled = false;
+}
+const itemVals = it => ({kcal: it.base.kcal * it.g, p: it.base.p * it.g, c: it.base.c * it.g, f: it.base.f * it.g});
+function photoTotals(){ return photoRes.items.reduce((a, it) => { const v = itemVals(it); return {kcal:a.kcal + v.kcal, p:a.p + v.p, c:a.c + v.c, f:a.f + v.f}; }, {kcal:0, p:0, c:0, f:0}); }
+function renderPhotoResult(){
+  const R = photoRes, aff = {alta:'stima affidabile', media:'stima indicativa', bassa:'stima incerta'}[R.aff] || 'stima';
+  $('#phRes').innerHTML = `<div style="display:grid;gap:10px">
+    <div class="row between"><strong style="font-size:17px">${esc(R.piatto)}</strong><span class="tag">${aff}</span></div>
+    <div class="scroll"><table><tr><th>Alimento</th><th class="r">Grammi</th><th class="r">kcal</th><th class="r">P</th><th class="r">C</th><th class="r">G</th></tr>
+      ${R.items.map((it, i) => { const v = itemVals(it); return `<tr><td>${esc(it.nome)}</td><td class="r"><input class="gin" inputmode="numeric" data-i="${i}" value="${Math.round(it.g)}" aria-label="Grammi di ${esc(it.nome)}"></td><td class="r num" id="pk-${i}">${Math.round(v.kcal)}</td><td class="r num" id="pp-${i}">${Math.round(v.p)}</td><td class="r num" id="pc-${i}">${Math.round(v.c)}</td><td class="r num" id="pf-${i}">${Math.round(v.f)}</td></tr>`; }).join('')}
+      <tr><td><strong>Totale</strong></td><td></td><td class="r num"><strong id="ptk"></strong></td><td class="r num" id="ptp"></td><td class="r num" id="ptc"></td><td class="r num" id="ptf"></td></tr></table></div>
+    ${R.consiglio ? `<div class="note small">${esc(R.consiglio)}</div>` : ''}
+    <p class="small muted">Correggi i grammi se servono: i valori si aggiornano da soli. È una stima: i condimenti nascosti possono cambiare il totale.</p>
+    <div class="row"><label class="f" style="width:min(100%,170px)">Pasto<select id="phMeal">${MEALS.map(m => `<option ${m === mealNow() ? 'selected' : ''}>${m}</option>`).join('')}</select></label>
+      <button class="btn primary" id="phAdd" style="align-self:end">Aggiungi al diario</button></div></div>`;
+  const upd = () => { const t = photoTotals(); $('#ptk').textContent = Math.round(t.kcal); $('#ptp').textContent = Math.round(t.p); $('#ptc').textContent = Math.round(t.c); $('#ptf').textContent = Math.round(t.f); };
+  upd();
+  $('#phRes').querySelectorAll('.gin').forEach(inp => inp.oninput = () => {
+    const it = R.items[+inp.dataset.i]; it.g = Math.max(0, num(inp.value)); const v = itemVals(it), i = inp.dataset.i;
+    $('#pk-' + i).textContent = Math.round(v.kcal); $('#pp-' + i).textContent = Math.round(v.p); $('#pc-' + i).textContent = Math.round(v.c); $('#pf-' + i).textContent = Math.round(v.f); upd();
+  });
+  $('#phAdd').onclick = () => {
+    const t = photoTotals();
+    addFood({meal: $('#phMeal').value, name: R.piatto, src:'foto', kcal: Math.round(t.kcal), p: Math.round(t.p), c: Math.round(t.c), f: Math.round(t.f),
+      items: R.items.filter(it => it.g > 0).map(it => { const v = itemVals(it); return {n: it.nome, g: Math.round(it.g), kcal: Math.round(v.kcal)}; })});
+    photo = null; photoRes = null; haptic(12); toast(`${R.piatto} aggiunto al diario`); renderNutrizione(); renderOggi();
+  };
+}
+function diaryHTML(){
+  const n = nutr(), list = foodToday(), t = foodTot(list);
+  const bar = (label, val, target, color, unit) => { const pct = target ? Math.min(100, val / target * 100) : 0, over = val > target * 1.05;
+    return `<div style="display:grid;gap:4px"><div class="row between small"><span>${label}</span><span class="num ${over ? '' : 'muted'}" style="${over ? 'color:var(--red)' : ''}">${Math.round(val).toLocaleString('it-IT')} / ${Math.round(target).toLocaleString('it-IT')} ${unit}</span></div><div class="prog"><span style="width:${pct}%;background:${color}"></span></div></div>`; };
+  return `<div class="card glass" id="diary">
+    <div class="row between"><div><span class="eyebrow">${dItal(iso())}</span><h3>Diario di oggi</h3></div><span class="num muted small">rimangono ${Math.max(0, Math.round(n.kcal - t.kcal)).toLocaleString('it-IT')} kcal</span></div>
+    ${bar('Calorie', t.kcal, n.kcal, 'var(--ink)', 'kcal')}${bar('Proteine', t.p, n.p, 'var(--mp)', 'g')}${bar('Carboidrati', t.c, n.c, 'var(--mc)', 'g')}${bar('Grassi', t.f, n.f, 'var(--mf)', 'g')}
+    ${list.length ? MEALS.filter(m => list.some(f => f.meal === m)).map(m => `<div style="display:grid;gap:6px"><span class="eyebrow">${m}</span>${list.filter(f => f.meal === m).map(f => `<div class="row between" style="flex-wrap:nowrap;gap:10px"><div style="min-width:0"><div>${esc(f.name)}${f.src === 'foto' ? ' <span class="tag">foto</span>' : ''}</div><div class="small muted num">${f.kcal} kcal · P ${f.p} · C ${f.c} · G ${f.f}${f.items && f.items.length ? ' · ' + esc(f.items.map(i => i.n + ' ' + i.g + ' g').join(', ')) : ''}</div></div><button class="btn ghost sm" data-delfood="${f.id}" aria-label="Elimina ${esc(f.name)}">Elimina</button></div>`).join('')}</div>`).join('') : `<p class="small muted">Ancora niente oggi. Fotografa un pasto o aggiungilo a mano.</p>`}
+    <details><summary class="small muted">Aggiungi a mano</summary>
+      <form id="manForm" class="formgrid" style="padding-top:10px;align-items:end" novalidate>
+        <label class="f">Cosa hai mangiato<input id="mfName" placeholder="es. Yogurt greco e miele"></label>
+        <label class="f">Pasto<select id="mfMeal">${MEALS.map(m => `<option ${m === mealNow() ? 'selected' : ''}>${m}</option>`).join('')}</select></label>
+        <label class="f">kcal<input id="mfK" inputmode="numeric"></label><label class="f">Proteine (g)<input id="mfP" inputmode="decimal"></label>
+        <label class="f">Carboidrati (g)<input id="mfC" inputmode="decimal"></label><label class="f">Grassi (g)<input id="mfF" inputmode="decimal"></label>
+        <button class="btn primary" type="submit">Aggiungi</button></form><p class="small" id="mfErr" style="color:var(--red)" hidden></p></details>
+  </div>`;
+}
+function bindDiary(root){
+  root.querySelectorAll('[data-delfood]').forEach(b => b.onclick = () => askDelete(b, () => { const f = state.food.find(x => x.id === b.dataset.delfood); state.food = state.food.filter(x => x.id !== b.dataset.delfood); if(f) markFood(f.date); renderNutrizione(); renderOggi(); toast('Pasto eliminato'); }));
+  const form = root.querySelector('#manForm'); if(!form) return;
+  form.onsubmit = e => {
+    e.preventDefault();
+    const name = $('#mfName').value.trim(), k = num($('#mfK').value), p = num($('#mfP').value), c = num($('#mfC').value), f = num($('#mfF').value);
+    const kcal = k || Math.round(p * 4 + c * 4 + f * 9);
+    if(!name || !(kcal > 0)){ const er = $('#mfErr'); er.textContent = 'Scrivi cosa hai mangiato e almeno le calorie, oppure i macronutrienti.'; er.hidden = false; haptic([10, 40, 10]); return; }
+    addFood({meal: $('#mfMeal').value, name, src:'manuale', kcal: Math.round(kcal), p: Math.round(p), c: Math.round(c), f: Math.round(f)});
+    haptic(10); toast(`${name} aggiunto al diario`); renderNutrizione(); renderOggi();
+  };
+}
+
+/* ================= menu of the day ================= */
+const MENU_SCHEMA = {type:'object', additionalProperties:false, required:['meals','note'], properties:{note:{type:'string'}, meals:{type:'array', items:{type:'object', additionalProperties:false, required:['name','items','kcal','p','c','f'], properties:{
+  name:{type:'string'}, kcal:{type:'number'}, p:{type:'number'}, c:{type:'number'}, f:{type:'number'},
+  items:{type:'array', items:{type:'object', additionalProperties:false, required:['food','qty'], properties:{food:{type:'string'}, qty:{type:'string'}}}}}}}}};
 async function genMenu(){
   const n = nutr(), p = state.profile, btn = $('#menuBtn'), out = $('#menuOut');
   btn.disabled = true; out.innerHTML = `<p class="muted row">${typing} Sto componendo il menù…</p>`;
-  const sample = await getSample();
-  if(!sample){ out.innerHTML = `<p class="muted">Il coach AI funziona aprendo la pagina su claude.ai con il tuo account. Intanto usa le tabelle qui sopra per comporre i pasti.</p>`; btn.disabled = false; return; }
   const names = {3:'colazione, pranzo, cena', 4:'colazione, pranzo, spuntino, cena', 5:'colazione, spuntino, pranzo, spuntino, cena'}[p.meals];
   try{
-    const r = await sample.json(`Sei un nutrizionista sportivo italiano. Componi il menù di UNA giornata per una persona (${p.sex === 'm' ? 'uomo' : 'donna'}, ${p.age} anni, ${p.weight} kg, obiettivo: ${GOALS[p.goal].l}) con ${p.meals} pasti (${names}).
-Target giornaliero: ${n.kcal} kcal, proteine ${n.p} g, carboidrati ${n.c} g, grassi ${n.f} g (tolleranza ±5%). Alimenti semplici reperibili in un supermercato italiano, grammature a crudo, varia rispetto ai soliti pollo e riso.
-Rispondi solo con JSON: {"meals":[{"name":"Colazione","items":[{"food":"Fiocchi d'avena","qty":"60 g"}],"kcal":0,"p":0,"c":0,"f":0}],"note":"un consiglio breve"}`, {modelTier:'default', cache:false});
+    const r = await aiJSON({schema: MENU_SCHEMA, effort:'medium', prompt:
+`Sei un nutrizionista sportivo italiano. Componi il menù di UNA giornata per una persona (${p.sex === 'm' ? 'uomo' : 'donna'}, ${p.age} anni, ${p.weight} kg, obiettivo: ${GOALS[p.goal].l}) con ${p.meals} pasti (${names}).
+Target giornaliero: ${n.kcal} kcal, proteine ${n.p} g, carboidrati ${n.c} g, grassi ${n.f} g (tolleranza ±5%). Alimenti semplici reperibili in un supermercato italiano, grammature a crudo, varia rispetto ai soliti pollo e riso. "note" è un consiglio breve.`});
     const meals = Array.isArray(r && r.meals) ? r.meals : [];
     if(!meals.length) throw {code:'invalid_json'};
     const tot = meals.reduce((a, m) => ({k:a.k + num(m.kcal), p:a.p + num(m.p), c:a.c + num(m.c), f:a.f + num(m.f)}), {k:0,p:0,c:0,f:0});
     out.innerHTML = `<div class="grid2">${meals.map(m => `<div class="card" style="background:var(--field);border:1px solid var(--glass-edge)"><div class="row between"><strong>${esc(m.name)}</strong><span class="num small muted">${Math.round(num(m.kcal))} kcal</span></div><ul class="clean">${(Array.isArray(m.items) ? m.items : []).map(it => `<li class="row between" style="flex-wrap:nowrap"><span style="min-width:0">${esc(it.food)}</span><span class="num muted" style="flex:0 0 auto">${esc(it.qty)}</span></li>`).join('')}</ul><span class="small num muted">P ${Math.round(num(m.p))} · C ${Math.round(num(m.c))} · G ${Math.round(num(m.f))}</span></div>`).join('')}</div>
       <p class="small num">Totale: ${Math.round(tot.k)} kcal · P ${Math.round(tot.p)} g · C ${Math.round(tot.c)} g · G ${Math.round(tot.f)} g</p>${r.note ? `<div class="note small">${esc(r.note)}</div>` : ''}`;
     btn.textContent = 'Proponi un altro menù';
-  }catch(e){ out.innerHTML = `<p class="muted">${esc(e && e.code === 'invalid_json' ? 'Il menù è arrivato in un formato illeggibile. Riprova.' : sampleErr(e && e.code))}</p>`; }
+  }catch(e){ out.innerHTML = `<p class="muted">${esc(sampleErr(e && e.code))}</p>`; }
   btn.disabled = false;
 }
+
+/* ================= TIMER (For Time, AMRAP, EMOM, Tabata, intervals, mix) ================= */
+const WOD_MODES = {
+  fortime:{n:'For Time', d:'Il più veloce possibile, con un tempo limite'},
+  amrap:{n:'AMRAP', d:'Più giri possibili nel tempo'},
+  emom:{n:'EMOM', d:'Un blocco di lavoro a ogni intervallo'},
+  tabata:{n:'Tabata', d:'Lavoro e riposo brevi, ripetuti'},
+  intervalli:{n:'Intervalli', d:'Lavoro e riposo su misura'},
+  mix:{n:'Mix', d:'La tua sequenza di blocchi'},
+};
+const WOD_DEF = {mode:'amrap', prep:10, voice:true, sound:true,
+  fortime:{cap:20}, amrap:{min:12}, emom:{every:60, rounds:10},
+  tabata:{work:20, rest:10, rounds:8, sets:1, setRest:60}, intervalli:{work:40, rest:20, rounds:10},
+  mix:{repeat:3, steps:[{name:'AMRAP', kind:'work', sec:240}, {name:'Riposo', kind:'rest', sec:60}]}};
+function wodCfg(){
+  if(!state.timerCfg || typeof state.timerCfg !== 'object') state.timerCfg = structuredClone(WOD_DEF);
+  const c = state.timerCfg; for(const k in WOD_DEF) if(c[k] === undefined) c[k] = structuredClone(WOD_DEF[k]);
+  if(!WOD_MODES[c.mode]) c.mode = 'amrap';
+  return c;
+}
+const mmss = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
+function buildSegs(c){
+  const S = [], m = c.mode;
+  if(c.prep) S.push({k:'prep', dur:c.prep, label:'Preparati'});
+  if(m === 'fortime') S.push({k:'work', dur: c.fortime.cap ? c.fortime.cap * 60 : Infinity, up:true, label:'For Time'});
+  if(m === 'amrap') S.push({k:'work', dur: c.amrap.min * 60, label:'AMRAP'});
+  if(m === 'emom') for(let i = 1; i <= c.emom.rounds; i++) S.push({k:'work', dur:c.emom.every, label:'EMOM', r:i, rt:c.emom.rounds});
+  if(m === 'tabata') for(let s = 1; s <= c.tabata.sets; s++){
+    for(let i = 1; i <= c.tabata.rounds; i++){
+      S.push({k:'work', dur:c.tabata.work, label:'Lavoro', r:i, rt:c.tabata.rounds, set:s, sets:c.tabata.sets});
+      if(i < c.tabata.rounds) S.push({k:'rest', dur:c.tabata.rest, label:'Riposo', r:i, rt:c.tabata.rounds, set:s, sets:c.tabata.sets});
+    }
+    if(s < c.tabata.sets && c.tabata.setRest) S.push({k:'rest', dur:c.tabata.setRest, label:'Riposo tra le serie', set:s, sets:c.tabata.sets});
+  }
+  if(m === 'intervalli') for(let i = 1; i <= c.intervalli.rounds; i++){
+    S.push({k:'work', dur:c.intervalli.work, label:'Lavoro', r:i, rt:c.intervalli.rounds});
+    if(i < c.intervalli.rounds && c.intervalli.rest) S.push({k:'rest', dur:c.intervalli.rest, label:'Riposo', r:i, rt:c.intervalli.rounds});
+  }
+  if(m === 'mix') for(let i = 1; i <= c.mix.repeat; i++) c.mix.steps.forEach((st, j) => {
+    if(i === c.mix.repeat && j === c.mix.steps.length - 1 && st.kind === 'rest') return; // no rest after the very last block
+    if(st.sec > 0) S.push({k:st.kind, dur:st.sec, label:st.name || (st.kind === 'rest' ? 'Riposo' : 'Lavoro'), r:i, rt:c.mix.repeat});
+  });
+  return S;
+}
+const workDur = segs => segs.filter(s => s.k !== 'prep').reduce((a, s) => a + (isFinite(s.dur) ? s.dur : 0), 0);
+const roundsCounting = m => m === 'fortime' || m === 'amrap' || m === 'mix';
+function wodSummaryLabel(c){
+  return {fortime: c.fortime.cap ? `For Time · limite ${c.fortime.cap} min` : 'For Time',
+    amrap: `AMRAP ${c.amrap.min} min`, emom: `EMOM ${c.emom.rounds} × ${mmss(c.emom.every)}`,
+    tabata: `Tabata ${c.tabata.work}/${c.tabata.rest} × ${c.tabata.rounds}${c.tabata.sets > 1 ? ' · ' + c.tabata.sets + ' serie' : ''}`,
+    intervalli: `Intervalli ${mmss(c.intervalli.work)}/${mmss(c.intervalli.rest)} × ${c.intervalli.rounds}`,
+    mix: `Mix · ${c.mix.steps.length} blocchi × ${c.mix.repeat}`}[c.mode];
+}
+
+/* settings UI */
+const STEP = {
+  'fortime.cap':{l:'Tempo limite', min:0, max:90, step:1, f:v => v ? v + ' min' : 'nessuno'},
+  'amrap.min':{l:'Durata', min:1, max:90, step:1, f:v => v + ' min'},
+  'emom.every':{l:'Ogni', min:10, max:600, step:5, f:mmss},
+  'emom.rounds':{l:'Round', min:1, max:99, step:1, f:v => v},
+  'tabata.work':{l:'Lavoro', min:5, max:300, step:5, f:v => v + ' s'},
+  'tabata.rest':{l:'Riposo', min:0, max:300, step:5, f:v => v + ' s'},
+  'tabata.rounds':{l:'Round', min:1, max:50, step:1, f:v => v},
+  'tabata.sets':{l:'Serie', min:1, max:10, step:1, f:v => v},
+  'tabata.setRest':{l:'Riposo tra le serie', min:0, max:600, step:15, f:mmss},
+  'intervalli.work':{l:'Lavoro', min:5, max:1800, step:5, f:mmss},
+  'intervalli.rest':{l:'Riposo', min:0, max:900, step:5, f:mmss},
+  'intervalli.rounds':{l:'Round', min:1, max:99, step:1, f:v => v},
+  'mix.repeat':{l:'Ripeti la sequenza', min:1, max:20, step:1, f:v => v + (v === 1 ? ' volta' : ' volte')},
+  'prep':{l:'Conto alla rovescia iniziale', min:0, max:60, step:5, f:v => v ? v + ' s' : 'nessuno'},
+};
+const getPath = (o, p) => p.split('.').reduce((a, k) => a[k], o);
+const setPath = (o, p, v) => { const ks = p.split('.'), last = ks.pop(); ks.reduce((a, k) => a[k], o)[last] = v; };
+function stepper(path, label){
+  const d = STEP[path] || {l:label, min:5, max:3600, step:15, f:mmss}, v = path.startsWith('mix.steps.') ? getPath(wodCfg(), path) : getPath(wodCfg(), path);
+  return `<div class="stepper" data-path="${path}"><span class="small muted">${esc(label || d.l)}</span><div class="stp"><button type="button" data-d="-1" aria-label="Diminuisci ${esc(label || d.l)}">−</button><output class="num">${esc(String(d.f(v)))}</output><button type="button" data-d="1" aria-label="Aumenta ${esc(label || d.l)}">+</button></div></div>`;
+}
+function wodSettingsHTML(){
+  const c = wodCfg(), m = c.mode;
+  let body = '';
+  if(m === 'fortime') body = stepper('fortime.cap') + `<p class="small muted">Il tempo sale da zero. Tocca «Fatto» quando finisci; se arrivi al limite il timer si ferma da solo.</p>`;
+  if(m === 'amrap') body = stepper('amrap.min') + `<p class="small muted">Il tempo scende. Tocca «+1 giro» a ogni giro completato: alla fine vedi quanti ne hai fatti e quanto è durato ognuno.</p>`;
+  if(m === 'emom') body = stepper('emom.every') + stepper('emom.rounds') + `<p class="small muted">All'inizio di ogni intervallo fai il lavoro previsto e riposi nel tempo che resta.</p>`;
+  if(m === 'tabata') body = `<div class="row" style="gap:8px"><button class="chip" type="button" data-preset="tabata">Classico 20/10 × 8</button><button class="chip" type="button" data-preset="tabata2">30/15 × 6</button></div>` + stepper('tabata.work') + stepper('tabata.rest') + stepper('tabata.rounds') + stepper('tabata.sets') + (c.tabata.sets > 1 ? stepper('tabata.setRest') : '');
+  if(m === 'intervalli') body = stepper('intervalli.work') + stepper('intervalli.rest') + stepper('intervalli.rounds');
+  if(m === 'mix') body = c.mix.steps.map((st, i) => `<div class="mixrow" data-i="${i}">
+      <input class="mixname" data-i="${i}" value="${esc(st.name)}" aria-label="Nome del blocco ${i + 1}" maxlength="24">
+      <div class="seg glass" role="group" aria-label="Tipo"><button type="button" data-kind="work" data-i="${i}" aria-pressed="${st.kind === 'work'}">Lavoro</button><button type="button" data-kind="rest" data-i="${i}" aria-pressed="${st.kind === 'rest'}">Riposo</button></div>
+      ${stepper('mix.steps.' + i + '.sec', 'Durata')}
+      ${c.mix.steps.length > 1 ? `<button class="btn ghost sm" type="button" data-mixdel="${i}">Togli</button>` : ''}</div>`).join('') +
+    `<div class="row"><button class="btn sm" type="button" id="mixAdd">+ Aggiungi blocco</button></div>` + stepper('mix.repeat');
+  return body;
+}
+function renderTimer(){
+  const c = wodCfg(), el = $('#p-timer'), segs = buildSegs(c), tot = workDur(segs);
+  el.innerHTML = `
+    <div><span class="eyebrow">Cronometro da allenamento</span><h2>Timer</h2></div>
+    <div class="modes" role="group" aria-label="Tipo di timer">${Object.entries(WOD_MODES).map(([k, v]) => `<button class="mode glass" type="button" data-mode="${k}" aria-pressed="${c.mode === k}"><strong>${v.n}</strong><span class="small muted">${v.d}</span></button>`).join('')}</div>
+    <div class="card glass" id="wodSet"><h3>${WOD_MODES[c.mode].n}</h3>${wodSettingsHTML()}</div>
+    <div class="card glass">${stepper('prep')}
+      <div class="row" style="gap:8px"><button class="chip" type="button" data-tog="voice" aria-pressed="${c.voice}">Voce</button><button class="chip" type="button" data-tog="sound" aria-pressed="${c.sound}">Suoni</button></div></div>
+    <button class="btn primary big" id="wodGo">Avvia${tot ? ' · ' + mmss(tot) : ''}</button>
+    ${state.wods.length ? `<div class="card glass"><h3>Ultimi allenamenti a tempo</h3>${state.wods.slice(0, 4).map(w => `<div class="row between small" style="flex-wrap:nowrap"><span style="min-width:0">${dItal(w.date)} · ${esc(w.label)}</span><span class="num">${mmss(w.total)}${w.rounds ? ' · ' + w.rounds + ' giri' : ''}</span></div>`).join('')}<div><button class="btn ghost sm" data-go="progressi">Vedi lo storico</button></div></div>` : ''}`;
+  bindTimerSettings(el);
+}
+function bindTimerSettings(el){
+  const c = wodCfg();
+  const refresh = () => { persist(); renderTimer(); };
+  el.querySelector('.modes').onclick = e => { const b = e.target.closest('[data-mode]'); if(!b || c.mode === b.dataset.mode) return; c.mode = b.dataset.mode; haptic(6); refresh(); };
+  el.querySelectorAll('[data-tog]').forEach(b => b.onclick = () => { c[b.dataset.tog] = !c[b.dataset.tog]; haptic(5); refresh(); });
+  el.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => { Object.assign(c.tabata, b.dataset.preset === 'tabata' ? {work:20, rest:10, rounds:8} : {work:30, rest:15, rounds:6}); haptic(6); refresh(); });
+  // steppers: tap to change, hold to repeat
+  el.querySelectorAll('.stepper').forEach(s => {
+    const path = s.dataset.path, d = STEP[path] || {min:5, max:3600, step:15, f:mmss};
+    const bump = dir => { const v = Math.min(d.max, Math.max(d.min, getPath(c, path) + dir * d.step)); setPath(c, path, v); s.querySelector('output').textContent = d.f(v); updateGo(); haptic(4); };
+    s.querySelectorAll('button[data-d]').forEach(b => {
+      let t1 = null, t2 = null;
+      const stop = () => { clearTimeout(t1); clearInterval(t2); t1 = t2 = null; };
+      b.addEventListener('pointerdown', e => { e.preventDefault(); bump(+b.dataset.d); t1 = setTimeout(() => { t2 = setInterval(() => bump(+b.dataset.d), 80); }, 420); });
+      ['pointerup','pointerleave','pointercancel'].forEach(t => b.addEventListener(t, () => { if(t1 || t2){ stop(); persist(); renderTimerSoft(); } }));
+      b.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); bump(+b.dataset.d); persist(); } });
+    });
+  });
+  el.querySelectorAll('.mixname').forEach(i => i.oninput = () => { c.mix.steps[+i.dataset.i].name = i.value; persist(); });
+  el.querySelectorAll('[data-kind]').forEach(b => b.onclick = () => { c.mix.steps[+b.dataset.i].kind = b.dataset.kind; haptic(5); refresh(); });
+  el.querySelectorAll('[data-mixdel]').forEach(b => b.onclick = () => { c.mix.steps.splice(+b.dataset.mixdel, 1); haptic(6); refresh(); });
+  const add = el.querySelector('#mixAdd'); if(add) add.onclick = () => { const last = c.mix.steps[c.mix.steps.length - 1]; c.mix.steps.push(last && last.kind === 'work' ? {name:'Riposo', kind:'rest', sec:60} : {name:'Lavoro', kind:'work', sec:120}); haptic(6); refresh(); };
+  $('#wodGo').onclick = wodStart;
+}
+function updateGo(){ const t = workDur(buildSegs(wodCfg())); const g = $('#wodGo'); if(g) g.textContent = 'Avvia' + (t ? ' · ' + mmss(t) : ''); }
+function renderTimerSoft(){ if($('#p-timer').querySelector('[data-path="tabata.sets"]')) renderTimer(); } // the set-rest stepper appears only with 2+ sets
+
+/* running the timer */
+let W = null;
+const clk = () => (W.paused ? W.pauseAt : performance.now()) - W.pausedTotal;
+function tone(freq, dur, at = 0, vol = .28){
+  if(!W || !W.c.sound || !actx) return;
+  try{ const t = actx.currentTime + at, o = actx.createOscillator(), g = actx.createGain(); o.type = 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(actx.destination); o.start(t); o.stop(t + dur + .02); }catch(e){}
+}
+function say(text){
+  if(!W || !W.c.voice || !('speechSynthesis' in window)) return;
+  try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'it-IT'; u.rate = 1.05; const v = speechSynthesis.getVoices().find(x => /^it/i.test(x.lang)); if(v) u.voice = v; speechSynthesis.speak(u); }catch(e){}
+}
+function wodStart(){
+  const c = wodCfg(), segs = buildSegs(c);
+  if(!segs.some(s => s.k === 'work')){ toast('Aggiungi almeno un blocco di lavoro'); haptic([10, 40, 10]); return; }
+  audio();
+  try{ if('speechSynthesis' in window && c.voice){ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } }catch(e){} // unlocks speech on iOS inside the tap
+  W = {c, segs, i:0, paused:false, pauseAt:0, pausedTotal:0, segStart:performance.now(), workStart:null, splits:[], cue:'', flags:{}, done:false, date:iso()};
+  openWod(); enterSeg();
+  lockScreen(true);
+  W.int = setInterval(wodTick, 100);
+  requestAnimationFrame(wodFrame);
+}
+function enterSeg(){
+  const s = W.segs[W.i]; W.flags = {};
+  if(s.k === 'work' && W.workStart === null) W.workStart = W.segStart;
+  const lastWork = s.k === 'work' && !W.segs.slice(W.i + 1).some(x => x.k === 'work');
+  tone(s.k === 'rest' ? 660 : 1046, .45);
+  haptic(s.k === 'rest' ? [60] : [120]);
+  if(s.k === 'prep') say('Preparati');
+  else if(s.k === 'rest') say(s.label === 'Riposo tra le serie' ? 'Riposo tra le serie' : 'Riposo');
+  else if(W.i === W.segs.findIndex(x => x.k === 'work')) say('Via!');
+  else if(lastWork && s.rt > 1) say('Ultimo round');
+  else if(W.c.mode === 'mix' && s.label) say(s.label);
+  else if(s.r) say(W.c.mode === 'emom' ? 'Round ' + s.r : 'Lavoro');
+  const ov = $('#wod'); if(ov){ ov.dataset.phase = s.k; ov.classList.remove('flash'); void ov.offsetWidth; ov.classList.add('flash'); }
+  wodLayout();
+}
+function wodTick(){
+  if(!W || W.paused || W.done) return;
+  let s = W.segs[W.i], el = (clk() - W.segStart) / 1000;
+  while(el >= s.dur){ // also catches up after the phone was locked
+    W.segStart += s.dur * 1000; W.i++;
+    if(W.i >= W.segs.length){ wodFinish(W.c.mode === 'fortime' ? 'cap' : 'done'); return; }
+    s = W.segs[W.i]; enterSeg(); el = (clk() - W.segStart) / 1000;
+  }
+  if(!isFinite(s.dur)) return;
+  const rem = s.dur - el, sec = Math.ceil(rem);
+  if(sec <= 3 && sec >= 1 && W.cue !== W.i + ':' + sec){ W.cue = W.i + ':' + sec; tone(880, .16); haptic(30); }
+  if(s.k === 'work' && s.dur >= 120 && !W.flags.half && el >= s.dur / 2){ W.flags.half = 1; say('Metà tempo'); }
+  if(s.k === 'work' && s.dur >= 180 && !W.flags.last && rem <= 60){ W.flags.last = 1; say('Ultimo minuto'); }
+  if(s.k === 'rest' && s.dur >= 15 && !W.flags.ready && rem <= 5.5){ W.flags.ready = 1; say('Pronti'); }
+}
+function wodFrame(){
+  if(!W || W.done) return;
+  const s = W.segs[W.i], el = Math.max(0, (clk() - W.segStart) / 1000);
+  const big = s.up ? Math.floor(el) : Math.ceil(Math.max(0, s.dur - el));
+  const bigTxt = s.k === 'prep' ? String(big) : mmss(big);
+  const B = $('#wBig'); if(B && B.textContent !== bigTxt){ B.textContent = bigTxt; B.classList.toggle('long', bigTxt.length > 5); }
+  const P = $('#wProg'); if(P) P.style.transform = `scaleX(${isFinite(s.dur) ? Math.min(1, el / s.dur) : 0})`;
+  const T = $('#wTot'); if(T){ const w = W.workStart === null ? 0 : (clk() - W.workStart) / 1000, all = workDur(W.segs); T.textContent = W.c.mode === 'fortime' ? (s.k === 'prep' ? 'Si parte tra poco' : (isFinite(s.dur) ? 'Limite ' + mmss(s.dur) : 'Nessun limite')) : `Trascorso ${mmss(w)} · mancano ${mmss(Math.max(0, all - w))}`; }
+  requestAnimationFrame(wodFrame);
+}
+function wodLayout(){
+  if(!W) return;
+  const s = W.segs[W.i], next = W.segs[W.i + 1], cnt = roundsCounting(W.c.mode) && s.k === 'work';
+  $('#wLabel').textContent = W.paused ? 'In pausa' : s.label;
+  $('#wRound').textContent = [s.set && s.sets > 1 ? `Serie ${s.set}/${s.sets}` : '', s.r ? `Round ${s.r}/${s.rt}` : ''].filter(Boolean).join(' · ');
+  $('#wNext').textContent = next ? `Dopo: ${next.label}${isFinite(next.dur) ? ' ' + mmss(next.dur) : ''}` : 'Ultimo blocco';
+  $('#wRounds').hidden = !roundsCounting(W.c.mode);
+  $('#wRounds').innerHTML = `<b class="num">${W.splits.length}</b><span>${W.splits.length === 1 ? 'giro' : 'giri'}${W.splits.length ? ' · ultimo ' + mmss((W.splits[W.splits.length - 1] - (W.splits[W.splits.length - 2] || 0)) / 1000) : ''}</span>`;
+  $('#wLap').hidden = !cnt; $('#wUndo').hidden = !cnt || !W.splits.length;
+  $('#wDone').hidden = !(W.c.mode === 'fortime' && s.k === 'work');
+  $('#wPause').textContent = W.paused ? 'Riprendi' : 'Pausa';
+  $('#wod').dataset.phase = W.paused ? 'pause' : s.k;
+}
+function openWod(){
+  const ov = $('#wod');
+  ov.innerHTML = `
+    <div class="wtop"><div style="min-width:0"><div class="wmode">${esc(wodSummaryLabel(W.c))}</div><div class="wsmall" id="wTot"></div></div><button class="wbtn ghost" id="wStop">Termina</button></div>
+    <div class="wmid" id="wTap">
+      <div class="wlabel" id="wLabel"></div><div class="wsmall" id="wRound"></div>
+      <div class="wbig num" id="wBig" aria-live="off"></div>
+      <div class="wbar"><span id="wProg"></span></div>
+      <div class="wrounds" id="wRounds"></div>
+      <div class="wsmall" id="wNext"></div>
+    </div>
+    <div class="wctl"><button class="wbtn" id="wPause">Pausa</button><button class="wbtn ghost" id="wUndo" hidden>−1</button><button class="wbtn strong" id="wLap" hidden>+1 giro</button><button class="wbtn strong" id="wDone" hidden>Fatto</button></div>`;
+  ov.hidden = false; document.documentElement.style.overflow = 'hidden';
+  $('#wPause').onclick = wodPause;
+  $('#wLap').onclick = () => { if(!W || W.paused || W.workStart === null) return; W.splits.push(clk() - W.workStart); tone(1320, .08, 0, .2); haptic(25); wodLayout(); const r = $('#wRounds'); r.classList.remove('pop'); void r.offsetWidth; r.classList.add('pop'); };
+  $('#wUndo').onclick = () => { if(!W) return; W.splits.pop(); haptic(10); wodLayout(); };
+  $('#wDone').onclick = () => wodFinish('fatto');
+  $('#wStop').onclick = e => { const b = e.currentTarget; if(b.dataset.armed){ wodFinish('stop'); return; } b.dataset.armed = 1; b.textContent = 'Tocca ancora'; haptic(10); setTimeout(() => { if(b.isConnected){ delete b.dataset.armed; b.textContent = 'Termina'; } }, 2500); };
+  try{ if(document.documentElement.requestFullscreen && matchMedia('(hover:none)').matches) document.documentElement.requestFullscreen().catch(() => {}); }catch(e){}
+}
+function wodPause(){
+  if(!W || W.done) return;
+  if(W.paused){ W.pausedTotal += performance.now() - W.pauseAt; W.paused = false; say('Si riparte'); }
+  else { W.paused = true; W.pauseAt = performance.now(); try{ speechSynthesis.cancel(); }catch(e){} }
+  haptic(10); wodLayout();
+}
+function wodFinish(reason){
+  if(!W || W.done) return;
+  W.done = true; clearInterval(W.int);
+  const s = W.segs[W.i] || W.segs[W.segs.length - 1];
+  const worked = W.workStart === null ? 0 : (clk() - W.workStart) / 1000;
+  const total = reason === 'cap' ? s.dur : reason === 'done' ? workDur(W.segs) : worked;
+  [0, .2, .4].forEach((t, i) => tone(i === 2 ? 1568 : 1046, .25, t));
+  haptic([150, 80, 150]);
+  say(reason === 'cap' ? 'Tempo scaduto' : reason === 'stop' ? 'Timer fermato' : 'Finito! Ottimo lavoro');
+  W.result = {total: Math.round(total), splits: W.splits.map(x => Math.round(x / 1000)), reason};
+  const sp = W.result.splits;
+  $('#wod').dataset.phase = 'done';
+  $('#wod').innerHTML = `
+    <div class="wtop"><div class="wmode">${esc(wodSummaryLabel(W.c))}</div></div>
+    <div class="wmid"><div class="wlabel">${reason === 'cap' ? 'Tempo scaduto' : reason === 'stop' ? 'Fermato' : 'Finito!'}</div>
+      <div class="wbig num">${mmss(W.result.total)}</div>
+      ${sp.length ? `<div class="wrounds"><b class="num">${sp.length}</b><span>${sp.length === 1 ? 'giro' : 'giri'}</span></div>
+      <div class="wsplits">${sp.map((t, i) => `<span class="num">Giro ${i + 1} · ${mmss(t - (sp[i - 1] || 0))}</span>`).join('')}</div>` : ''}</div>
+    <div class="wctl"><button class="wbtn ghost" id="wDiscard">Esci senza salvare</button><button class="wbtn strong" id="wSave">Salva</button></div>`;
+  $('#wSave').onclick = () => {
+    state.wods.unshift({id: uidGen(), ts: Date.now(), date: W.date, mode: W.c.mode, label: wodSummaryLabel(W.c), total: W.result.total, rounds: sp.length, splits: sp.slice(0, 60)});
+    state.wods = state.wods.slice(0, 100); persist(); closeWod(); toast('Salvato nello storico'); renderTimer(); renderProgressi();
+  };
+  $('#wDiscard').onclick = closeWod;
+}
+function closeWod(){
+  const ov = $('#wod'); ov.hidden = true; ov.innerHTML = ''; document.documentElement.style.overflow = '';
+  try{ speechSynthesis.cancel(); }catch(e){}
+  if(!state.active) lockScreen(false);
+  try{ if(document.fullscreenElement) document.exitFullscreen().catch(() => {}); }catch(e){}
+  W = null;
+}
+document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && W && !W.done){ lockScreen(true); wodTick(); } });
+document.addEventListener('keydown', e => { if(!W || W.done || $('#wod').hidden) return; if(e.key === ' '){ e.preventDefault(); wodPause(); } if(e.key === 'Enter' && !$('#wLap').hidden){ e.preventDefault(); $('#wLap').click(); } });
 
 /* ================= PROGRESSI ================= */
 function renderProgressi(){
@@ -1805,7 +2347,12 @@ function renderProgressi(){
     </div>
     <div class="card glass"><h3>Storico allenamenti</h3>
       ${state.workouts.length ? `<div class="scroll"><table><tr><th>Data</th><th>Seduta</th><th class="r">Serie</th><th class="r">Volume</th><th class="r">Durata</th><th></th></tr>${state.workouts.slice().reverse().map(x => `<tr id="wo-${x.id}"><td class="num">${dItal(x.date)}</td><td>${esc(x.n)}</td><td class="r num">${x.ex.reduce((a, e) => a + e.sets.length, 0)}</td><td class="r num">${Math.round(vol(x)).toLocaleString('it-IT')} kg</td><td class="r num">${x.min} min</td><td class="r"><button class="btn ghost sm" data-delwo="${x.id}" aria-label="Elimina allenamento del ${dItal(x.date)}">Elimina</button></td></tr>`).join('')}</table></div><p class="small muted">Volume = somma di chili × ripetizioni. Se sale nel tempo, stai progredendo.</p>` : `<p class="muted">Nessun allenamento registrato. Inizia dalla scheda di Oggi: ogni serie che segni finisce qui.</p>`}
+    </div>
+    <div class="card glass" id="wodHist"><h3>Allenamenti a tempo</h3>
+      ${state.wods.length ? `<div class="scroll"><table><tr><th>Data</th><th>Timer</th><th class="r">Tempo</th><th class="r">Giri</th><th></th></tr>${state.wods.map(w => `<tr><td class="num">${dItal(w.date)}</td><td>${esc(w.label)}</td><td class="r num">${mmss(w.total)}</td><td class="r num">${w.rounds || '—'}</td><td class="r"><button class="btn ghost sm" data-delwod="${w.id}" aria-label="Elimina">Elimina</button></td></tr>`).join('')}</table></div>` : `<p class="muted">Quando salvi un allenamento dal Timer lo trovi qui, con tempi e giri.</p>`}
     </div>`;
+  const wb = el.querySelector('#wodHist');
+  if(wb) wb.querySelectorAll('[data-delwod]').forEach(b => b.onclick = () => askDelete(b, () => { state.wods = state.wods.filter(x => x.id !== b.dataset.delwod); persist(); renderProgressi(); renderTimer(); toast('Eliminato'); }));
   $('#wForm').onsubmit = e => {
     e.preventDefault();
     const kg = num($('#wKg').value), waist = num($('#wWaist').value), d = $('#wDate').value || iso(), err = $('#wErr');
@@ -1937,9 +2484,9 @@ function renderCoach(){
 async function ask(){
   const q = $('#chatIn').value.trim(); if(!q || chatBusy) return;
   chatBusy = true; $('#chatSend').disabled = true;
-  const sample = await getSample();
+  const src = await aiSource();
   const box = $('#chatBox');
-  if(!sample){ $('#chatNote').textContent = 'Il coach AI funziona aprendo questa pagina su claude.ai con il tuo account.'; chatBusy = false; $('#chatSend').disabled = false; return; }
+  if(!src){ $('#chatNote').innerHTML = esc(sampleErr('no_ai')) + ' <button class="btn ghost sm" data-go="profilo">Vai al Profilo</button>'; chatBusy = false; $('#chatSend').disabled = false; return; }
   if(!state.chat.length) box.innerHTML = '';
   state.chat.push({role:'user', content:q});
   box.insertAdjacentHTML('beforeend', `<div class="msg u">${fmtMsg(q)}</div><div class="msg a" id="pending">${typing}</div>`);
@@ -1948,7 +2495,7 @@ async function ask(){
   chatCtl = new AbortController();
   const turns = state.chat.slice(-12); while(turns.length && turns[0].role !== 'user') turns.shift();
   try{
-    const {text} = await sample([{role:'user', content:RULES()}, ...turns], {cache:false, signal:chatCtl.signal, onText:({text}) => { pend.innerHTML = fmtMsg(text); }});
+    const text = await aiText({system: RULES(), turns, effort:'low', signal: chatCtl.signal, onText:({text}) => { pend.innerHTML = fmtMsg(text); }});
     state.chat.push({role:'assistant', content:text});
   }catch(e){
     if(e && e.text){ state.chat.push({role:'assistant', content:e.text}); pend.innerHTML = fmtMsg(e.text); }
@@ -1990,6 +2537,13 @@ function renderProfilo(){
       <p class="small" id="pErr" style="color:var(--red)" hidden></p>
       <div class="row"><button class="btn primary" type="submit">Salva profilo</button></div>
     </form>
+    <div class="card glass" id="aiCard"><h3>Coach AI fuori da Claude</h3>
+      <p class="small">Dentro l'app Claude il coach usa il tuo account e non serve altro. Nella web app, per esempio quando la apri dalla Home, coach, menù e foto dei pasti usano l'API di Claude con una chiave tua. La crei su <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.</p>
+      <p class="small muted">Il costo va sul tuo account API: pochi centesimi per una foto o una risposta. Imposta un limite di spesa nella console. La chiave resta solo in questo browser: non va nel tuo account Claude né su GitHub.</p>
+      <label class="f">Chiave API<input id="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="${getKey() ? 'Chiave salvata · ••••' + esc(getKey().slice(-4)) : 'sk-ant-…'}"></label>
+      <div class="row"><button class="btn primary sm" id="keySave">Salva chiave</button>${getKey() ? '<button class="btn sm" id="keyTest">Prova la chiave</button><button class="btn ghost sm" id="keyDel">Rimuovi</button>' : ''}</div>
+      <p class="small" id="keyMsg" aria-live="polite"></p>
+    </div>
     <div class="card glass"><h3>Colore dell'app</h3>
       <div class="swatches" role="group" aria-label="Colore principale">${ACCENTS.map(([k, l, c]) => `<button class="sw" data-accent="${k}" aria-pressed="${(p.accent || 'blu') === k}" aria-label="${l}" title="${l}" style="background:${c}"></button>`).join('')}</div>
       <p class="small muted" id="accName">${esc((ACCENTS.find(a => a[0] === (p.accent || 'blu')) || ACCENTS[0])[1])}</p>
@@ -2009,6 +2563,18 @@ function renderProfilo(){
     const lw = sortedWeights().pop();
     if(!lw || Math.abs(lw.kg - weight) > 0.05){ state.weights = state.weights.filter(x => x.date !== iso()); state.weights.push({date:iso(), kg:weight}); }
     persist(); renderAll(); haptic(12); toast('Profilo salvato: scheda e piano aggiornati');
+  };
+  $('#keySave').onclick = () => {
+    const k = $('#apiKey').value.trim(), msg = $('#keyMsg');
+    if(!/^sk-ant-[A-Za-z0-9_\-]{20,}$/.test(k)){ msg.style.color = 'var(--red)'; msg.textContent = 'La chiave deve iniziare con sk-ant- . Copiala intera dalla console.'; haptic([10, 40, 10]); return; }
+    setKey(k); haptic(10); renderProfilo(); $('#keyMsg').style.color = ''; $('#keyMsg').textContent = 'Chiave salvata su questo dispositivo. Tocca «Prova la chiave» per verificarla.';
+  };
+  if($('#keyDel')) $('#keyDel').onclick = () => { setKey(''); renderProfilo(); toast('Chiave rimossa da questo dispositivo'); };
+  if($('#keyTest')) $('#keyTest').onclick = async () => {
+    const b = $('#keyTest'), msg = $('#keyMsg'); b.disabled = true; msg.style.color = ''; msg.innerHTML = typing + ' Provo la chiave…';
+    try{ await aiText({force:'api', system:'Rispondi solo con la parola OK.', turns:[{role:'user', content:'Prova'}], effort:'low'}); msg.style.color = 'var(--green)'; msg.textContent = 'La chiave funziona: coach, menù e foto sono attivi anche nella web app.'; haptic(12); }
+    catch(e){ msg.style.color = 'var(--red)'; msg.textContent = sampleErr(e && e.code); }
+    b.disabled = false;
   };
   el.querySelectorAll('[data-accent]').forEach(b => b.onclick = () => {
     state.profile.accent = b.dataset.accent; applyAccent(); persist(); haptic(8);
@@ -2048,7 +2614,7 @@ window.addEventListener('resize', fadeRows);
 /* ================= boot ================= */
 function renderAll(keepTab){
   applyAccent();
-  renderOggi(); renderScheda(); renderEsercizi(); renderNutrizione(); renderProgressi(); renderCoach(); renderProfilo();
+  renderOggi(); renderScheda(); renderTimer(); renderEsercizi(); renderNutrizione(); renderProgressi(); renderCoach(); renderProfilo();
   showTab(tab, {animate:false, scroll:false});
 }
 const local = loadLocal(); if(local) state = merge(local);
