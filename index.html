@@ -286,6 +286,15 @@ ol.steps li::before{content:counter(st);width:24px;height:24px;border-radius:50%
 .set .ok:active{transform:scale(.88)}
 .set .ok[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:var(--on-accent);box-shadow:0 6px 14px -8px var(--green)}
 .set.done input{border-color:color-mix(in srgb,var(--green) 60%,transparent);background:color-mix(in srgb,var(--green) 9%,var(--field))}
+.sxcur{border:0!important;padding:16px!important;margin:4px -4px;border-radius:20px;background:var(--field);box-shadow:0 0 0 2px var(--accent)}
+.curhead{display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px;align-items:center}
+.curhead svg{width:84px;height:84px;border-radius:16px;background:var(--sunken)}
+.exin{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:10px}
+.exin input{text-align:center;font-family:var(--mono);font-size:20px;min-height:52px}
+.sxdone strong{color:var(--muted);font-weight:600}
+.okdot{width:28px;height:28px;flex:none;border-radius:50%;background:var(--green);color:var(--on-accent);display:grid;place-items:center}
+.okdot svg{width:16px;height:16px}
+.btn.big svg{width:22px;height:22px}
 .hint{font-size:13px;border-left:3px solid var(--accent);padding-left:9px;color:var(--muted)}
 
 /* timer pill */
@@ -1726,32 +1735,54 @@ function startSession(ref, opt = {}){
   if(opt.past) state.active.past = true;
   persist(); haptic(12); if(!opt.past) lockScreen(true);
   renderOggi(); window.scrollTo({top:0});
-  if(opt.past) toast('Scegli la data, scrivi chili e ripetizioni, poi Termina');
+  if(opt.past) toast('Scegli la data, poi per ogni esercizio scrivi i chili e tocca Fatto');
   $('#p-oggi').classList.remove('in-r','in-l','in-f'); void $('#p-oggi').offsetWidth; $('#p-oggi').classList.add('in-f');
 }
 const setDone = s => s.done || String(s.reps ?? '') !== ''; // writing the reps is enough: no need to tick every set
 const sessionCount = A => { let d = 0, t = 0; A.ex.forEach(e => e.sets.forEach(s => { t++; if(setDone(s)) d++; })); return [d, t]; };
+/* one exercise at a time: do all the sets, write the kilos you used, tick it, go to the next one */
+const curIdx = A => { if(typeof A.cur === 'number' && A.ex[A.cur] && !A.ex[A.cur].done) return A.cur; return A.ex.findIndex(e => !e.done); };
+function exDraft(e){
+  if(e.draft) return e.draft;
+  const p = presc(e.id), last = lastFor(e.id), sg = suggest(e.id);
+  const kg = sg.kg != null ? sg.kg : last ? Math.max(0, ...last.sets.map(x => num(x.kg))) : '';
+  e.draft = {kg: kg ? String(kg) : '', ns: String(last ? last.sets.length : p.s), nr: String(last ? (num(last.sets[0].reps) || p.r[0]) : p.r[0])};
+  return e.draft;
+}
+function altFor(id){
+  const mine = state.profile.style === 'mia' && MY_VAR_OF[id] ? MY_VAR_OF[id].filter(v => v !== id && EX[v]) : [];
+  return [...new Set([...mine, ...alternatives(id)])].slice(0, 10);
+}
 function sxBlock(i){
-  const A = state.active, e = A.ex[i], X = EX[e.id], p = presc(e.id), last = lastFor(e.id);
-  const bwOnly = X.bw, cardio = X.type === 'cardio';
-  return `<div class="sx" id="sx-${i}">
-    <div class="row between"><button class="exname" data-ex="${e.id}" style="font-size:17px">${esc(X.n)}</button><span class="tag">${p.r[0]}–${p.r[1]} ${p.unit === 'rip' ? 'rip' : p.unit}</span></div>
-    <div class="hint">${esc(suggest(e.id).text)}${last ? ` <span class="num">(${dItal(last.date)}: ${last.sets.map(s => (num(s.kg) ? fmt(num(s.kg)) + '×' : '') + num(s.reps)).join(', ')})</span>` : ''}</div>
-    <div class="sethead" aria-hidden="true"><span>#</span><span>${cardio ? 'km' : bwOnly ? 'kg extra' : 'kg'}</span><span>${{s:'secondi', min:'minuti', rip:'ripetiz.'}[p.unit]}</span><span></span></div>
-    <div class="sets">${e.sets.map((s, j) => `
-      <div class="set ${s.done ? 'done' : ''}" id="set-${i}-${j}">
-        <span class="n">${j + 1}</span>
-        <input inputmode="decimal" autocomplete="off" id="kg-${i}-${j}" data-i="${i}" data-j="${j}" data-f="kg" value="${esc(s.kg)}" placeholder="${bwOnly ? '0' : '—'}" aria-label="${esc(X.n)}, serie ${j + 1}: ${cardio ? 'chilometri' : 'chili'}">
-        <input inputmode="numeric" autocomplete="off" id="rp-${i}-${j}" data-i="${i}" data-j="${j}" data-f="reps" value="${esc(s.reps)}" placeholder="${p.r[1]}" aria-label="${esc(X.n)}, serie ${j + 1}: ${UNIT_LONG[p.unit]}">
-        <button class="ok" data-i="${i}" data-j="${j}" aria-pressed="${s.done}" aria-label="Serie ${j + 1} completata">${icon('check')}</button>
-      </div>`).join('')}</div>
-    <div class="row" style="gap:4px"><button class="btn ghost sm" data-addset="${i}">+ Aggiungi serie</button>${e.sets.length > 1 ? `<button class="btn ghost sm" data-delset="${i}">− Togli ultima</button>` : ''}<button class="btn ghost sm" data-delex="${i}">Rimuovi esercizio</button></div>
+  const A = state.active, e = A.ex[i], X = EX[e.id], p = presc(e.id), cur = curIdx(A) === i;
+  if(e.done){
+    const kgs = [...new Set(e.sets.map(x => num(x.kg)).filter(Boolean))];
+    return `<div class="sx sxdone" id="sx-${i}"><div class="row between" style="flex-wrap:nowrap;gap:10px">
+      <div style="min-width:0;display:flex;gap:10px;align-items:center"><span class="okdot">${icon('check')}</span><div style="min-width:0"><strong>${esc(X.n)}</strong><div class="small muted num">${e.sets.length} × ${num(e.sets[0].reps)}${kgs.length ? ' · ' + kgs.map(k => fmt(k)).join('–') + ' kg' : ''}</div></div></div>
+      <button class="btn ghost sm" data-edit="${i}">Modifica</button></div></div>`;
+  }
+  if(!cur) return `<div class="sx sxnext" id="sx-${i}"><div class="row between" style="flex-wrap:nowrap;gap:10px">
+      <div style="min-width:0"><strong>${esc(X.n)}</strong><div class="small muted">${p.s} × ${p.r[0]}–${p.r[1]} ${p.unit === 'rip' ? 'rip' : UNIT_LONG[p.unit]}</div></div>
+      <button class="btn ghost sm" data-goto="${i}">Fai ora</button></div></div>`;
+  const d = exDraft(e), last = lastFor(e.id), cardio = X.type === 'cardio';
+  return `<div class="sx sxcur" id="sx-${i}">
+    <div class="row between"><span class="eyebrow">Esercizio ${i + 1} di ${A.ex.length}</span><span class="tag">${p.s} × ${p.r[0]}–${p.r[1]} ${p.unit === 'rip' ? 'rip' : UNIT_LONG[p.unit]}</span></div>
+    <div class="curhead">${figSVG(e.id)}<div style="min-width:0;display:grid;gap:4px"><button class="exname" data-ex="${e.id}" style="font-size:19px">${esc(X.n)}</button>
+      <div class="small muted">${last ? `Ultima volta (${dItal(last.date)}): ${esc(last.sets.map(x => (num(x.kg) ? fmt(num(x.kg)) + ' kg × ' : '') + num(x.reps)).join(', '))}` : 'Prima volta: scegli un peso che ti lasci 2–3 ripetizioni di margine.'}</div></div></div>
+    <p class="small">Fai tutte le serie, poi scrivi qui quanto hai usato e tocca <strong>Fatto</strong>.</p>
+    <div class="exin">
+      <label class="f">${cardio ? 'Km' : X.bw ? 'Kg extra' : 'Kg usati'}<input inputmode="decimal" autocomplete="off" data-d="kg" data-i="${i}" value="${esc(d.kg)}" placeholder="${X.bw ? '0' : '—'}"></label>
+      <label class="f">Serie<input inputmode="numeric" autocomplete="off" data-d="ns" data-i="${i}" value="${esc(d.ns)}"></label>
+      <label class="f">${p.unit === 'rip' ? 'Ripetizioni' : UNIT_LONG[p.unit][0].toUpperCase() + UNIT_LONG[p.unit].slice(1)}<input inputmode="numeric" autocomplete="off" data-d="nr" data-i="${i}" value="${esc(d.nr)}"></label>
+    </div>
+    <button class="btn primary big" data-done="${i}">${icon('check')} Fatto · ${A.ex.slice(i + 1).some(x => !x.done) || A.ex.slice(0, i).some(x => !x.done) ? 'prossimo esercizio' : 'ultimo esercizio'}</button>
+    <div class="row" style="gap:4px;justify-content:center"><button class="btn sm" data-alt="${i}">Scegli un'alternativa</button><button class="btn ghost sm" data-skip="${i}">Dopo</button><button class="btn ghost sm" data-delex="${i}">Togli</button></div>
   </div>`;
 }
 function updateProgress(){
-  const [d, t] = sessionCount(state.active);
+  const A = state.active, t = A.ex.length, d = A.ex.filter(e => e.done).length;
   $('#sProg').style.width = (t ? d / t * 100 : 0) + '%';
-  $('#sCount').textContent = `${d}/${t} serie`;
+  $('#sCount').textContent = `${d}/${t} esercizi fatti`;
 }
 function renderSession(el){
   const A = state.active;
@@ -1759,76 +1790,74 @@ function renderSession(el){
     <div class="card glass">
       <div class="row between" style="align-items:flex-end">
         <div style="min-width:0"><span class="eyebrow" id="elapsed">${A.past ? 'Allenamento già fatto' : `In corso · ${Math.max(0, Math.round((Date.now() - A.start) / 60000))} min`}</span><h2>${esc(A.n)}</h2></div>
-        <div class="row"><button class="btn ghost sm" id="cancelW">Annulla</button><button class="btn sm" data-go="timer">Timer</button><button class="btn primary" id="finishW">Termina</button></div>
+        <div class="row"><button class="btn ghost sm" id="cancelW">Annulla</button><button class="btn primary" id="finishW">Termina</button></div>
       </div>
-      <label class="f" style="width:min(100%,200px)">Data dell'allenamento<input type="date" id="sDate" value="${esc(A.date)}" max="${iso()}"></label>
+      ${A.past ? `<label class="f" style="width:min(100%,200px)">Data dell'allenamento<input type="date" id="sDate" value="${esc(A.date)}" max="${iso()}"></label>` : ''}
       <div style="display:grid;gap:6px"><div class="prog"><span id="sProg"></span></div><span class="small muted num" id="sCount"></span></div>
-      <p class="small muted">Per ogni serie scrivi i chili e le ripetizioni: la serie conta già così, il ✓ serve solo a far partire il recupero.</p>
       <div id="sessionMsg"></div>
-      ${sessionCount(A)[0] ? '' : (() => { const U = WARMUPS.find(x => x.id === warmupFor(A.ex.map(e => e.id))); return `<div class="note small wurow"><span style="min-width:0"><strong>Prima riscaldati</strong> · ${esc(U.n)}, ${mmss(wuDur(U.id))}</span><button class="btn sm" id="wuGo2" data-wu="${U.id}">Avvia</button></div>`; })()}
+      ${A.past || A.ex.some(e => e.done) ? '' : (() => { const U = WARMUPS.find(x => x.id === warmupFor(A.ex.map(e => e.id))); return `<div class="note small wurow"><span style="min-width:0"><strong>Prima riscaldati</strong> · ${esc(U.n)}, ${mmss(wuDur(U.id))}</span><button class="btn sm" id="wuGo2" data-wu="${U.id}">Avvia</button></div>`; })()}
     </div>
-    <div class="card glass" id="sxList">${A.ex.map((_, i) => sxBlock(i)).join('')}</div>
+    <div class="card glass" id="sxList"></div>
     <div class="row"><button class="btn" id="addEx">+ Aggiungi esercizio</button></div>`;
-  updateProgress();
-  $('#sDate').onchange = e => { const v = e.target.value; if(v && v <= iso()){ A.date = v; persist(); } else e.target.value = A.date; };
-  const wu2 = $('#wuGo2'); if(wu2) wu2.onclick = () => wodStart({warmup:wu2.dataset.wu});
   const list = $('#sxList');
+  const draw = focusCur => {
+    list.innerHTML = A.ex.length ? A.ex.map((_, k) => sxBlock(k)).join('') : '<p class="muted">Nessun esercizio: aggiungine uno qui sotto.</p>';
+    hookFigs(list); updateProgress();
+    if(focusCur){ const c = list.querySelector('.sxcur'); if(c) setTimeout(() => c.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'}), 60); }
+  };
+  draw(false);
+  const sd = $('#sDate'); if(sd) sd.onchange = e => { const v = e.target.value; if(v && v <= iso()){ A.date = v; persist(); } else e.target.value = A.date; };
+  const wu2 = $('#wuGo2'); if(wu2) wu2.onclick = () => wodStart({warmup:wu2.dataset.wu});
   list.addEventListener('input', ev => {
-    const inp = ev.target.closest('.set input[data-f]'); if(!inp) return;
-    const s = A.ex[+inp.dataset.i].sets[+inp.dataset.j];
-    s[inp.dataset.f] = inp.value.replace(',', '.').replace(/[^0-9.]/g, '');
-    if(inp.value !== s[inp.dataset.f]) inp.value = s[inp.dataset.f];
-    $(`#set-${inp.dataset.i}-${inp.dataset.j}`).classList.toggle('done', setDone(s));
-    updateProgress(); persist();
+    const inp = ev.target.closest('input[data-d]'); if(!inp) return;
+    const e = A.ex[+inp.dataset.i], d = exDraft(e), v = inp.value.replace(',', '.').replace(/[^0-9.]/g, '');
+    if(v !== inp.value) inp.value = v;
+    d[inp.dataset.d] = v; persist();
   });
-  list.addEventListener('keydown', ev => { if(ev.key === 'Enter' && ev.target.matches('.set input')){ ev.preventDefault(); ev.target.blur(); } });
+  list.addEventListener('keydown', ev => { if(ev.key === 'Enter' && ev.target.matches('input[data-d]')){ ev.preventDefault(); ev.target.blur(); } });
   list.addEventListener('click', ev => {
-    const ok = ev.target.closest('.ok');
-    if(ok){
-      const i = +ok.dataset.i, j = +ok.dataset.j, s = A.ex[i].sets[j], p = presc(A.ex[i].id);
-      s.done = !s.done; $('#sessionMsg').innerHTML = '';
-      if(s.done){
-        if(!s.reps){ s.reps = String(p.r[1]); $(`#rp-${i}-${j}`).value = s.reps; }
-        const next = A.ex[i].sets[j + 1];
-        if(next && next.kg === '' && s.kg !== ''){ next.kg = s.kg; $(`#kg-${i}-${j+1}`).value = s.kg; }
-        if(p.rest) startTimer(p.rest); haptic(15);
-      }
-      $(`#set-${i}-${j}`).classList.toggle('done', s.done);
-      ok.setAttribute('aria-pressed', s.done);
-      updateProgress(); persist();
+    const b = ev.target.closest('button'); if(!b) return;
+    if(b.dataset.done != null){
+      const i = +b.dataset.done, e = A.ex[i], d = exDraft(e), p = presc(e.id);
+      const ns = Math.min(20, Math.max(1, Math.round(num(d.ns)) || p.s)), nr = num(d.nr) || p.r[0], kg = num(d.kg);
+      e.sets = [...Array(ns)].map(() => ({kg, reps: nr, done: true})); e.done = true; e.draft = null; const wu = el.querySelector('.wurow'); if(wu) wu.remove();
+      const nx = A.ex.findIndex((x, k) => k > i && !x.done);
+      A.cur = nx >= 0 ? nx : A.ex.findIndex(x => !x.done);
+      $('#sessionMsg').innerHTML = ''; haptic(15); persist(); draw(true);
+      if(A.cur < 0) $('#sessionMsg').innerHTML = `<div class="note row between"><span>Hai finito tutti gli esercizi.</span><button class="btn sm primary" id="finish2">Termina e salva</button></div>`, $('#finish2').onclick = () => finishSession();
+      else toast(`${EX[e.id].n} fatto: ora ${EX[A.ex[A.cur].id].n}`);
       return;
     }
-    const dx = ev.target.closest('[data-delex]');
-    if(dx){ askDelete(dx, () => { A.ex.splice(+dx.dataset.delex, 1); list.innerHTML = A.ex.map((_, k) => sxBlock(k)).join('') || '<p class="muted">Nessun esercizio: aggiungine uno qui sotto.</p>'; updateProgress(); persist(); }, 'Rimuovi esercizio'); return; }
-    const add = ev.target.closest('[data-addset]'), del = ev.target.closest('[data-delset]');
-    if(add || del){
-      const i = +(add || del).dataset[add ? 'addset' : 'delset'], e = A.ex[i];
-      if(add){ const l = e.sets[e.sets.length - 1]; e.sets.push({kg: l ? l.kg : '', reps:'', done:false}); }
-      else if(e.sets.length > 1) e.sets.pop();
-      $(`#sx-${i}`).outerHTML = sxBlock(i); updateProgress(); persist();
+    if(b.dataset.goto != null){ A.cur = +b.dataset.goto; persist(); draw(true); haptic(6); return; }
+    if(b.dataset.skip != null){ const i = +b.dataset.skip, nx = A.ex.findIndex((x, k) => k > i && !x.done); A.cur = nx >= 0 ? nx : A.ex.findIndex((x, k) => k !== i && !x.done); if(A.cur < 0) A.cur = i; persist(); draw(true); haptic(6); return; }
+    if(b.dataset.edit != null){ const i = +b.dataset.edit, e = A.ex[i]; e.draft = {kg: e.sets[0] ? String(num(e.sets[0].kg) || '') : '', ns: String(e.sets.length || presc(e.id).s), nr: String(e.sets[0] ? num(e.sets[0].reps) : presc(e.id).r[0])}; e.done = false; e.sets = []; A.cur = i; persist(); draw(true); return; }
+    if(b.dataset.alt != null){
+      const i = +b.dataset.alt, e = A.ex[i];
+      openPicker({title:'Alternativa a ' + EX[e.id].n, sub:'Prende il suo posto in questo allenamento', first: altFor(e.id), onPick: nid => {
+        const old = EX[e.id].n; e.id = nid; e.draft = null; e.sets = []; e.done = false; A.cur = i;
+        persist(); draw(true); toast(`${old} → ${EX[nid].n}`);
+      }});
+      return;
     }
+    if(b.dataset.delex != null){ askDelete(b, () => { const i = +b.dataset.delex; A.ex.splice(i, 1); A.cur = A.ex.findIndex(x => !x.done); persist(); draw(true); }, 'Togli'); return; }
   });
   $('#addEx').onclick = () => openPicker({title:'Aggiungi esercizio', sub: A.n, onPick: id => {
-    const p = presc(id), sg = suggest(id);
-    A.ex.push({id, sets: [...Array(p.s)].map(() => ({kg: sg.kg ?? '', reps:'', done:false}))});
-    if(!list.querySelector('.sx')) list.innerHTML = '';
-    list.insertAdjacentHTML('beforeend', sxBlock(A.ex.length - 1)); updateProgress(); persist();
-    toast(`${EX[id].n} aggiunto`); setTimeout(() => $('#sx-' + (A.ex.length - 1))?.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'center'}), 350);
+    A.ex.push({id, sets: []}); if(curIdx(A) < 0) A.cur = A.ex.length - 1;
+    persist(); draw(true); toast(`${EX[id].n} aggiunto`);
   }});
   $('#finishW').onclick = () => {
-    const [d] = sessionCount(A);
-    if(!d){ $('#sessionMsg').innerHTML = `<div class="note row between"><span>Non hai ancora scritto nessuna serie. Scrivi chili e ripetizioni, oppure annulla la seduta.</span></div>`; haptic([10, 40, 10]); return; }
+    if(!A.ex.some(e => e.done)){ $('#sessionMsg').innerHTML = `<div class="note row between"><span>Non hai ancora finito nessun esercizio. Scrivi i chili e tocca Fatto, oppure annulla.</span></div>`; haptic([10, 40, 10]); return; }
     finishSession();
   };
   $('#cancelW').onclick = () => {
-    $('#sessionMsg').innerHTML = `<div class="note row between"><span>Annullare la seduta? Le serie segnate non verranno salvate.</span><span class="row"><button class="btn sm" id="cNo">Continua</button><button class="btn sm primary" id="cYes">Annulla seduta</button></span></div>`;
+    $('#sessionMsg').innerHTML = `<div class="note row between"><span>Annullare l'allenamento? Non verrà salvato.</span><span class="row"><button class="btn sm" id="cNo">Continua</button><button class="btn sm primary" id="cYes">Annulla</button></span></div>`;
     $('#cNo').onclick = () => $('#sessionMsg').innerHTML = '';
-    $('#cYes').onclick = () => { state.active = null; stopTimer(); lockScreen(false); persist(); renderAll(); toast('Seduta annullata'); };
+    $('#cYes').onclick = () => { state.active = null; stopTimer(); lockScreen(false); persist(); renderAll(); toast('Allenamento annullato'); };
   };
 }
 function finishSession(){
   const A = state.active;
-  const ex = A.ex.map(e => ({id:e.id, sets:e.sets.filter(setDone).map(s => ({kg:num(s.kg), reps: num(s.reps) || presc(e.id).r[1]}))})).filter(e => e.sets.length);
+  const ex = A.ex.filter(e => e.done).map(e => ({id:e.id, sets:e.sets.map(s => ({kg:num(s.kg), reps: num(s.reps) || presc(e.id).r[1]}))})).filter(e => e.sets.length);
   const w = {id: uidGen(), ts: A.date === iso() ? Date.now() : dayNum(A.date) * 864e5 + 18 * 36e5, date: A.date, dayIdx: typeof A.dayIdx === 'number' ? A.dayIdx : null, plan: A.plan || planSig(), n: A.n, min: A.past ? 0 : Math.max(1, Math.round((Date.now() - A.start) / 60000)), ex};
   state.workouts.push(w); state.workouts.sort((a, b) => a.ts - b.ts); state.active = null;
   stopTimer(); lockScreen(false); markWorkout(w.id); renderAll(); haptic([20, 60, 20]);
