@@ -294,6 +294,7 @@ ol.steps li::before{content:counter(st);width:24px;height:24px;border-radius:50%
 .sxdone strong{color:var(--muted);font-weight:600}
 .exnav{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .exnav .btn{padding:0 12px}
+.reccard{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 55%,transparent),0 12px 34px -14px var(--glass-shadow)}
 .okdot{width:28px;height:28px;flex:none;border-radius:50%;background:var(--green);color:var(--on-accent);display:grid;place-items:center}
 .okdot svg{width:16px;height:16px}
 .btn.big svg{width:22px;height:22px}
@@ -467,7 +468,7 @@ const haptic = p => {
 };
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const APP_VERSION = '6 · 21/11/2026';
+const APP_VERSION = '7 · 21/11/2026';
 const ICON = {
   oggi:'<rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/><path d="m9 15 2 2 4-4"/>',
   scheda:'<rect x="8" y="2.5" width="8" height="4" rx="1"/><path d="M16 4.5h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2h2"/><path d="M12 11h4M12 16h4M8 11h.01M8 16h.01"/>',
@@ -1668,11 +1669,20 @@ function macroBar(n){
 function renderOggi(){
   const el = $('#p-oggi');
   if(state.active) return renderSession(el);
-  const sp = split(), idx = nextDayIdx(), n = nutr(), wd = weekDates(), today = iso();
+  const sp = split(), idx = nextDayIdx(), wd = weekDates(), today = iso(), rec = recommend();
   const doneDays = new Set(state.workouts.map(w => w.date));
   const done = wd.filter(d => doneDays.has(d)).length;
   el.innerHTML = `
     ${state.profile.example ? `<div class="card glass"><span class="eyebrow">Benvenuto</span><h2>Parti dal tuo profilo</h2><p class="muted">Ora vedi valori di esempio. Inserisci età, altezza, peso e obiettivo: la scheda si calcola su di te.</p><div class="row"><button class="btn primary" data-go="profilo">Inserisci i miei dati</button></div></div>` : ''}
+    <div class="card glass reccard">
+      <span class="eyebrow">Consiglio di oggi</span>
+      <h2>${rec.kind === 'circ' ? 'Fai un circuito' : 'Segui la scheda'}</h2>
+      <p class="muted">${esc(rec.why)}</p>
+      <div class="note small wurow" id="wuRow">${rec.kind === 'circ' ? circWuNote(rec.C) : wuNote(sp[idx])}</div>
+      <div class="row">${rec.kind === 'circ'
+        ? `<button class="btn primary" id="recGo">Inizia circuito · ${esc(rec.C.n)}</button><button class="btn ghost sm" id="recAlt">Preferisco la scheda</button>`
+        : `<button class="btn primary" id="recGo">Inizia ${esc(sp[idx].n)}</button><button class="btn ghost sm" id="recAlt">Oggi preferisco un circuito</button>`}</div>
+    </div>
     <div class="card glass">
       <span class="eyebrow">Questa settimana · ${done}/${state.profile.days} allenamenti</span>
       <div class="week">${['L','M','M','G','V','S','D'].map((l, i) => `<div><i class="${doneDays.has(wd[i]) ? 'on' : ''} ${wd[i] === today ? 'today' : ''}" aria-label="${doneDays.has(wd[i]) ? 'allenamento fatto' : 'nessun allenamento'}"></i>${l}</div>`).join('')}</div>
@@ -1684,7 +1694,6 @@ function renderOggi(){
       </div>
       <div id="nextList">${dayList(sp[idx])}</div>
       <div class="row between" style="flex-wrap:nowrap;gap:10px"><span class="small muted" style="min-width:0">Cambiano da soli ogni settimana.</span><button class="btn ghost sm" id="reroll" style="flex:none">Cambia esercizi</button></div>
-      <div class="note small wurow" id="wuRow">${wuNote(sp[idx])}</div>
       <div class="row"><button class="btn primary" id="startW">Inizia allenamento</button><button class="btn" id="logPast">Registra un allenamento già fatto</button></div>
     </div>
     <div class="card glass">
@@ -1704,11 +1713,14 @@ function renderOggi(){
     if(!(kg >= 30 && kg <= 300)){ err.textContent = 'Scrivi un peso tra 30 e 300 kg.'; err.hidden = false; haptic([10, 40, 10]); return; }
     saveWeight(iso(), kg);
   };
-  const bindWu = () => { $('#wuGo').onclick = () => wodStart({warmup:$('#wuGo').dataset.wu, after:$('#pickDay').value}); };
+  const bindWu = () => { $('#wuGo').onclick = () => wodStart({warmup:$('#wuGo').dataset.wu, after: rec.kind === 'circ' ? null : $('#pickDay').value, afterCirc: rec.kind === 'circ' ? rec.C.id : null}); };
   bindWu();
+  const fallbackC = CIRCUITS.find(c => c.id === 'bruciagrassi');
+  $('#recGo').onclick = () => rec.kind === 'circ' ? wodStart(rec.C.id) : startSession($('#pickDay').value);
+  $('#recAlt').onclick = () => rec.kind === 'circ' ? $('#startW').scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'center'}) : wodStart(fallbackC.id);
   const pick = ref => {
     const {day} = resolveDay(ref); $('#pickDay').value = ref;
-    $('#wuRow').innerHTML = wuNote(day); bindWu();
+    if(rec.kind !== 'circ'){ $('#wuRow').innerHTML = wuNote(day); bindWu(); }
     $('#nextName').textContent = day.n; $('#nextEyebrow').textContent = String(ref).startsWith('g:') ? `Gruppo muscolare · circa ${estMin(day.ex)} minuti` : `Prossimo allenamento · circa ${estMin(day.ex)} minuti`;
     $('#nextList').innerHTML = dayList(day); hookFigs($('#nextList'));
   };
@@ -1716,6 +1728,23 @@ function renderOggi(){
   $('#reroll').onclick = () => { const ref = $('#pickDay').value; reroll(ref); pick(ref); haptic(8); const l = $('#nextList'); l.animate?.([{opacity:.25}, {opacity:1}], {duration:260}); renderScheda(); };
   hookFigs(el);
 }
+/* today's advice: the next session of the plan, or a light circuit when the muscles need a break */
+function recommend(){
+  const today = iso(), wd = weekDates(), days = +state.profile.days || 3, sp = split(), idx = nextDayIdx();
+  const trained = new Set([...state.workouts.map(w => w.date), ...state.wods.map(w => w.date)]);
+  const weekDone = new Set(state.workouts.filter(w => wd.includes(w.date)).map(w => w.date)).size;
+  const last = state.workouts[state.workouts.length - 1];
+  const gap = last ? dayNum(today) - dayNum(last.date) : 99;
+  let row = 0; for(let d = dayNum(today) - 1; row < 10; d--){ const iso2 = new Date(d * 864e5).toISOString().slice(0, 10); if(trained.has(iso2)) row++; else break; }
+  const lastLegs = last && /gamb|glute/i.test(last.n);
+  const C = CIRCUITS.find(c => c.id === (lastLegs ? 'addome' : weekIdx() % 2 ? 'bruciagrassi' : 'addome'));
+  const circ = why => ({kind:'circ', C, why});
+  if(trained.has(today)) return circ(last && last.date === today ? `Oggi hai già fatto ${last.n}. Se ti va di fare ancora qualcosa, basta un circuito leggero.` : 'Oggi ti sei già allenato. Se ti va di fare ancora qualcosa, basta un circuito leggero.');
+  if(weekDone >= days) return circ(`Hai già fatto i tuoi ${days} allenamenti di questa settimana. Un circuito ti tiene in movimento senza stancare i muscoli che lavori con la scheda.`);
+  if(row >= 2) return circ(`Ti sei allenato ${row} giorni di fila. Oggi un circuito leggero aiuta a recuperare; con la scheda riprendi domani.`);
+  return {kind:'plan', why: gap >= 4 && last ? `Sono passati ${gap} giorni dall'ultimo allenamento: riprendi dalla scheda, con ${sp[idx].n}.` : `Tocca alla scheda: oggi ${sp[idx].n}.${weekDone ? ` Questa settimana ne hai fatti ${weekDone} su ${days}.` : ''}`};
+}
+function circWuId(C){ return warmupFor(circSt(C)) === 'generale' ? 'cardio' : warmupFor(circSt(C)); }
 function reroll(ref){ const k = rotKey(ref); state.rot[k] = (state.rot[k] || 0) + 1; persist(); }
 const dayList = d => d.ex.map(id => exRow(id, `<div class="hint">${esc(suggest(id).text)}</div>`)).join('');
 
@@ -2623,6 +2652,10 @@ function wuNote(day){
   const U = WARMUPS.find(x => x.id === warmupFor(day.ex));
   return `<div style="min-width:0"><strong>Riscaldamento guidato · ${esc(U.n)}</strong><br><span class="muted">${U.st.length} esercizi in ${mmss(wuDur(U.id))}, con timer e animazioni. Poi 1–2 serie leggere del primo esercizio.</span></div><button class="btn sm" id="wuGo" data-wu="${U.id}">Riscaldati</button>`;
 }
+function circWuNote(C){
+  const U = WARMUPS.find(x => x.id === circWuId(C));
+  return `<div style="min-width:0"><strong>Riscaldati · ${esc(U.n)}</strong><br><span class="muted">${U.st.length} esercizi in ${mmss(wuDur(U.id))}, con timer e animazioni.</span></div><button class="btn sm" id="wuGo" data-wu="${U.id}">Riscaldati</button>`;
+}
 let openCirc = null;
 function circCardHTML(C){
   const k = circCfg(C.id), st = circSt(C), dur = workDur(buildSegs({...wodCfg(), prep:0, mode:'circuit', circuit:C.id}));
@@ -2692,7 +2725,7 @@ function wodStart(opt){
   if(!segs.some(s => s.k === 'work')){ toast('Aggiungi almeno un blocco di lavoro'); haptic([10, 40, 10]); return; }
   audio();
   try{ if('speechSynthesis' in window && state.settings.voice){ const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } }catch(e){} // unlocks speech on iOS inside the tap
-  W = {c, segs, i:0, paused:false, pauseAt:0, pausedTotal:0, segStart:performance.now(), workStart:null, splits:[], cue:'', flags:{}, done:false, date:iso(), after: opt && opt.after != null ? opt.after : null};
+  W = {c, segs, i:0, paused:false, pauseAt:0, pausedTotal:0, segStart:performance.now(), workStart:null, splits:[], cue:'', flags:{}, done:false, date:iso(), after: opt && opt.after != null ? opt.after : null, afterCirc: opt && opt.afterCirc || null};
   openWod(); enterSeg();
   lockScreen(true);
   W.int = setInterval(wodTick, 100);
@@ -2801,16 +2834,16 @@ function wodFinish(reason){
   say(reason === 'cap' ? 'Tempo scaduto' : reason === 'stop' ? 'Timer fermato' : W.c.mode === 'warmup' ? 'Riscaldamento finito. Ora si parte!' : 'Finito! Ottimo lavoro');
   W.result = {total: Math.round(total), splits: W.splits.map(x => Math.round(x / 1000)), reason};
   if(W.c.mode === 'warmup'){
-    const after = W.after, act = !!state.active;
+    const after = W.after, afterCirc = W.afterCirc, act = !!state.active;
     $('#wod').dataset.phase = 'done';
     $('#wod').innerHTML = `
     <div class="wtop"><div class="wmode">${esc(wodSummaryLabel(W.c))}</div></div>
     <div class="wmid"><div class="wlabel">${reason === 'stop' ? 'Riscaldamento interrotto' : 'Sei pronto!'}</div>
       <div class="wbig num">${mmss(W.result.total)}</div>
       <div class="wsmall">Prima delle serie vere fai 1–2 serie leggere del primo esercizio: metà carico, poi circa il 70%.</div></div>
-    <div class="wctl"><button class="wbtn ghost" id="wDiscard">Chiudi</button>${act || after != null ? `<button class="wbtn strong" id="wAfter">${act ? "Torna all'allenamento" : 'Inizia allenamento'}</button>` : ''}</div>`;
+    <div class="wctl"><button class="wbtn ghost" id="wDiscard">Chiudi</button>${act || after != null || afterCirc ? `<button class="wbtn strong" id="wAfter">${act ? "Torna all'allenamento" : afterCirc ? 'Inizia circuito' : 'Inizia allenamento'}</button>` : ''}</div>`;
     $('#wDiscard').onclick = closeWod;
-    const a = $('#wAfter'); if(a) a.onclick = () => { closeWod(); showTab('oggi'); if(!state.active) startSession(after); };
+    const a = $('#wAfter'); if(a) a.onclick = () => { closeWod(); if(afterCirc && !act){ wodStart(afterCirc); return; } showTab('oggi'); if(!state.active) startSession(after); };
     return;
   }
   const sp = W.result.splits;
