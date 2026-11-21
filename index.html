@@ -468,7 +468,7 @@ const haptic = p => {
 };
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const APP_VERSION = '7 · 21/11/2026';
+const APP_VERSION = '8 · 21/11/2026';
 const ICON = {
   oggi:'<rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/><path d="m9 15 2 2 4-4"/>',
   scheda:'<rect x="8" y="2.5" width="8" height="4" rx="1"/><path d="M16 4.5h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2h2"/><path d="M12 11h4M12 16h4M8 11h.01M8 16h.01"/>',
@@ -1122,9 +1122,11 @@ const LS = 'ghisa-coach-v2';
 const SYNC = {stateRef:null, woCol:null, chain:Promise.resolve(), t:null};
 function loadLocal(){ try{ const j = localStorage.getItem(LS) || localStorage.getItem('ghisa-coach-v1'); if(j) return JSON.parse(j); }catch(e){} return null; }
 function saveLocal(){ try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){} }
+const IMP_DATES = {"imp01": "2026-10-15", "imp02": "2026-10-17", "imp03": "2026-10-19", "imp04": "2026-10-21", "imp05": "2026-10-23", "imp06": "2026-10-25", "imp07": "2026-10-27", "imp08": "2026-10-29", "imp09": "2026-10-31", "imp10": "2026-11-02", "imp11": "2026-11-04", "imp12": "2026-11-06", "imp13": "2026-11-08", "imp14": "2026-11-10", "imp15": "2026-11-12", "imp16": "2026-11-14"};
 function merge(s){
   const m = {...structuredClone(DEFAULT), ...(s || {}), profile:{...DEFAULT.profile, ...((s && s.profile) || {})}};
-  m.workouts = (m.workouts || []).map(w => ({...w, id: w.id || uidGen(), ts: w.ts || dayNum(w.date) * 864e5}));
+  m.workouts = (m.workouts || []).map(w => ({...w, id: w.id || uidGen(), ts: w.ts || dayNum(w.date) * 864e5}))
+    .map(w => w.imported && IMP_DATES[w.id] && w.date !== IMP_DATES[w.id] ? {...w, date: IMP_DATES[w.id], ts: dayNum(IMP_DATES[w.id]) * 864e5 + 18 * 36e5} : w);
   m.weights = (m.weights || []).filter(x => x && x.date && x.kg > 0);
   m.chat = (m.chat || []).filter(x => x && x.content);
   m.pending = Array.isArray(m.pending) ? m.pending : [];
@@ -1670,7 +1672,7 @@ function renderOggi(){
   const el = $('#p-oggi');
   if(state.active) return renderSession(el);
   const sp = split(), idx = nextDayIdx(), wd = weekDates(), today = iso(), rec = recommend();
-  const doneDays = new Set(state.workouts.map(w => w.date));
+  const doneDays = new Set(realWos().map(w => w.date));
   const done = wd.filter(d => doneDays.has(d)).length;
   el.innerHTML = `
     ${state.profile.example ? `<div class="card glass"><span class="eyebrow">Benvenuto</span><h2>Parti dal tuo profilo</h2><p class="muted">Ora vedi valori di esempio. Inserisci età, altezza, peso e obiettivo: la scheda si calcola su di te.</p><div class="row"><button class="btn primary" data-go="profilo">Inserisci i miei dati</button></div></div>` : ''}
@@ -1678,9 +1680,8 @@ function renderOggi(){
       <span class="eyebrow">Consiglio di oggi</span>
       <h2>${rec.kind === 'circ' ? 'Fai un circuito' : 'Segui la scheda'}</h2>
       <p class="muted">${esc(rec.why)}</p>
-      <div class="note small wurow" id="wuRow">${rec.kind === 'circ' ? circWuNote(rec.C) : wuNote(sp[idx])}</div>
       <div class="row">${rec.kind === 'circ'
-        ? `<button class="btn primary" id="recGo">Inizia circuito · ${esc(rec.C.n)}</button><button class="btn ghost sm" id="recAlt">Preferisco la scheda</button>`
+        ? `<button class="btn primary" id="recGo">Inizia circuito · ${esc(rec.C.n)}</button><button class="btn sm" id="wuCirc">Riscaldati</button><button class="btn ghost sm" id="recAlt">Preferisco la scheda</button>`
         : `<button class="btn primary" id="recGo">Inizia ${esc(sp[idx].n)}</button><button class="btn ghost sm" id="recAlt">Oggi preferisco un circuito</button>`}</div>
     </div>
     <div class="card glass">
@@ -1689,38 +1690,24 @@ function renderOggi(){
     </div>
     <div class="card glass">
       <div class="row between" style="align-items:flex-end">
-        <div style="min-width:0"><span class="eyebrow" id="nextEyebrow">Prossimo allenamento · circa ${estMin(sp[idx].ex)} minuti</span><h2 id="nextName">${esc(sp[idx].n)}</h2></div>
+        <div style="min-width:0"><span class="eyebrow" id="nextEyebrow">Prossimo allenamento · circa ${estMin(sp[idx].ex)} minuti</span><div class="row" style="gap:10px;align-items:center"><h2 id="nextName">${esc(sp[idx].n)}</h2><button class="btn sm" id="wuGo" data-wu="${warmupFor(sp[idx].ex)}">Riscaldati · <span id="wuMin">${mmss(wuDur(warmupFor(sp[idx].ex)))}</span></button></div></div>
         <label class="f" style="width:min(100%,210px)">Cambia seduta<select id="pickDay"><optgroup label="La tua scheda">${sp.map((d, i) => `<option value="${i}" ${i === idx ? 'selected' : ''}>${esc(d.n)}</option>`).join('')}</optgroup><optgroup label="Per gruppo muscolare">${GROUP_WORKOUTS.map(g => `<option value="g:${g.key}">${esc(g.n)}</option>`).join('')}</optgroup></select></label>
       </div>
       <div id="nextList">${dayList(sp[idx])}</div>
       <div class="row between" style="flex-wrap:nowrap;gap:10px"><span class="small muted" style="min-width:0">Cambiano da soli ogni settimana.</span><button class="btn ghost sm" id="reroll" style="flex:none">Cambia esercizi</button></div>
       <div class="row"><button class="btn primary" id="startW">Inizia allenamento</button><button class="btn" id="logPast">Registra un allenamento già fatto</button></div>
     </div>
-    <div class="card glass">
-      <div class="row between"><h3>Il tuo peso</h3><span class="small muted num">${(() => { const lw = sortedWeights().pop(); return lw ? 'ultima pesata ' + fmt(lw.kg) + ' kg · ' + dItal(lw.date) : 'nessuna pesata'; })()}</span></div>
-      <form class="row" id="qwForm" style="flex-wrap:nowrap;gap:8px" novalidate>
-        <label class="f" style="flex:1"><span class="sr">Peso di oggi in kg</span><input id="qwKg" inputmode="decimal" autocomplete="off" placeholder="Peso di oggi (kg)"></label>
-        <button class="btn primary" type="submit" style="flex:none">Salva</button>
-      </form>
-      <p class="small" id="qwErr" style="color:var(--red)" hidden></p>
-    </div>
 `;
   $('#startW').onclick = () => startSession($('#pickDay').value);
   $('#logPast').onclick = () => { startSession($('#pickDay').value, {past:true}); };
-  $('#qwForm').onsubmit = e => {
-    e.preventDefault();
-    const kg = num($('#qwKg').value), err = $('#qwErr');
-    if(!(kg >= 30 && kg <= 300)){ err.textContent = 'Scrivi un peso tra 30 e 300 kg.'; err.hidden = false; haptic([10, 40, 10]); return; }
-    saveWeight(iso(), kg);
-  };
-  const bindWu = () => { $('#wuGo').onclick = () => wodStart({warmup:$('#wuGo').dataset.wu, after: rec.kind === 'circ' ? null : $('#pickDay').value, afterCirc: rec.kind === 'circ' ? rec.C.id : null}); };
-  bindWu();
+  $('#wuGo').onclick = () => wodStart({warmup:$('#wuGo').dataset.wu, after:$('#pickDay').value});
+  const wc = $('#wuCirc'); if(wc) wc.onclick = () => wodStart({warmup:circWuId(rec.C), afterCirc:rec.C.id});
   const fallbackC = CIRCUITS.find(c => c.id === 'bruciagrassi');
   $('#recGo').onclick = () => rec.kind === 'circ' ? wodStart(rec.C.id) : startSession($('#pickDay').value);
   $('#recAlt').onclick = () => rec.kind === 'circ' ? $('#startW').scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'center'}) : wodStart(fallbackC.id);
   const pick = ref => {
     const {day} = resolveDay(ref); $('#pickDay').value = ref;
-    if(rec.kind !== 'circ'){ $('#wuRow').innerHTML = wuNote(day); bindWu(); }
+    const wu = warmupFor(day.ex); $('#wuGo').dataset.wu = wu; $('#wuMin').textContent = mmss(wuDur(wu));
     $('#nextName').textContent = day.n; $('#nextEyebrow').textContent = String(ref).startsWith('g:') ? `Gruppo muscolare · circa ${estMin(day.ex)} minuti` : `Prossimo allenamento · circa ${estMin(day.ex)} minuti`;
     $('#nextList').innerHTML = dayList(day); hookFigs($('#nextList'));
   };
@@ -1731,9 +1718,9 @@ function renderOggi(){
 /* today's advice: the next session of the plan, or a light circuit when the muscles need a break */
 function recommend(){
   const today = iso(), wd = weekDates(), days = +state.profile.days || 3, sp = split(), idx = nextDayIdx();
-  const trained = new Set([...state.workouts.map(w => w.date), ...state.wods.map(w => w.date)]);
-  const weekDone = new Set(state.workouts.filter(w => wd.includes(w.date)).map(w => w.date)).size;
-  const last = state.workouts[state.workouts.length - 1];
+  const real = realWos(), trained = new Set([...real.map(w => w.date), ...state.wods.map(w => w.date)]);
+  const weekDone = new Set(real.filter(w => wd.includes(w.date)).map(w => w.date)).size;
+  const last = real[real.length - 1] || state.workouts[state.workouts.length - 1];
   const gap = last ? dayNum(today) - dayNum(last.date) : 99;
   let row = 0; for(let d = dayNum(today) - 1; row < 10; d--){ const iso2 = new Date(d * 864e5).toISOString().slice(0, 10); if(trained.has(iso2)) row++; else break; }
   const lastLegs = last && /gamb|glute/i.test(last.n);
@@ -1742,7 +1729,7 @@ function recommend(){
   if(trained.has(today)) return circ(last && last.date === today ? `Oggi hai già fatto ${last.n}. Se ti va di fare ancora qualcosa, basta un circuito leggero.` : 'Oggi ti sei già allenato. Se ti va di fare ancora qualcosa, basta un circuito leggero.');
   if(weekDone >= days) return circ(`Hai già fatto i tuoi ${days} allenamenti di questa settimana. Un circuito ti tiene in movimento senza stancare i muscoli che lavori con la scheda.`);
   if(row >= 2) return circ(`Ti sei allenato ${row} giorni di fila. Oggi un circuito leggero aiuta a recuperare; con la scheda riprendi domani.`);
-  return {kind:'plan', why: gap >= 4 && last ? `Sono passati ${gap} giorni dall'ultimo allenamento: riprendi dalla scheda, con ${sp[idx].n}.` : `Tocca alla scheda: oggi ${sp[idx].n}.${weekDone ? ` Questa settimana ne hai fatti ${weekDone} su ${days}.` : ''}`};
+  return {kind:'plan', why: gap >= 4 && last && !last.imported ? `Sono passati ${gap} giorni dall'ultimo allenamento: riprendi dalla scheda, con ${sp[idx].n}.` : `Tocca alla scheda: oggi ${sp[idx].n}.${weekDone ? ` Questa settimana ne hai fatti ${weekDone} su ${days}.` : ''}`};
 }
 function circWuId(C){ return warmupFor(circSt(C)) === 'generale' ? 'cardio' : warmupFor(circSt(C)); }
 function reroll(ref){ const k = rotKey(ref); state.rot[k] = (state.rot[k] || 0) + 1; persist(); }
@@ -1773,6 +1760,7 @@ function startSession(ref, opt = {}){
 const setDone = s => s.done || String(s.reps ?? '') !== ''; // writing the reps is enough: no need to tick every set
 const sessionCount = A => { let d = 0, t = 0; A.ex.forEach(e => e.sets.forEach(s => { t++; if(setDone(s)) d++; })); return [d, t]; };
 /* one exercise at a time: do all the sets, write the kilos you used, tick it, go to the next one */
+const realWos = () => state.workouts.filter(w => !w.imported); // workouts actually logged in the app
 const curIdx = A => { if(typeof A.cur === 'number' && A.ex[A.cur]) return A.cur; return A.cur === -1 ? -1 : A.ex.findIndex(e => !e.done); };
 function exDraft(e){
   if(e.draft) return e.draft;
@@ -1949,7 +1937,7 @@ function renderScheda(){
     <div><span class="eyebrow">${p.days} giorni · ${esc(G.l)} · ${esc(LEVELS[p.level].split(' (')[0])}</span><h2>La tua scheda</h2></div>
     <div class="seg glass" role="group" aria-label="Organizzazione della scheda">${Object.entries(STYLES).map(([k, l]) => `<button data-style="${k}" aria-pressed="${(p.style || 'auto') === k}">${l}</button>`).join('')}</div>
     <p class="muted">${p.style === 'mia' ? 'Le tue 3 sedute della palestra: gambe, dorso e bicipiti, petto e tricipiti. Gli esercizi cambiano solo tra quelli che usi, così trovi sempre le macchine che conosci.' : p.style === 'muscoli' ? 'Ogni seduta allena uno o due gruppi muscolari. È adatta soprattutto se ti alleni 4 o più volte a settimana.' : 'Ogni seduta allena più muscoli: è la scelta migliore se ti alleni 2–3 volte a settimana o se sei all\'inizio.'} Esegui le sedute in ordine: dopo l'ultima ricominci dalla prima.</p>
-    <div class="grid2">${sp.map((d, i) => `<div class="card glass"><div class="row between"><div style="min-width:0"><span class="eyebrow">Seduta ${i + 1} · circa ${estMin(d.ex)} min</span><h3>${esc(d.n)}</h3></div><div class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn ghost sm" data-reroll="${i}">Cambia esercizi</button><button class="btn primary sm" data-start="${i}">Inizia</button></div></div><div>${d.ex.map((id, pos) => exRow(id, id !== d.base[pos] ? '<span><span class="tag">sostituito</span></span>' : '', planKey(i, pos))).join('')}</div></div>`).join('')}</div>
+    <div class="grid2">${sp.map((d, i) => `<div class="card glass"><div class="row between"><div style="min-width:0"><span class="eyebrow">Seduta ${i + 1} · circa ${estMin(d.ex)} min</span><h3>${esc(d.n)}</h3></div><div class="row" style="gap:6px"><button class="btn sm" data-wustart="${i}">Riscaldati</button><button class="btn ghost sm" data-reroll="${i}">Cambia esercizi</button><button class="btn primary sm" data-start="${i}">Inizia</button></div></div><div>${d.ex.map((id, pos) => exRow(id, id !== d.base[pos] ? '<span><span class="tag">sostituito</span></span>' : '', planKey(i, pos))).join('')}</div></div>`).join('')}</div>
     <p class="small muted">Gli esercizi cambiano da soli ogni settimana (squat, pressa e chest press ogni ${ROT_WEEKS}). «Cambia esercizi» li varia subito, «Cambia» sostituisce un esercizio e lo tiene fisso.</p>
     <details class="card glass" id="gruppi"><summary><strong>Allenamenti per un solo muscolo</strong> <span class="small muted">· quando vuoi</span></summary><div style="padding-top:12px">
     <div class="grid2">${GROUP_WORKOUTS.map(g => { const ex = groupEx(g.key); return `<div class="card glass gcard">
@@ -1963,6 +1951,7 @@ function renderScheda(){
       persist(); renderAll(); toast(`${day.n}: ora c'è ${EX[nid].n}`);
     }});
   });
+  el.querySelectorAll('[data-wustart]').forEach(b => b.onclick = () => wodStart({warmup: warmupFor(sp[+b.dataset.wustart].ex), after: +b.dataset.wustart}));
   el.querySelectorAll('[data-start]').forEach(b => b.onclick = () => { if(!state.active) showTab('oggi'); startSession(+b.dataset.start); });
   el.querySelectorAll('[data-reroll]').forEach(b => b.onclick = () => { reroll(b.dataset.reroll); renderAll(); toast(`${sp[+b.dataset.reroll].n}: esercizi cambiati`); });
   el.querySelectorAll('[data-gstart]').forEach(b => b.onclick = () => { if(!state.active) showTab('oggi'); startSession('g:' + b.dataset.gstart); });
@@ -2891,7 +2880,7 @@ function renderProgressi(){
   const prs = {};
   state.workouts.forEach(wo => wo.ex.forEach(e => loaded(e.id) && e.sets.forEach(s => { const kg = num(s.kg), rp = num(s.reps); if(!kg || !rp) return; const v = e1rm(kg, rp); if(!prs[e.id] || v > prs[e.id].v) prs[e.id] = {v, kg, reps:rp, date:wo.date}; })));
   const today = dayNum(iso());
-  const month = state.workouts.filter(x => today - dayNum(x.date) < 30).length;
+  const month = realWos().filter(x => today - dayNum(x.date) < 30).length;
   const el = $('#p-progressi');
   el.innerHTML = `
     <div><span class="eyebrow">Andamento</span><h2>I tuoi progressi</h2></div>
