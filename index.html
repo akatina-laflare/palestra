@@ -468,7 +468,7 @@ const haptic = p => {
 };
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const APP_VERSION = '8 · 21/11/2026';
+const APP_VERSION = '9 · 21/11/2026';
 const ICON = {
   oggi:'<rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/><path d="m9 15 2 2 4-4"/>',
   scheda:'<rect x="8" y="2.5" width="8" height="4" rx="1"/><path d="M16 4.5h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2h2"/><path d="M12 11h4M12 16h4M8 11h.01M8 16h.01"/>',
@@ -1671,19 +1671,11 @@ function macroBar(n){
 function renderOggi(){
   const el = $('#p-oggi');
   if(state.active) return renderSession(el);
-  const sp = split(), idx = nextDayIdx(), wd = weekDates(), today = iso(), rec = recommend();
+  const sp = split(), idx = nextDayIdx(), wd = weekDates(), today = iso();
   const doneDays = new Set(realWos().map(w => w.date));
   const done = wd.filter(d => doneDays.has(d)).length;
   el.innerHTML = `
     ${state.profile.example ? `<div class="card glass"><span class="eyebrow">Benvenuto</span><h2>Parti dal tuo profilo</h2><p class="muted">Ora vedi valori di esempio. Inserisci età, altezza, peso e obiettivo: la scheda si calcola su di te.</p><div class="row"><button class="btn primary" data-go="profilo">Inserisci i miei dati</button></div></div>` : ''}
-    <div class="card glass reccard">
-      <span class="eyebrow">Consiglio di oggi</span>
-      <h2>${rec.kind === 'circ' ? 'Fai un circuito' : 'Segui la scheda'}</h2>
-      <p class="muted">${esc(rec.why)}</p>
-      <div class="row">${rec.kind === 'circ'
-        ? `<button class="btn primary" id="recGo">Inizia circuito · ${esc(rec.C.n)}</button><button class="btn sm" id="wuCirc">Riscaldati</button><button class="btn ghost sm" id="recAlt">Preferisco la scheda</button>`
-        : `<button class="btn primary" id="recGo">Inizia ${esc(sp[idx].n)}</button><button class="btn ghost sm" id="recAlt">Oggi preferisco un circuito</button>`}</div>
-    </div>
     <div class="card glass">
       <span class="eyebrow">Questa settimana · ${done}/${state.profile.days} allenamenti</span>
       <div class="week">${['L','M','M','G','V','S','D'].map((l, i) => `<div><i class="${doneDays.has(wd[i]) ? 'on' : ''} ${wd[i] === today ? 'today' : ''}" aria-label="${doneDays.has(wd[i]) ? 'allenamento fatto' : 'nessun allenamento'}"></i>${l}</div>`).join('')}</div>
@@ -1701,10 +1693,6 @@ function renderOggi(){
   $('#startW').onclick = () => startSession($('#pickDay').value);
   $('#logPast').onclick = () => { startSession($('#pickDay').value, {past:true}); };
   $('#wuGo').onclick = () => wodStart({warmup:$('#wuGo').dataset.wu, after:$('#pickDay').value});
-  const wc = $('#wuCirc'); if(wc) wc.onclick = () => wodStart({warmup:circWuId(rec.C), afterCirc:rec.C.id});
-  const fallbackC = CIRCUITS.find(c => c.id === 'bruciagrassi');
-  $('#recGo').onclick = () => rec.kind === 'circ' ? wodStart(rec.C.id) : startSession($('#pickDay').value);
-  $('#recAlt').onclick = () => rec.kind === 'circ' ? $('#startW').scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'center'}) : wodStart(fallbackC.id);
   const pick = ref => {
     const {day} = resolveDay(ref); $('#pickDay').value = ref;
     const wu = warmupFor(day.ex); $('#wuGo').dataset.wu = wu; $('#wuMin').textContent = mmss(wuDur(wu));
