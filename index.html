@@ -107,7 +107,7 @@ input.hapin{all:revert!important;position:absolute!important;inset:0!important;w
 /* bottom tab capsule */
 nav.dock{position:fixed;z-index:9;left:0;right:0;margin-inline:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));
   width:min(480px,calc(100% - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));
-  border-radius:999px;padding:6px;display:grid;grid-template-columns:repeat(6,1fr);gap:2px}
+  border-radius:999px;padding:6px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
 nav.dock .ind{position:absolute;top:6px;bottom:6px;left:0;width:0;border-radius:999px;background:var(--glass-strong);
   box-shadow:0 4px 14px -6px var(--glass-shadow),inset 0 1px 0 var(--sheen);border:1px solid var(--glass-edge);
   transition:transform .45s var(--spring),width .45s var(--spring),opacity .25s}
@@ -372,7 +372,6 @@ details[open] summary::before{transform:rotate(45deg)}
       <h1><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6.5" fill="var(--accent)"/><g fill="var(--on-accent)"><rect x="5.6" y="7.4" width="2.4" height="9.2" rx="1.1"/><rect x="16" y="7.4" width="2.4" height="9.2" rx="1.1"/><rect x="3.4" y="9.4" width="1.8" height="5.2" rx=".8"/><rect x="18.8" y="9.4" width="1.8" height="5.2" rx=".8"/><rect x="7.6" y="11" width="8.8" height="2" rx=".9"/></g></svg>Ghisa</h1>
       <div class="hbtns">
         <button class="iconbtn glass" id="hSet" data-tab="profilo" aria-pressed="false" aria-label="Impostazioni" title="Impostazioni"></button>
-        <button class="iconbtn glass" id="hCoach" data-tab="coach" aria-pressed="false" aria-label="Coach" title="Coach"></button>
       </div>
     </div>
   </div>
@@ -383,11 +382,8 @@ details[open] summary::before{transform:rotate(45deg)}
   <section class="panel" id="p-scheda" hidden></section>
   <section class="panel" id="p-timer" hidden></section>
   <section class="panel" id="p-esercizi" hidden></section>
-  <section class="panel" id="p-nutrizione" hidden></section>
   <section class="panel" id="p-progressi" hidden></section>
-  <section class="panel" id="p-coach" hidden></section>
   <section class="panel" id="p-profilo" hidden></section>
-  <p class="swipehint">Scorri a destra o a sinistra per cambiare sezione</p>
 </main>
 
 <nav class="dock glass bar" id="dock" role="tablist" aria-label="Sezioni">
@@ -396,7 +392,6 @@ details[open] summary::before{transform:rotate(45deg)}
   <button role="tab" data-tab="scheda" aria-selected="false"></button>
   <button role="tab" data-tab="timer" aria-selected="false"></button>
   <button role="tab" data-tab="esercizi" aria-selected="false"></button>
-  <button role="tab" data-tab="nutrizione" aria-selected="false"></button>
   <button role="tab" data-tab="progressi" aria-selected="false"></button>
 </nav>
 
@@ -474,10 +469,10 @@ const ICON = {
   settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
 };
 const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]}</svg>`;
-const TABS = ['oggi','scheda','timer','esercizi','nutrizione','progressi','coach','profilo'];
+const TABS = ['oggi','scheda','timer','esercizi','progressi','profilo'];
 const TAB_LABEL = {oggi:'Oggi', scheda:'Scheda', timer:'Timer', esercizi:'Esercizi', nutrizione:'Nutrizione', progressi:'Progressi', coach:'Coach', profilo:'Impostazioni'};
 document.querySelectorAll('#dock button').forEach(b => b.innerHTML = icon(b.dataset.tab) + `<span>${TAB_LABEL[b.dataset.tab]}</span>`);
-$('#hSet').innerHTML = icon('settings'); $('#hCoach').innerHTML = icon('coach');
+$('#hSet').innerHTML = icon('settings');
 
 let toastT = null;
 function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400); }
@@ -1615,7 +1610,7 @@ function showTab(t, opts = {}){
   if(prev === t && opts.scroll !== false && opts.animate !== false){ window.scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'}); return; }
   if(prev !== t) tabScroll[prev] = window.scrollY;
   document.querySelectorAll('#dock button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === t));
-  $('#hCoach').setAttribute('aria-pressed', t === 'coach'); $('#hSet').setAttribute('aria-pressed', t === 'profilo');
+  $('#hSet').setAttribute('aria-pressed', t === 'profilo');
   document.querySelectorAll('section.panel').forEach(s => {
     const on = s.id === 'p-' + t; s.hidden = !on;
     s.classList.remove('in-r', 'in-l', 'in-f');
@@ -1665,7 +1660,7 @@ function renderOggi(){
   const doneDays = new Set(state.workouts.map(w => w.date));
   const done = wd.filter(d => doneDays.has(d)).length;
   el.innerHTML = `
-    ${state.profile.example ? `<div class="card glass"><span class="eyebrow">Benvenuto</span><h2>Parti dal tuo profilo</h2><p class="muted">Ora vedi valori di esempio. Inserisci età, altezza, peso e obiettivo: scheda, calorie e macro si calcolano su di te.</p><div class="row"><button class="btn primary" data-go="profilo">Inserisci i miei dati</button></div></div>` : ''}
+    ${state.profile.example ? `<div class="card glass"><span class="eyebrow">Benvenuto</span><h2>Parti dal tuo profilo</h2><p class="muted">Ora vedi valori di esempio. Inserisci età, altezza, peso e obiettivo: la scheda si calcola su di te.</p><div class="row"><button class="btn primary" data-go="profilo">Inserisci i miei dati</button></div></div>` : ''}
     <div class="card glass">
       <span class="eyebrow">Questa settimana · ${done}/${state.profile.days} allenamenti</span>
       <div class="week">${['L','M','M','G','V','S','D'].map((l, i) => `<div><i class="${doneDays.has(wd[i]) ? 'on' : ''} ${wd[i] === today ? 'today' : ''}" aria-label="${doneDays.has(wd[i]) ? 'allenamento fatto' : 'nessun allenamento'}"></i>${l}</div>`).join('')}</div>
@@ -1675,9 +1670,8 @@ function renderOggi(){
         <div style="min-width:0"><span class="eyebrow" id="nextEyebrow">Prossimo allenamento · circa ${estMin(sp[idx].ex)} minuti</span><h2 id="nextName">${esc(sp[idx].n)}</h2></div>
         <label class="f" style="width:min(100%,210px)">Cambia seduta<select id="pickDay"><optgroup label="La tua scheda">${sp.map((d, i) => `<option value="${i}" ${i === idx ? 'selected' : ''}>${esc(d.n)}</option>`).join('')}</optgroup><optgroup label="Per gruppo muscolare">${GROUP_WORKOUTS.map(g => `<option value="g:${g.key}">${esc(g.n)}</option>`).join('')}</optgroup></select></label>
       </div>
-      <div style="display:grid;gap:6px"><span class="small muted">Oppure allena un gruppo muscolare:</span><div class="chiprow" id="gChips">${GROUP_WORKOUTS.map(g => `<button class="chip" data-gpick="g:${g.key}" aria-pressed="false">${esc(g.n)}</button>`).join('')}</div></div>
       <div id="nextList">${dayList(sp[idx])}</div>
-      <div class="row between" style="flex-wrap:nowrap;gap:10px"><span class="small muted" style="min-width:0">Gli esercizi cambiano ogni settimana e a ogni seduta salvata; i fondamentali ogni ${ROT_WEEKS} settimane.</span><button class="btn ghost sm" id="reroll" style="flex:none">Cambia esercizi</button></div>
+      <div class="row between" style="flex-wrap:nowrap;gap:10px"><span class="small muted" style="min-width:0">Cambiano da soli ogni settimana.</span><button class="btn ghost sm" id="reroll" style="flex:none">Cambia esercizi</button></div>
       <div class="note small wurow" id="wuRow">${wuNote(sp[idx])}</div>
       <div class="row"><button class="btn primary" id="startW">Inizia allenamento</button><button class="btn" id="logPast">Registra un allenamento già fatto</button></div>
     </div>
@@ -1689,17 +1683,7 @@ function renderOggi(){
       </form>
       <p class="small" id="qwErr" style="color:var(--red)" hidden></p>
     </div>
-    <div class="grid2">
-      <div class="card glass"><h3>Consigli del coach</h3><ul class="clean tips">${tips().map(t => `<li style="--c:${t.c}">${esc(t.t)}</li>`).join('')}</ul></div>
-      <div class="card glass"><h3>Obiettivo di oggi a tavola</h3>
-        <div class="row" style="align-items:baseline;gap:6px"><b class="num" style="font-size:34px;font-family:var(--display);line-height:1">${n.kcal.toLocaleString('it-IT')}</b><span class="muted">kcal</span></div>
-        ${macroBar(n)}
-        <div class="legend"><span><i class="dot p-c"></i>${n.p} g proteine</span><span><i class="dot c-c"></i>${n.c} g carboidrati</span><span><i class="dot f-c"></i>${n.f} g grassi</span></div>
-        ${(() => { const t = foodTot(foodToday()); return t.kcal ? `<p class="small">Mangiato finora <strong class="num">${Math.round(t.kcal).toLocaleString('it-IT')}</strong> kcal · rimangono <strong class="num">${Math.max(0, Math.round(n.kcal - t.kcal)).toLocaleString('it-IT')}</strong></p><div class="prog"><span style="width:${Math.min(100, t.kcal / n.kcal * 100)}%;background:var(--accent)"></span></div>` : ''; })()}
-        <p class="small muted">Acqua: ${fmt(n.water)} litri · Fibre: ${n.fiber} g</p>
-        <div class="row"><button class="btn primary sm" data-go="nutrizione">Scrivi cosa hai mangiato</button><button class="btn sm" data-go="nutrizione">Piano alimentare</button></div>
-      </div>
-    </div>`;
+`;
   $('#startW').onclick = () => startSession($('#pickDay').value);
   $('#logPast').onclick = () => { startSession($('#pickDay').value, {past:true}); };
   $('#qwForm').onsubmit = e => {
@@ -1714,12 +1698,10 @@ function renderOggi(){
     const {day} = resolveDay(ref); $('#pickDay').value = ref;
     $('#wuRow').innerHTML = wuNote(day); bindWu();
     $('#nextName').textContent = day.n; $('#nextEyebrow').textContent = String(ref).startsWith('g:') ? `Gruppo muscolare · circa ${estMin(day.ex)} minuti` : `Prossimo allenamento · circa ${estMin(day.ex)} minuti`;
-    $('#gChips').querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c.dataset.gpick === ref));
     $('#nextList').innerHTML = dayList(day); hookFigs($('#nextList'));
   };
   $('#pickDay').onchange = e => { pick(e.target.value); haptic(5); };
   $('#reroll').onclick = () => { const ref = $('#pickDay').value; reroll(ref); pick(ref); haptic(8); const l = $('#nextList'); l.animate?.([{opacity:.25}, {opacity:1}], {duration:260}); renderScheda(); };
-  $('#gChips').onclick = e => { const c = e.target.closest('[data-gpick]'); if(!c) return; pick(c.getAttribute('aria-pressed') === 'true' ? String(idx) : c.dataset.gpick); haptic(5); };
   hookFigs(el);
 }
 function reroll(ref){ const k = rotKey(ref); state.rot[k] = (state.rot[k] || 0) + 1; persist(); }
@@ -1904,20 +1886,12 @@ function renderScheda(){
     <div class="seg glass" role="group" aria-label="Organizzazione della scheda">${Object.entries(STYLES).map(([k, l]) => `<button data-style="${k}" aria-pressed="${(p.style || 'auto') === k}">${l}</button>`).join('')}</div>
     <p class="muted">${p.style === 'mia' ? 'Le tue 3 sedute della palestra: gambe, dorso e bicipiti, petto e tricipiti. Gli esercizi cambiano solo tra quelli che usi, così trovi sempre le macchine che conosci.' : p.style === 'muscoli' ? 'Ogni seduta allena uno o due gruppi muscolari. È adatta soprattutto se ti alleni 4 o più volte a settimana.' : 'Ogni seduta allena più muscoli: è la scelta migliore se ti alleni 2–3 volte a settimana o se sei all\'inizio.'} Esegui le sedute in ordine: dopo l'ultima ricominci dalla prima.</p>
     <div class="grid2">${sp.map((d, i) => `<div class="card glass"><div class="row between"><div style="min-width:0"><span class="eyebrow">Seduta ${i + 1} · circa ${estMin(d.ex)} min</span><h3>${esc(d.n)}</h3></div><div class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn ghost sm" data-reroll="${i}">Cambia esercizi</button><button class="btn primary sm" data-start="${i}">Inizia</button></div></div><div>${d.ex.map((id, pos) => exRow(id, id !== d.base[pos] ? '<span><span class="tag">sostituito</span></span>' : '', planKey(i, pos))).join('')}</div></div>`).join('')}</div>
-    <p class="small muted">Gli esercizi cambiano da soli: gli altri ogni settimana e a ogni seduta salvata, i fondamentali (squat, panca, pressa, chest press…) ogni ${ROT_WEEKS} settimane, così hai il tempo di aumentare i carichi. «Cambia esercizi» li varia subito; «Cambia» su un esercizio lo sostituisce con quello che preferisci e lo tiene fisso.</p>
-    <div id="gruppi"><span class="eyebrow">Fuori dalla rotazione</span><h2>Allenamenti per gruppo muscolare</h2></div>
-    <p class="muted">Sedute pronte per un singolo muscolo, da fare quando vuoi. Non spostano la rotazione della tua scheda.</p>
+    <p class="small muted">Gli esercizi cambiano da soli ogni settimana (squat, pressa e chest press ogni ${ROT_WEEKS}). «Cambia esercizi» li varia subito, «Cambia» sostituisce un esercizio e lo tiene fisso.</p>
+    <details class="card glass" id="gruppi"><summary><strong>Allenamenti per un solo muscolo</strong> <span class="small muted">· quando vuoi</span></summary><div style="padding-top:12px">
     <div class="grid2">${GROUP_WORKOUTS.map(g => { const ex = groupEx(g.key); return `<div class="card glass gcard">
       <div class="top"><div style="min-width:0"><span class="eyebrow">${ex.length} esercizi · circa ${estMin(ex)} min</span><h3>${esc(g.n)}</h3><p class="small muted">${esc(ex.map(id => EX[id].n).join(' · '))}</p></div>${figSVG(ex[0])}</div>
       <details><summary class="small muted">Vedi gli esercizi</summary><div style="padding-top:8px">${ex.map(id => exRow(id)).join('')}</div></details>
-      <div class="row"><button class="btn primary sm" data-gstart="${g.key}">Inizia allenamento</button></div></div>`; }).join('')}</div>
-    <div class="card glass"><h3>Come progredire</h3>
-      <ul class="clean tips">
-        <li style="--c:var(--green)">Quando chiudi tutte le serie al massimo delle ripetizioni, aumenta il carico: +2,5 kg sul bilanciere, +1 kg per manubrio.</li>
-        <li style="--c:var(--blue)">Lascia sempre 1–3 ripetizioni di margine: non serve arrivare allo sfinimento a ogni serie.</li>
-        <li style="--c:var(--yellow)">Ogni 6–8 settimane fai una settimana di scarico, con metà delle serie.</li>
-        <li style="--c:var(--red)">Un dolore acuto alle articolazioni non è normale: fermati e cambia esercizio. L'indolenzimento muscolare nei giorni dopo, invece, sì.</li>
-      </ul></div>`;
+      <div class="row"><button class="btn primary sm" data-gstart="${g.key}">Inizia allenamento</button></div></div>`; }).join('')}</div></div></details>`;
   el.querySelectorAll('[data-swapkey]').forEach(b => b.onclick = () => {
     const key = b.dataset.swapkey, [, di, pos] = key.split(':').map(Number), day = sp[di], cur = day.ex[pos], base = day.base[pos];
     openPicker({title:'Sostituisci ' + EX[cur].n, sub: day.n, first: alternatives(cur), restore: cur !== base ? base : null, onPick: nid => {
@@ -1959,7 +1933,7 @@ function fillLib(){
   $('#libCount').textContent = ids.length === EX_IDS.length ? `${EX_IDS.length} esercizi` : `${ids.length} di ${EX_IDS.length} esercizi`;
   const card = id => `<button class="libcard glass" data-ex="${id}">${figSVG(id)}<strong>${esc(EX[id].n)}</strong><span class="small muted">${esc(EX[id].eq)} · ${esc(EX[id].m)}</span></button>`;
   let html;
-  if(!ids.length) html = `<p class="muted">Nessun esercizio trovato. Chiedi al Coach: ti spiega anche quelli che non sono in libreria.</p>`;
+  if(!ids.length) html = `<p class="muted">Nessun esercizio trovato.</p>`;
   else if(libGroup === 'Tutti' && !libQ) html = GROUPS.slice(1).map(g => { const gi = ids.filter(id => EX[id].g === g); return gi.length ? `<h3 class="libh">${g}<span class="small muted num">${gi.length}</span></h3><div class="lib">${gi.map(card).join('')}</div>` : ''; }).join('');
   else html = `<div class="lib">${ids.map(card).join('')}</div>`;
   $('#libGrid').innerHTML = html;
@@ -2446,6 +2420,16 @@ const WARMUPS = [
   {id:'schiena', n:'Prima di schiena e stacchi', for:'Schiena', d:'Colonna mobile e anche attive prima di trazioni, rematori e stacchi.', st:[['skip',45],['gatto_mucca',45],['birddog',40],['hinge_cl',40],['ponte',40],['cerchi_braccia',40]]},
   {id:'cardio', n:'Prima della corsa o del cardio', for:'Cardio e circuiti', d:'Gambe e fiato pronti per tapis roulant, corsa, HIIT e circuiti.', st:[['skip',60],['slanci_gambe',50],['affondo_allungo',45],['calf',30],['jj',45]]},
 ];
+/* circuit exercises change every Monday, only with moves that use the same equipment */
+function circSt(C){
+  const wk = weekIdx() + CIRCUITS.indexOf(C), used = new Set(), beg = state.profile.level === 'beginner';
+  return C.st.map(id => {
+    const g = (VAR_OF[id] || [id]).filter(v => EX[v] && (v === id || (EX[v].eq === EX[id].eq && EX[v].type !== 'cardio' && !(beg && HARD.has(v))))), at = g.indexOf(id);
+    const ring = at < 0 ? [id] : [...g.slice(at), ...g.slice(0, at)];
+    for(let k = 0; k < ring.length; k++){ const v = ring[(wk + k) % ring.length]; if(!used.has(v)){ used.add(v); return v; } }
+    used.add(id); return id;
+  });
+}
 const WU_GAP = 6; // seconds to get into position between warm-up moves
 function warmupFor(ids){
   const c = {}; ids.forEach(id => { const g = EX[id] && EX[id].g; if(g) c[g] = (c[g] || 0) + 1; });
@@ -2476,17 +2460,17 @@ const mmss = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 360
 function buildSegs(c){
   const S = [], m = c.mode;
   const U = m === 'warmup' ? WARMUPS.find(x => x.id === c.warmup) : null;
-  if(c.prep) S.push({k:'prep', dur:c.prep, label:'Preparati', nextEx: m === 'circuit' ? CIRCUITS.find(x => x.id === c.circuit).st[0] : U ? U.st[0][0] : null});
+  if(c.prep) S.push({k:'prep', dur:c.prep, label:'Preparati', nextEx: m === 'circuit' ? circSt(CIRCUITS.find(x => x.id === c.circuit))[0] : U ? U.st[0][0] : null});
   if(U) U.st.forEach(([id, sec], i) => {
     S.push({k:'work', dur:sec, label:EX[id].n, ex:id, st:i + 1, sts:U.st.length, half:EX[id].half || null});
     if(i < U.st.length - 1) S.push({k:'rest', dur:WU_GAP, label:'Cambio', nextEx:U.st[i + 1][0]});
   });
   if(m === 'circuit'){
-    const C = CIRCUITS.find(x => x.id === c.circuit), k = circCfg(c.circuit), n = C.st.length;
-    for(let r = 1; r <= k.rounds; r++) C.st.forEach((id, i) => {
+    const C = CIRCUITS.find(x => x.id === c.circuit), k = circCfg(c.circuit), st = circSt(C), n = st.length;
+    for(let r = 1; r <= k.rounds; r++) st.forEach((id, i) => {
       S.push({k:'work', dur:k.work, label:EX[id].n, ex:id, r, rt:k.rounds, st:i + 1, sts:n});
-      if(i < n - 1 && k.rest) S.push({k:'rest', dur:k.rest, label:'Riposo', nextEx:C.st[i + 1], r, rt:k.rounds});
-      if(i === n - 1 && r < k.rounds && k.roundRest) S.push({k:'rest', dur:k.roundRest, label:'Riposo tra i giri', nextEx:C.st[0], r, rt:k.rounds});
+      if(i < n - 1 && k.rest) S.push({k:'rest', dur:k.rest, label:'Riposo', nextEx:st[i + 1], r, rt:k.rounds});
+      if(i === n - 1 && r < k.rounds && k.roundRest) S.push({k:'rest', dur:k.roundRest, label:'Riposo tra i giri', nextEx:st[0], r, rt:k.rounds});
     });
   }
   if(m === 'fortime') S.push({k:'work', dur: c.fortime.cap ? c.fortime.cap * 60 : Infinity, up:true, label:'For Time'});
@@ -2579,7 +2563,7 @@ function renderTimer(){
   }
   if(c.view === 'circuiti'){
     el.innerHTML = `<div><span class="eyebrow">${CIRCUITS.length} circuiti pronti, con timer integrato</span><h2>Circuiti</h2></div>${seg}
-      <p class="muted">Ogni esercizio dura un tempo fisso: il timer ti dice cosa fare, ti mostra il movimento e ti avvisa del prossimo. Puoi cambiare tempi e giri.</p>
+      <p class="muted">Il timer ti guida esercizio per esercizio. Gli esercizi cambiano ogni settimana; tempi e giri li scegli tu.</p>
       <div class="grid2">${CIRCUITS.map(C => circCardHTML(C)).join('')}</div>`;
     bindTimerSettings(el);
     return;
@@ -2606,12 +2590,12 @@ function wuNote(day){
 }
 let openCirc = null;
 function circCardHTML(C){
-  const k = circCfg(C.id), dur = workDur(buildSegs({...wodCfg(), prep:0, mode:'circuit', circuit:C.id}));
+  const k = circCfg(C.id), st = circSt(C), dur = workDur(buildSegs({...wodCfg(), prep:0, mode:'circuit', circuit:C.id}));
   return `<div class="card glass gcard" id="cc-${C.id}">
-    <div class="top"><div style="min-width:0"><span class="eyebrow">${esc(C.lv)} · <span class="ccdur">${mmss(dur)}</span></span><h3>${esc(C.n)}</h3><p class="small muted">${esc(C.d)}</p></div>${figSVG(C.st[0])}</div>
+    <div class="top"><div style="min-width:0"><span class="eyebrow">${esc(C.lv)} · <span class="ccdur">${mmss(dur)}</span></span><h3>${esc(C.n)}</h3><p class="small muted">${esc(C.d)}</p></div>${figSVG(st[0])}</div>
     <p class="small"><strong>Attrezzatura:</strong> ${esc(C.eq)}<br><span class="ccsum">${C.st.length} esercizi · ${k.work} s lavoro, ${k.rest ? k.rest + ' s riposo' : 'senza riposo'} · ${k.rounds} ${k.rounds === 1 ? 'giro' : 'giri'}</span></p>
     <details data-circ-details="${C.id}" ${openCirc === C.id ? 'open' : ''}><summary class="small muted">Esercizi e tempi</summary>
-      <div style="padding-top:8px">${C.st.map(id => exRow(id)).join('')}</div>
+      <div style="padding-top:8px">${st.map(id => exRow(id)).join('')}</div>
       <div style="display:grid;gap:10px;padding-top:8px">${stepper('circ.' + C.id + '.work')}${stepper('circ.' + C.id + '.rest')}${stepper('circ.' + C.id + '.rounds')}${stepper('circ.' + C.id + '.roundRest')}</div></details>
     <div class="row"><button class="btn primary" data-circ="${C.id}">Inizia circuito</button></div></div>`;
 }
@@ -2845,9 +2829,7 @@ function renderProgressi(){
     <div><span class="eyebrow">Andamento</span><h2>I tuoi progressi</h2></div>
     <div class="stats">
       <div class="stat glass"><span>Peso attuale</span><b class="num">${fmt(lastW)}</b><span>kg${w.length ? ' · ' + dItal(w[w.length-1].date) : ' · dal profilo'}</span></div>
-      <div class="stat glass"><span>Ritmo (ultime 4 settimane)</span><b class="num">${r ? (r.kgWk > 0 ? '+' : '') + fmt(r.kgWk, 2) : '—'}</b><span>${r ? 'kg a settimana' : 'servono 10 giorni di pesate'}</span></div>
       <div class="stat glass"><span>Allenamenti ultimi 30 giorni</span><b class="num">${month}</b><span>su circa ${Math.round(state.profile.days * 30 / 7)} previsti</span></div>
-      <div class="stat glass"><span>BMI</span><b class="num">${fmt(lastW / ((state.profile.height/100) ** 2))}</b><span>indicativo</span></div>
     </div>
     <div class="card glass">
       <h3>Peso corporeo</h3>
@@ -3034,9 +3016,9 @@ function renderProfilo(){
   const opt = (obj, v) => Object.entries(obj).map(([k, l]) => `<option value="${k}" ${String(v) === k ? 'selected' : ''}>${esc(typeof l === 'string' ? l : l.l)}</option>`).join('');
   const el = $('#p-profilo');
   el.innerHTML = `
-    <div><span class="eyebrow">Avvisi, profilo e app</span><h2>Impostazioni</h2></div>
+    <div><h2>Impostazioni</h2></div>
     ${settingsHTML()}
-    <div style="padding-top:6px"><span class="eyebrow">I calcoli partono da qui</span><h2>Il tuo profilo</h2></div>
+    <div style="padding-top:6px"><h2>Il tuo profilo</h2></div>
     ${p.example ? `<div class="example"><span>Questi sono valori di esempio. Sostituiscili con i tuoi e premi Salva.</span></div>` : ''}
     <form class="card glass" id="pForm" novalidate>
       <div class="formgrid">
@@ -3049,22 +3031,13 @@ function renderProfilo(){
         <label class="f">Obiettivo<select id="pf-goal">${opt(GOALS, p.goal)}</select></label>
         <label class="f">Esperienza<select id="pf-level">${opt(LEVELS, p.level)}</select></label>
         <label class="f">Allenamenti a settimana<select id="pf-days">${[2,3,4,5,6].map(d => `<option value="${d}" ${+p.days === d ? 'selected' : ''}>${d}</option>`).join('')}</select></label>
-        <label class="f">Pasti al giorno<select id="pf-meals">${[3,4,5].map(d => `<option value="${d}" ${+p.meals === d ? 'selected' : ''}>${d}</option>`).join('')}</select></label>
       </div>
       <div class="formgrid">
-        <label class="f">Attività fuori dalla palestra<select id="pf-activity">${opt(ACT, p.activity)}</select></label>
         <label class="f">Organizzazione della scheda<select id="pf-style">${opt(STYLES, p.style || 'auto')}</select></label>
       </div>
       <p class="small" id="pErr" style="color:var(--red)" hidden></p>
       <div class="row"><button class="btn primary" type="submit">Salva profilo</button></div>
     </form>
-    <div class="card glass" id="aiCard"><h3>Coach AI fuori da Claude</h3>
-      <p class="small">Dentro l'app Claude il coach usa il tuo account e non serve altro. Nella web app, per esempio quando la apri dalla Home, coach e menù del giorno usano l'API di Claude con una chiave tua: è facoltativa, tutto il resto funziona senza. La crei su <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.</p>
-      <p class="small muted">Il costo va sul tuo account API: pochi centesimi per una risposta. Imposta un limite di spesa nella console. La chiave resta solo in questo browser: non va nel tuo account Claude né su GitHub.</p>
-      <label class="f">Chiave API<input id="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="${getKey() ? 'Chiave salvata · ••••' + esc(getKey().slice(-4)) : 'sk-ant-…'}"></label>
-      <div class="row"><button class="btn primary sm" id="keySave">Salva chiave</button>${getKey() ? '<button class="btn sm" id="keyTest">Prova la chiave</button><button class="btn ghost sm" id="keyDel">Rimuovi</button>' : ''}</div>
-      <p class="small" id="keyMsg" aria-live="polite"></p>
-    </div>
     <div class="card glass"><h3>Colore dell'app</h3>
       <div class="swatches" role="group" aria-label="Colore principale">${ACCENTS.map(([k, l, c]) => `<button class="sw" data-accent="${k}" aria-pressed="${(p.accent || 'blu') === k}" aria-label="${l}" title="${l}" style="background:${c}"></button>`).join('')}</div>
       <p class="small muted" id="accName">${esc((ACCENTS.find(a => a[0] === (p.accent || 'blu')) || ACCENTS[0])[1])}</p>
@@ -3082,22 +3055,10 @@ function renderProfilo(){
     const age = num(g('age')), height = num(g('height')), weight = num(g('weight'));
     const bad = !(age >= 14 && age <= 90) ? ['age', 'L\'età deve essere tra 14 e 90 anni.'] : !(height >= 130 && height <= 220) ? ['height', 'L\'altezza deve essere tra 130 e 220 cm.'] : !(weight >= 30 && weight <= 300) ? ['weight', 'Il peso deve essere tra 30 e 300 kg.'] : null;
     if(bad){ err.textContent = bad[1]; err.hidden = false; $('#pf-' + bad[0]).focus(); haptic([10, 40, 10]); return; }
-    state.profile = {...state.profile, sex:g('sex'), age:Math.round(age), height:Math.round(height), weight, goal:g('goal'), level:g('level'), days:+g('days'), meals:+g('meals'), activity:g('activity'), style:g('style'), example:false};
+    state.profile = {...state.profile, sex:g('sex'), age:Math.round(age), height:Math.round(height), weight, goal:g('goal'), level:g('level'), days:+g('days'), meals:state.profile.meals, activity:state.profile.activity, style:g('style'), example:false};
     const lw = sortedWeights().pop();
     if(!lw || Math.abs(lw.kg - weight) > 0.05){ state.weights = state.weights.filter(x => x.date !== iso()); state.weights.push({date:iso(), kg:weight}); }
     persist(); renderAll(); haptic(12); toast('Profilo salvato: scheda e piano aggiornati');
-  };
-  $('#keySave').onclick = () => {
-    const k = $('#apiKey').value.trim(), msg = $('#keyMsg');
-    if(!/^sk-ant-[A-Za-z0-9_\-]{20,}$/.test(k)){ msg.style.color = 'var(--red)'; msg.textContent = 'La chiave deve iniziare con sk-ant- . Copiala intera dalla console.'; haptic([10, 40, 10]); return; }
-    setKey(k); haptic(10); renderProfilo(); $('#keyMsg').style.color = ''; $('#keyMsg').textContent = 'Chiave salvata su questo dispositivo. Tocca «Prova la chiave» per verificarla.';
-  };
-  if($('#keyDel')) $('#keyDel').onclick = () => { setKey(''); renderProfilo(); toast('Chiave rimossa da questo dispositivo'); };
-  if($('#keyTest')) $('#keyTest').onclick = async () => {
-    const b = $('#keyTest'), msg = $('#keyMsg'); b.disabled = true; msg.style.color = ''; msg.innerHTML = typing + ' Provo la chiave…';
-    try{ await aiText({force:'api', system:'Rispondi solo con la parola OK.', turns:[{role:'user', content:'Prova'}], effort:'low'}); msg.style.color = 'var(--green)'; msg.textContent = 'La chiave funziona: coach e menù sono attivi anche nella web app.'; haptic(12); }
-    catch(e){ msg.style.color = 'var(--red)'; msg.textContent = sampleErr(e && e.code); }
-    b.disabled = false;
   };
   el.querySelectorAll('[data-accent]').forEach(b => b.onclick = () => {
     state.profile.accent = b.dataset.accent; applyAccent(); persist(); haptic(8);
@@ -3137,7 +3098,7 @@ window.addEventListener('resize', fadeRows);
 /* ================= boot ================= */
 function renderAll(keepTab){
   applyAccent();
-  renderOggi(); renderScheda(); renderTimer(); renderEsercizi(); renderNutrizione(); renderProgressi(); renderCoach(); renderProfilo();
+  renderOggi(); renderScheda(); renderTimer(); renderEsercizi(); renderProgressi(); renderProfilo();
   showTab(tab, {animate:false, scroll:false});
 }
 const local = loadLocal(); if(local) state = merge(local);
